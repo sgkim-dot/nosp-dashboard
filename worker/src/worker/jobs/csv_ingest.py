@@ -1,8 +1,9 @@
 """JOB 2: CSV ingest.
 
 Usage:
-    uv run python -m worker.jobs.csv_ingest --file path/to/file.csv --product SEARCHING_VIEW --kind bid_info
-    uv run python -m worker.jobs.csv_ingest --watch          # watches inbox/
+    uv run python -m worker.jobs.csv_ingest --file path/to/file.csv \
+        --product SEARCHING_VIEW --kind bid_info
+    uv run python -m worker.jobs.csv_ingest --watch  # watches inbox/
 """
 
 from __future__ import annotations
@@ -22,13 +23,17 @@ def _detect_kind_and_product(name: str) -> tuple[str, str]:
     """Infer (product_code, kind) from the NOSP filename pattern."""
     n = name
     product = (
-        "SEARCHING_VIEW" if n.startswith("서칭뷰_")
-        else "NEW_PRODUCT" if n.startswith("신제품_")
+        "SEARCHING_VIEW"
+        if n.startswith("서칭뷰_")
+        else "NEW_PRODUCT"
+        if n.startswith("신제품_")
         else None
     )
     kind = (
-        "bid_info" if "회차별입찰정보" in n
-        else "winning" if "키워드그룹별최근낙찰가" in n
+        "bid_info"
+        if "회차별입찰정보" in n
+        else "winning"
+        if "키워드그룹별최근낙찰가" in n
         else None
     )
     if product is None or kind is None:
@@ -59,9 +64,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--file", type=Path, help="single CSV to ingest")
     parser.add_argument("--product", choices=["SEARCHING_VIEW", "NEW_PRODUCT"])
     parser.add_argument("--kind", choices=["bid_info", "winning"])
-    parser.add_argument(
-        "--watch", action="store_true", help="watch inbox/ folder"
-    )
+    parser.add_argument("--watch", action="store_true", help="watch inbox/ folder")
     args = parser.parse_args(argv)
 
     if args.watch:

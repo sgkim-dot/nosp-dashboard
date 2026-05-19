@@ -1,9 +1,9 @@
 """High-level CSV -> DB orchestrator (JOB 2)."""
 
+import re
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-import re
 
 from psycopg import Connection
 
@@ -18,12 +18,11 @@ from worker.upsert import (
     upsert_category_pair,
     upsert_keyword_group,
     upsert_round,
-    upsert_round_keyword_group,
 )
 
 log = get_logger(__name__)
 
-_QUERY_DATE = re.compile(r"조회일자\s*[:：]\s*(\d{8})")
+_QUERY_DATE = re.compile(r"조회일자\s*[:\s]*(\d{8})")
 
 
 @dataclass
@@ -62,9 +61,7 @@ def ingest_csv(
 ) -> IngestResult:
     run_type = "csv_bid_info" if kind == "bid_info" else "csv_winning"
     product_id = _product_id(conn, product_code)
-    run_id = start_ingest_run(
-        conn, run_type=run_type, file_path=str(path), product_id=product_id
-    )
+    run_id = start_ingest_run(conn, run_type=run_type, file_path=str(path), product_id=product_id)
 
     try:
         if kind == "bid_info":
@@ -92,8 +89,14 @@ def _row_exists_for(conn: Connection, product_id: int, row: BidInfoRow) -> bool:
             """
             SELECT 1
             FROM round_keyword_groups rkg
-            JOIN rounds r  ON r.id  = rkg.round_id  AND r.product_id  = %s AND r.round_no = %s
-            JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id AND kg.product_id = %s AND kg.name = %s
+            JOIN rounds r
+              ON r.id = rkg.round_id
+              AND r.product_id = %s
+              AND r.round_no = %s
+            JOIN keyword_groups kg
+              ON kg.id = rkg.keyword_group_id
+              AND kg.product_id = %s
+              AND kg.name = %s
             LIMIT 1
             """,
             (product_id, row.round_no, product_id, row.keyword_group),
@@ -116,9 +119,7 @@ def _load_existing_rkg_keys(conn: Connection, product_id: int) -> set[tuple[int,
         return {(rn, nm) for rn, nm in cur.fetchall()}
 
 
-def _ingest_bid_info(
-    conn: Connection, path: Path, product_id: int, run_id: int
-) -> IngestResult:
+def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int) -> IngestResult:
     # Parse all rows into memory first
     rows = list(parse_bid_info_csv(path))
 
@@ -134,7 +135,8 @@ def _ingest_bid_info(
     for row in rows:
         cat_key = (row.category_lvl1, row.category_lvl2)
         if cat_key not in category_pair_cache:
-            category_pair_cache[cat_key] = upsert_category_pair(conn, row.category_lvl1, row.category_lvl2)
+            cat_lvl1, cat_lvl2 = row.category_lvl1, row.category_lvl2
+            category_pair_cache[cat_key] = upsert_category_pair(conn, cat_lvl1, cat_lvl2)
 
     # Phase 2: upsert all unique keyword groups (deduplicated)
     for row in rows:
@@ -167,11 +169,16 @@ def _ingest_bid_info(
     for row in rows:
         round_id = round_cache[row.round_no]
         kg_id = kg_cache[(product_id, row.keyword_group)]
-        rkg_params.append((
-            round_id, kg_id,
-            row.reference_query_volume, row.min_bid_price,
-            row.bid_status, row.empty_slots,
-        ))
+        rkg_params.append(
+            (
+                round_id,
+                kg_id,
+                row.reference_query_volume,
+                row.min_bid_price,
+                row.bid_status,
+                row.empty_slots,
+            )
+        )
         total += 1
         if (row.round_no, row.keyword_group) in existing_keys:
             updated += 1
@@ -203,9 +210,7 @@ def _ingest_bid_info(
     return IngestResult(total, inserted, updated, run_id)
 
 
-def _ingest_winning(
-    conn: Connection, path: Path, product_id: int, run_id: int
-) -> IngestResult:
+def _ingest_winning(conn: Connection, path: Path, product_id: int, run_id: int) -> IngestResult:
     query_date = _read_query_date(path)
     total = updated = 0
     for w_row in parse_winning_bid_csv(path):
@@ -217,7 +222,11 @@ def _ingest_winning(
                 keyword_group=w_row.keyword_group,
             )
             continue
-        update_winning_bid(conn, round_keyword_group_id=rkg_id, winning_bid=w_row.recent_winning_bid)
+        update_winning_bid(
+            conn,
+            round_keyword_group_id=rkg_id,
+            winning_bid=w_row.recent_winning_bid,
+        )
         total += 1
         updated += 1
     return IngestResult(total, 0, updated, run_id)
@@ -231,8 +240,13 @@ def _latest_announced_rkg(
             """
             SELECT rkg.id
             FROM round_keyword_groups rkg
-            JOIN rounds r  ON r.id  = rkg.round_id  AND r.product_id  = %s
-            JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id AND kg.product_id = %s AND kg.name = %s
+            JOIN rounds r
+              ON r.id = rkg.round_id
+              AND r.product_id = %s
+            JOIN keyword_groups kg
+              ON kg.id = rkg.keyword_group_id
+              AND kg.product_id = %s
+              AND kg.name = %s
             WHERE r.regular_announce_date IS NOT NULL
               AND r.regular_announce_date <= %s
             ORDER BY r.regular_announce_date DESC

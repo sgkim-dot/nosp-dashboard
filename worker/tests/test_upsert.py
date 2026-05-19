@@ -1,6 +1,13 @@
+from datetime import date
+
 import pytest
 
-from worker.upsert import upsert_category_pair, upsert_keyword_group
+from worker.upsert import (
+    upsert_category_pair,
+    upsert_keyword_group,
+    upsert_round,
+    upsert_round_keyword_group,
+)
 
 pytestmark = pytest.mark.db
 
@@ -30,11 +37,6 @@ def test_upsert_keyword_group_is_unique_per_product(db_conn):
 
     again = upsert_keyword_group(db_conn, sv_id, lvl2, "실비보험")
     assert again == sv_kg
-
-
-from datetime import date
-
-from worker.upsert import upsert_round, upsert_round_keyword_group
 
 
 def test_upsert_round_is_idempotent(db_conn):

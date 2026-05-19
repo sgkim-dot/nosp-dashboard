@@ -9,9 +9,7 @@ def test_start_then_complete_ingest_run(db_conn):
     run_id = start_ingest_run(db_conn, run_type="csv_bid_info", file_path="raw/foo.csv")
     assert isinstance(run_id, int)
 
-    complete_ingest_run(
-        db_conn, run_id=run_id, rows_total=100, rows_inserted=80, rows_updated=20
-    )
+    complete_ingest_run(db_conn, run_id=run_id, rows_total=100, rows_inserted=80, rows_updated=20)
 
     cur = db_conn.cursor()
     cur.execute(

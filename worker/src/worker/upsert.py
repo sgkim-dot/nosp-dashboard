@@ -118,7 +118,9 @@ def upsert_round_keyword_group(
                 min_bid_price = EXCLUDED.min_bid_price,
                 bid_status = EXCLUDED.bid_status,
                 empty_slots = EXCLUDED.empty_slots,
-                keyword_count = COALESCE(EXCLUDED.keyword_count, round_keyword_groups.keyword_count),
+                keyword_count = COALESCE(
+                    EXCLUDED.keyword_count, round_keyword_groups.keyword_count
+                ),
                 updated_at = now()
             RETURNING id
             """,

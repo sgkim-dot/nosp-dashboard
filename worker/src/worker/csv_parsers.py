@@ -1,8 +1,8 @@
 import csv
+import re
 from collections.abc import Iterator
 from datetime import date
 from pathlib import Path
-import re
 
 from worker.models import BidInfoRow, WinningBidRow
 
