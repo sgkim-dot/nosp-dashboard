@@ -101,41 +101,104 @@ def _row_exists_for(conn: Connection, product_id: int, row: BidInfoRow) -> bool:
         return cur.fetchone() is not None
 
 
+def _load_existing_rkg_keys(conn: Connection, product_id: int) -> set[tuple[int, str]]:
+    """Pre-load (round_no, kg_name) for all existing round_keyword_groups of this product."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT r.round_no, kg.name
+            FROM round_keyword_groups rkg
+            JOIN rounds r ON r.id = rkg.round_id AND r.product_id = %s
+            JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id AND kg.product_id = %s
+            """,
+            (product_id, product_id),
+        )
+        return {(rn, nm) for rn, nm in cur.fetchall()}
+
+
 def _ingest_bid_info(
     conn: Connection, path: Path, product_id: int, run_id: int
 ) -> IngestResult:
+    # Parse all rows into memory first
+    rows = list(parse_bid_info_csv(path))
+
+    # Pre-load existing RKG keys to avoid per-row existence checks (single query)
+    existing_keys: set[tuple[int, str]] = _load_existing_rkg_keys(conn, product_id)
+
+    # In-memory caches to avoid repeated identical DB round-trips
+    category_pair_cache: dict[tuple[str, str], tuple[int, int]] = {}
+    kg_cache: dict[tuple[int, str], int] = {}  # (product_id, name) -> id
+    round_cache: dict[int, int] = {}  # round_no -> id
+
+    # Phase 1: upsert all unique category pairs (deduplicated)
+    for row in rows:
+        cat_key = (row.category_lvl1, row.category_lvl2)
+        if cat_key not in category_pair_cache:
+            category_pair_cache[cat_key] = upsert_category_pair(conn, row.category_lvl1, row.category_lvl2)
+
+    # Phase 2: upsert all unique keyword groups (deduplicated)
+    for row in rows:
+        kg_key = (product_id, row.keyword_group)
+        if kg_key not in kg_cache:
+            _, lvl2_id = category_pair_cache[(row.category_lvl1, row.category_lvl2)]
+            kg_cache[kg_key] = upsert_keyword_group(conn, product_id, lvl2_id, row.keyword_group)
+
+    # Phase 3: upsert all unique rounds (deduplicated)
+    for row in rows:
+        if row.round_no not in round_cache:
+            round_cache[row.round_no] = upsert_round(
+                conn,
+                product_id=product_id,
+                round_no=row.round_no,
+                period_start=row.period_start,
+                period_end=row.period_end,
+                regular_bid_start=row.regular_bid_start,
+                regular_bid_end=row.regular_bid_end,
+                regular_announce_date=row.regular_announce_date,
+                rebid_start=row.rebid_start,
+                rebid_end=row.rebid_end,
+                rebid_announce_date=row.rebid_announce_date,
+            )
+
+    # Phase 4: upsert all round_keyword_groups (one per row - unavoidable)
+    # Use executemany-style bulk insert for better performance
     total = inserted = updated = 0
-    for row in parse_bid_info_csv(path):
-        before = _row_exists_for(conn, product_id, row)
-        _, lvl2 = upsert_category_pair(conn, row.category_lvl1, row.category_lvl2)
-        kg_id = upsert_keyword_group(conn, product_id, lvl2, row.keyword_group)
-        round_id = upsert_round(
-            conn,
-            product_id=product_id,
-            round_no=row.round_no,
-            period_start=row.period_start,
-            period_end=row.period_end,
-            regular_bid_start=row.regular_bid_start,
-            regular_bid_end=row.regular_bid_end,
-            regular_announce_date=row.regular_announce_date,
-            rebid_start=row.rebid_start,
-            rebid_end=row.rebid_end,
-            rebid_announce_date=row.rebid_announce_date,
-        )
-        upsert_round_keyword_group(
-            conn,
-            round_id=round_id,
-            keyword_group_id=kg_id,
-            reference_query_volume=row.reference_query_volume,
-            min_bid_price=row.min_bid_price,
-            bid_status=row.bid_status,
-            empty_slots=row.empty_slots,
-        )
+    rkg_params = []
+    for row in rows:
+        round_id = round_cache[row.round_no]
+        kg_id = kg_cache[(product_id, row.keyword_group)]
+        rkg_params.append((
+            round_id, kg_id,
+            row.reference_query_volume, row.min_bid_price,
+            row.bid_status, row.empty_slots,
+        ))
         total += 1
-        if before:
+        if (row.round_no, row.keyword_group) in existing_keys:
             updated += 1
         else:
             inserted += 1
+
+    # Bulk upsert round_keyword_groups using executemany
+    if rkg_params:
+        with conn.cursor() as cur:
+            cur.executemany(
+                """
+                INSERT INTO round_keyword_groups (
+                    round_id, keyword_group_id,
+                    reference_query_volume, min_bid_price, bid_status, empty_slots,
+                    updated_at
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, now())
+                ON CONFLICT (round_id, keyword_group_id) DO UPDATE SET
+                    reference_query_volume = EXCLUDED.reference_query_volume,
+                    min_bid_price = EXCLUDED.min_bid_price,
+                    bid_status = EXCLUDED.bid_status,
+                    empty_slots = EXCLUDED.empty_slots,
+                    updated_at = now()
+                """,
+                rkg_params,
+            )
+
     log.info("bid_info ingested", total=total, inserted=inserted, updated=updated)
     return IngestResult(total, inserted, updated, run_id)
 
