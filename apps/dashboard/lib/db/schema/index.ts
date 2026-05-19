@@ -1,2 +1,10 @@
-// Re-exports all schema tables. Populated by Task 5 onward.
-export {};
+export * from "./products";
+export * from "./categories";
+export * from "./keyword_groups";
+export * from "./rounds";
+export * from "./round_keyword_groups";
+export * from "./round_keywords";
+export * from "./brands";
+export * from "./round_brands";
+export * from "./clients";
+export * from "./ingest_runs";
