@@ -26,7 +26,8 @@ def test_ingest_bid_info_creates_rounds_and_rkg(db_conn):
         FROM round_keyword_groups rkg
         JOIN rounds r ON r.id = rkg.round_id
         JOIN products p ON p.id = r.product_id
-        WHERE p.code = 'SEARCHING_VIEW'
+        JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
+        WHERE p.code = 'SEARCHING_VIEW' AND kg.name = '__테스트_실비보험__'
         ORDER BY r.round_no
         """
     )
@@ -62,7 +63,9 @@ def test_ingest_winning_then_bid_info_preserves_winning(db_conn):
         SELECT r.round_no, rkg.regular_winning_bid
         FROM round_keyword_groups rkg
         JOIN rounds r ON r.id = rkg.round_id
+        JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
         WHERE rkg.regular_winning_bid IS NOT NULL
+          AND kg.name = '__테스트_실비보험__'
         ORDER BY r.round_no DESC
         LIMIT 1
         """
