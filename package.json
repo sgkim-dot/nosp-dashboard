@@ -1,0 +1,11 @@
+{
+  "name": "searchingview-newproduct",
+  "private": true,
+  "packageManager": "pnpm@9.12.0",
+  "scripts": {
+    "dashboard:dev": "pnpm --filter dashboard dev",
+    "dashboard:build": "pnpm --filter dashboard build",
+    "db:generate": "pnpm --filter dashboard drizzle-kit generate",
+    "db:migrate": "pnpm --filter dashboard drizzle-kit migrate"
+  }
+}
