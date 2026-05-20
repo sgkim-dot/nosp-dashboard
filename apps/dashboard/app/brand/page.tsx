@@ -28,7 +28,7 @@ export default async function BrandPage({
 
   const [allProducts, lvl1, heatmap] = await Promise.all([
     getProducts(),
-    getCategoriesLvl1(),
+    getCategoriesLvl1(product),
     getBrandHeatmap({ product, categoryLvl1: cat1, lastNRounds: lastN }),
   ]);
 

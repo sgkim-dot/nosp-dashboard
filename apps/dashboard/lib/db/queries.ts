@@ -16,21 +16,45 @@ export async function getProducts() {
   return db.select().from(products).orderBy(asc(products.id));
 }
 
-export async function getCategoriesLvl1() {
-  const rows = await db
-    .select({ id: categories.id, name: categories.name })
-    .from(categories)
-    .where(eq(categories.level, 1))
-    .orderBy(asc(categories.name));
-  return rows;
-}
-
-export async function getCategoriesLvl2(lvl1Name: string) {
+export async function getCategoriesLvl1(productCode?: ProductCode) {
+  if (!productCode) {
+    const rows = await db
+      .select({ id: categories.id, name: categories.name })
+      .from(categories)
+      .where(eq(categories.level, 1))
+      .orderBy(asc(categories.name));
+    return rows;
+  }
   const result = await db.execute<{ id: number; name: string }>(sql`
-    SELECT c2.id, c2.name
+    SELECT DISTINCT c1.id, c1.name
     FROM categories c1
     JOIN categories c2 ON c2.parent_id = c1.id AND c2.level = 2
-    WHERE c1.level = 1 AND c1.name = ${lvl1Name}
+    JOIN keyword_groups kg ON kg.category_id = c2.id
+    JOIN products p ON p.id = kg.product_id
+    WHERE c1.level = 1 AND p.code = ${productCode}
+    ORDER BY c1.name
+  `);
+  return result.rows;
+}
+
+export async function getCategoriesLvl2(lvl1Name: string, productCode?: ProductCode) {
+  if (!productCode) {
+    const result = await db.execute<{ id: number; name: string }>(sql`
+      SELECT c2.id, c2.name
+      FROM categories c1
+      JOIN categories c2 ON c2.parent_id = c1.id AND c2.level = 2
+      WHERE c1.level = 1 AND c1.name = ${lvl1Name}
+      ORDER BY c2.name
+    `);
+    return result.rows;
+  }
+  const result = await db.execute<{ id: number; name: string }>(sql`
+    SELECT DISTINCT c2.id, c2.name
+    FROM categories c1
+    JOIN categories c2 ON c2.parent_id = c1.id AND c2.level = 2
+    JOIN keyword_groups kg ON kg.category_id = c2.id
+    JOIN products p ON p.id = kg.product_id
+    WHERE c1.level = 1 AND c1.name = ${lvl1Name} AND p.code = ${productCode}
     ORDER BY c2.name
   `);
   return result.rows;

@@ -18,8 +18,8 @@ type FilterBarParams = {
 export async function FilterBar(props: FilterBarParams) {
   const [allProducts, lvl1, lvl2, kgs] = await Promise.all([
     getProducts(),
-    getCategoriesLvl1(),
-    props.categoryLvl1 ? getCategoriesLvl2(props.categoryLvl1) : Promise.resolve([]),
+    getCategoriesLvl1(props.product),
+    props.categoryLvl1 ? getCategoriesLvl2(props.categoryLvl1, props.product) : Promise.resolve([]),
     props.categoryLvl1
       ? getKeywordGroups({
           product: props.product,
