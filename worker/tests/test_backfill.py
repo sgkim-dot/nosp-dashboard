@@ -1,7 +1,7 @@
 from pathlib import Path
 from unittest.mock import patch
 
-from worker.backfill import classify_and_sort, backfill_directory
+from worker.backfill import backfill_directory, classify_and_sort
 
 FIXTURES = Path(__file__).parent / "fixtures" / "backfill"
 
@@ -22,7 +22,9 @@ def test_classify_and_sort_numeric_filename_order(tmp_path: Path):
         (tmp_path / f.name).write_bytes(f.read_bytes())
 
     sorted_paths = classify_and_sort(tmp_path)
-    sv_bid = [p.path.name for p in sorted_paths if p.product == "SEARCHING_VIEW" and p.kind == "bid_info"]
+    sv_bid = [
+        p.path.name for p in sorted_paths if p.product == "SEARCHING_VIEW" and p.kind == "bid_info"
+    ]
     assert sv_bid == ["서칭뷰_회차별입찰정보 (1).csv", "서칭뷰_회차별입찰정보 (2).csv"]
 
 
@@ -48,6 +50,7 @@ def test_backfill_directory_ingests_in_order(tmp_path: Path):
     def fake_ingest_one(path: Path, product=None, kind=None):
         if product is None or kind is None:
             from worker.jobs.csv_ingest import _detect_kind_and_product
+
             product, kind = _detect_kind_and_product(path.name)
         calls.append((path.name, kind))
 

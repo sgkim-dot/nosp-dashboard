@@ -11,19 +11,19 @@ from bs4 import BeautifulSoup
 # Delimiters after the name: 대표, 사업자, 주소, 전화, TEL, ㅣ, |, ·, newline, tag
 _PATTERNS: list[re.Pattern[str]] = [
     re.compile(
-        r"상호\s*명?\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",
+        r"상호\s*명?\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",  # noqa: RUF001
         re.IGNORECASE,
     ),
     re.compile(
-        r"회사명\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",
+        r"회사명\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",  # noqa: RUF001
         re.IGNORECASE,
     ),
     re.compile(
-        r"법인명\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",
+        r"법인명\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",  # noqa: RUF001
         re.IGNORECASE,
     ),
     re.compile(
-        r"商號\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",
+        r"商號\s*[:：]\s*([^\n<,|·ㅣ]+?)(?=\s*(?:대표|사업자|주소|전화|TEL|ㅣ|\||·|$|<))",  # noqa: RUF001
         re.IGNORECASE,
     ),
 ]

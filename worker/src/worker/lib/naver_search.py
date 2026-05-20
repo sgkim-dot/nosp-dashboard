@@ -47,7 +47,8 @@ _EXTRACT_JS = r"""
         }
     }
     if (npSection) {
-        const cards = npSection.querySelectorAll('[class*="sds-comps-profile"][class*="type-basic"]');
+        const sel = '[class*="sds-comps-profile"][class*="type-basic"]';
+        const cards = npSection.querySelectorAll(sel);
         let slot = 0;
         for (const card of cards) {
             const titleEl = card.querySelector('[class*="profile-info-title"]');
