@@ -6,6 +6,7 @@ import type {
   Insights,
   KeywordGroupSummary,
   ProductCode,
+  RoundBrand,
   RoundRow,
 } from "@/types/bid-decision";
 
@@ -112,6 +113,41 @@ export async function getKeywordGroupSummary(args: {
     LIMIT ${args.lastNRounds}
   `);
 
+  const brandsResult = await db.execute<{
+    round_id: number;
+    slot_no: number;
+    display_name: string;
+    business_name: string;
+    source: string;
+    confidence: number | null;
+  }>(sql`
+    SELECT
+      rkg.round_id,
+      rb.slot_no,
+      b.display_name,
+      b.business_name,
+      rb.source,
+      rb.confidence
+    FROM round_brands rb
+    JOIN round_keyword_groups rkg ON rkg.id = rb.round_keyword_group_id
+    JOIN brands b ON b.id = rb.brand_id
+    WHERE rkg.keyword_group_id = ${args.keywordGroupId}
+    ORDER BY rb.slot_no
+  `);
+
+  const brandsByRound = new Map<number, RoundBrand[]>();
+  for (const r of brandsResult.rows) {
+    const list = brandsByRound.get(r.round_id) ?? [];
+    list.push({
+      slotNo: r.slot_no,
+      displayName: r.display_name,
+      businessName: r.business_name,
+      source: r.source as RoundBrand["source"],
+      confidence: r.confidence,
+    });
+    brandsByRound.set(r.round_id, list);
+  }
+
   const roundsAsc: RoundRow[] = tail.rows
     .slice()
     .reverse()
@@ -128,9 +164,10 @@ export async function getKeywordGroupSummary(args: {
         r.regular_winning_bid != null && r.min_bid_price
           ? r.regular_winning_bid / r.min_bid_price
           : null,
+      brands: brandsByRound.get(r.round_id) ?? [],
     }));
 
-  const latest = roundsAsc[roundsAsc.length - 1];
+  const latestRound = roundsAsc[roundsAsc.length - 1];
   const lastAnnounced = [...roundsAsc]
     .reverse()
     .find((r) => r.regularWinningBid != null);
@@ -141,7 +178,8 @@ export async function getKeywordGroupSummary(args: {
     categoryLvl1: h.category_lvl1,
     categoryLvl2: h.category_lvl2,
     latestWinning: lastAnnounced?.regularWinningBid ?? null,
-    latestEmptySlots: latest?.emptySlots ?? null,
+    latestEmptySlots: latestRound?.emptySlots ?? null,
+    latestBrands: latestRound?.brands ?? [],
     rounds: roundsAsc,
   };
 }

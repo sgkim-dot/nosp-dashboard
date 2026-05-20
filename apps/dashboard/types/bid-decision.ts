@@ -1,5 +1,13 @@
 export type ProductCode = "SEARCHING_VIEW" | "NEW_PRODUCT";
 
+export type RoundBrand = {
+  slotNo: number;
+  displayName: string;
+  businessName: string;
+  source: "dom" | "landing" | "manual" | "scrape_failed";
+  confidence: number | null;
+};
+
 export type FilterState = {
   product: ProductCode;
   categoryLvl1: string | null;
@@ -18,6 +26,7 @@ export type RoundRow = {
   emptySlots: number | null;
   bidStatus: string | null;
   ratio: number | null;
+  brands: RoundBrand[];
 };
 
 export type KeywordGroupSummary = {
@@ -28,6 +37,7 @@ export type KeywordGroupSummary = {
   categoryLvl2: string;
   latestWinning: number | null;
   latestEmptySlots: number | null;
+  latestBrands: RoundBrand[];
   rounds: RoundRow[];
 };
 
