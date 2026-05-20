@@ -40,3 +40,16 @@ End-to-end ingest of 4 NOSP CSVs into Neon Postgres (production DB).
 
 All 4 `ingest_runs` rows in DB with `status = success`.
 Archived source files → `raw/2026-05-20/`.
+
+### W2 Screen 1 ready (2026-05-20)
+
+Decision screen live at `pnpm --filter dashboard dev` → http://localhost:3000.
+Filters: 제품 / 대분류 / 소분류 / 키워드그룹 / 기간 (회차 단위).
+
+Components:
+- Summary card (최근 낙찰가 · 공실 · 현재 집행 — 브랜드는 W4 예정)
+- 회차별 라인 차트 (최저입찰가 vs 낙찰가)
+- 인사이트 카드 (평균 배수 · 공실률 · 추천 입찰가 레인지)
+- 회차 표 (최신순)
+
+Screenshots: `docs/superpowers/screenshots/w2-screen1-{empty,loaded}.png`.
