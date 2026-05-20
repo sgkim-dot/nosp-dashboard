@@ -32,6 +32,16 @@ def test_parse_bid_info_csv_handles_zero_empty_slots():
     assert r.empty_slots == 0
 
 
+def test_parse_bid_info_csv_handles_old_11_column_format():
+    rows = list(parse_bid_info_csv(FIXTURES / "sample_bid_info_searching_old_format.csv"))
+    assert len(rows) == 1
+    r = rows[0]
+    assert r.round_no == 202552
+    assert r.bid_status is None
+    assert r.empty_slots is None
+    assert r.keyword_group == "__테스트_old__"
+
+
 def test_parse_winning_bid_csv_returns_rows():
     rows = list(parse_winning_bid_csv(FIXTURES / "sample_winning_searching.csv"))
     assert len(rows) == 1

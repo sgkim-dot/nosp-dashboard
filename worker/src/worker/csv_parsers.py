@@ -48,8 +48,15 @@ def parse_bid_info_csv(path: Path) -> Iterator[BidInfoRow]:
         period_start, period_end = _parse_date_range(row[1])
         reg_start, reg_end = _parse_date_range(row[7])
         rebid_start, rebid_end = _parse_date_range(row[9])
-        empty_str = row[12].strip()
-        empty_slots = int(empty_str) if empty_str.isdigit() else 0
+
+        # Old-format CSVs (pre-2026) only have 11 columns and stop at 재입찰발표.
+        # New-format adds 입찰가능여부 (idx 11) and 현재공실구좌 (idx 12).
+        bid_status = row[11].strip() if len(row) > 11 and row[11].strip() else None
+        if len(row) > 12 and row[12].strip().isdigit():
+            empty_slots = int(row[12].strip())
+        else:
+            empty_slots = None
+
         yield BidInfoRow(
             round_no=int(row[0]),
             period_start=period_start,
@@ -65,7 +72,7 @@ def parse_bid_info_csv(path: Path) -> Iterator[BidInfoRow]:
             rebid_start=rebid_start,
             rebid_end=rebid_end,
             rebid_announce_date=_parse_date(row[10]),
-            bid_status=row[11].strip(),
+            bid_status=bid_status,
             empty_slots=empty_slots,
         )
 

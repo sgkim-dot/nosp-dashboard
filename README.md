@@ -53,3 +53,19 @@ Components:
 - 회차 표 (최신순)
 
 Screenshots: `docs/superpowers/screenshots/w2-screen1-{empty,loaded}.png`.
+
+### W2 backfill result (2026-05-20)
+
+End-to-end backfill of NOSP historical CSVs (~10 months of data):
+
+- Rounds: 52 (NP 36 + SV 16) — 202538 (2025-09) to 20260512 (2026-05)
+- round_keyword_groups: 56,181
+- Winning bids attached: 13,970
+- Categories: 177 (대분류·소분류)
+- Keyword groups: 2,710 (SV 372 + NP 2,338)
+
+Known limitations (patched after backfill):
+- Old-format SV CSVs (pre-2026, 11 columns) fixed in `parse_bid_info_csv` to accept null `bid_status` / `empty_slots`
+- `_archive` made resilient to a Windows shutil quirk where the file is moved but the call still raises
+
+Source CSVs archived to `worker/raw/<date>/` (backfill staging path was `worker/`-relative). A few files may have failed archive but completed ingest — they remain in `backfill-staging/` and are safely re-ingestible (upserts are idempotent).

@@ -57,11 +57,21 @@ def classify_and_sort(directory: Path) -> list[ClassifiedFile]:
 
 
 def _archive(path: Path) -> Path:
+    """Move `path` into `raw/<today>/`. Tolerates Windows shutil quirks where
+    the file ends up at the destination but shutil.move raises an exception."""
     today = date.today().isoformat()
     dest_dir = _RAW_ROOT / today
     dest_dir.mkdir(parents=True, exist_ok=True)
     dest = dest_dir / path.name
-    shutil.move(str(path), str(dest))
+    try:
+        shutil.move(str(path), str(dest))
+    except (FileNotFoundError, OSError):
+        # Windows + shutil.move sometimes raises after successfully moving the
+        # file. Treat as success iff dest exists and src no longer does.
+        if dest.exists() and not path.exists():
+            log.warning("archive raised but file moved; tolerating", file=path.name)
+        else:
+            raise
     return dest
 
 

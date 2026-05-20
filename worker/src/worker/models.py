@@ -18,8 +18,8 @@ class BidInfoRow(BaseModel):
     rebid_start: date
     rebid_end: date
     rebid_announce_date: date
-    bid_status: str
-    empty_slots: int
+    bid_status: str | None
+    empty_slots: int | None
 
 
 class WinningBidRow(BaseModel):
