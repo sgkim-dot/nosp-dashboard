@@ -69,3 +69,19 @@ Known limitations (patched after backfill):
 - `_archive` made resilient to a Windows shutil quirk where the file is moved but the call still raises
 
 Source CSVs archived to `worker/raw/<date>/` (backfill staging path was `worker/`-relative). A few files may have failed archive but completed ingest — they remain in `backfill-staging/` and are safely re-ingestible (upserts are idempotent).
+
+### W4 — Brand Scraping & Display (2026-05-20)
+
+Workers and dashboard updated to capture and surface currently-running brands.
+
+- JOB 3 (brand_scrape): Playwright-headless Naver search scraper + httpx footer parser + rapidfuzz brand matcher. Run with `uv run python -m worker.jobs.brand_scrape [--limit N]`.
+- Screen 1: 현재 집행 브랜드 chips on Summary card, brand columns in Round table, "집행: ..." line in Trend chart tooltip.
+- Screen 3 (`/brand`): category × round heatmap with brand row labels and round-keyed cells showing count.
+
+Limitation: Naver search results return current-run brands only. Past rounds' brands cannot be backfilled (Naver doesn't preserve historical ad slots). All historical data from this point forward is captured.
+
+Selectors used (from `docs/superpowers/notes/naver-search-dom.md`):
+- SV: `.searching_view a.sub_title`
+- NP: section heading contains `브랜드 콘텐츠`; cards = `[class*="sds-comps-profile"][class*="type-basic"]`; title = `[class*="profile-info-title"]`.
+
+27 worker tests pass.
