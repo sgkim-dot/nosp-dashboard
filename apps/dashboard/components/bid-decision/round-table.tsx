@@ -39,7 +39,15 @@ export function RoundTable({ rounds }: { rounds: RoundRow[] }) {
               <TableCell className="text-right">
                 {r.emptySlots == null ? "-" : `${r.emptySlots}구좌`}
               </TableCell>
-              <TableCell className="text-muted-foreground text-xs">- (W4)</TableCell>
+              <TableCell className="text-xs">
+                {r.brands.length === 0 ? (
+                  <span className="text-muted-foreground">-</span>
+                ) : (
+                  <span title={r.brands.map((b) => b.businessName).join(" / ")}>
+                    {r.brands.map((b) => b.displayName).join(" / ")}
+                  </span>
+                )}
+              </TableCell>
               <TableCell className="text-xs">{r.bidStatus ?? "-"}</TableCell>
             </TableRow>
           ))}

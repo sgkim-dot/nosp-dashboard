@@ -12,11 +12,47 @@ import {
 } from "recharts";
 import type { RoundRow } from "@/types/bid-decision";
 
+type ChartDatum = {
+  round: string;
+  minBid: number | null;
+  winning: number | null;
+  brands: string[];
+};
+
+type TooltipEntry = { name?: string; value?: number | null; payload?: ChartDatum };
+
+function ChartTooltip(props: {
+  active?: boolean;
+  payload?: TooltipEntry[];
+  label?: string;
+}) {
+  const { active, payload, label } = props;
+  if (!active || !payload || payload.length === 0) return null;
+  const datum = payload[0].payload as ChartDatum;
+  return (
+    <div className="rounded-md border bg-background px-3 py-2 text-xs shadow">
+      <div className="font-semibold">{label}</div>
+      {payload.map((p) => (
+        <div key={p.name}>
+          <span className="text-muted-foreground">{p.name}:</span>{" "}
+          {p.value == null ? "-" : `${Number(p.value).toLocaleString()}원`}
+        </div>
+      ))}
+      {datum.brands.length > 0 && (
+        <div className="mt-1 border-t pt-1 text-muted-foreground">
+          집행: {datum.brands.join(" / ")}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TrendChart({ rounds }: { rounds: RoundRow[] }) {
-  const data = rounds.map((r) => ({
+  const data: ChartDatum[] = rounds.map((r) => ({
     round: String(r.roundNo),
     minBid: r.minBidPrice,
     winning: r.regularWinningBid,
+    brands: r.brands.map((b) => b.displayName),
   }));
 
   return (
@@ -31,12 +67,7 @@ export function TrendChart({ rounds }: { rounds: RoundRow[] }) {
               v >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}M` : `${Math.round(v / 1000)}k`
             }
           />
-          <Tooltip
-            formatter={(value, name) => [
-              value == null ? "-" : `${Number(value).toLocaleString()}원`,
-              name as string,
-            ]}
-          />
+          <Tooltip content={<ChartTooltip />} />
           <Legend
             verticalAlign="top"
             align="right"

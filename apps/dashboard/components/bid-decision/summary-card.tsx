@@ -25,7 +25,26 @@ export function SummaryCard({ summary }: { summary: KeywordGroupSummary }) {
           value={summary.latestEmptySlots == null ? "-" : `${summary.latestEmptySlots}구좌`}
           accent={(summary.latestEmptySlots ?? 0) > 0 ? "warn" : undefined}
         />
-        <Stat label="현재 집행 브랜드" value="- (W4 예정)" muted />
+        <div>
+          <div className="text-xs text-muted-foreground">현재 집행 브랜드</div>
+          <div className="mt-1 flex flex-wrap items-center gap-1.5">
+            {summary.latestBrands.length === 0 ? (
+              <span className="text-sm text-muted-foreground">- (집행사 없음 또는 미수집)</span>
+            ) : (
+              summary.latestBrands.map((b) => (
+                <span
+                  key={b.slotNo}
+                  className="inline-flex items-center gap-1 rounded-md border bg-muted/40 px-2 py-0.5 text-sm font-medium"
+                  title={`${b.businessName} · ${b.source} · 신뢰도 ${
+                    b.confidence != null ? b.confidence.toFixed(2) : "-"
+                  }`}
+                >
+                  {b.displayName}
+                </span>
+              ))
+            )}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
