@@ -31,8 +31,8 @@ export function TrendChart({ rounds }: { rounds: RoundRow[] }) {
             }
           />
           <Tooltip
-            formatter={(value: number, name) => [
-              value == null ? "-" : `${value.toLocaleString()}원`,
+            formatter={(value, name) => [
+              value == null ? "-" : `${Number(value).toLocaleString()}원`,
               name === "minBid" ? "최저입찰가" : "낙찰가",
             ]}
           />
