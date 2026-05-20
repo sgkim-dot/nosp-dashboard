@@ -131,13 +131,16 @@ export async function getKeywordGroupSummary(args: {
     }));
 
   const latest = roundsAsc[roundsAsc.length - 1];
+  const lastAnnounced = [...roundsAsc]
+    .reverse()
+    .find((r) => r.regularWinningBid != null);
   return {
     keywordGroupId: h.keyword_group_id,
     keywordGroupName: h.keyword_group_name,
     product: h.product,
     categoryLvl1: h.category_lvl1,
     categoryLvl2: h.category_lvl2,
-    latestWinning: latest?.regularWinningBid ?? null,
+    latestWinning: lastAnnounced?.regularWinningBid ?? null,
     latestEmptySlots: latest?.emptySlots ?? null,
     rounds: roundsAsc,
   };
