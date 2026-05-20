@@ -52,6 +52,16 @@ def _product_id(conn: Connection, code: str) -> int:
         return row[0]
 
 
+_ANNIVERSARY_LVL1 = "기념일"
+
+
+def _resolve_product_id_for_row(
+    default_product_id: int, anniversary_product_id: int, category_lvl1: str
+) -> int:
+    """Route a row to ANNIVERSARY product if category_lvl1 matches."""
+    return anniversary_product_id if category_lvl1 == _ANNIVERSARY_LVL1 else default_product_id
+
+
 def ingest_csv(
     conn: Connection,
     *,
@@ -120,37 +130,59 @@ def _load_existing_rkg_keys(conn: Connection, product_id: int) -> set[tuple[int,
 
 
 def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int) -> IngestResult:
+    """Ingest bid_info CSV; anniversary rows (category_lvl1=='기념일') are routed to ANNIVERSARY product."""
     # Parse all rows into memory first
     rows = list(parse_bid_info_csv(path))
 
-    # Pre-load existing RKG keys to avoid per-row existence checks (single query)
-    existing_keys: set[tuple[int, str]] = _load_existing_rkg_keys(conn, product_id)
+    # Resolve the ANNIVERSARY product id for per-row routing
+    anniversary_product_id = _product_id(conn, "ANNIVERSARY")
+
+    # Collect all distinct product_ids used in this file
+    all_product_ids = {product_id, anniversary_product_id}
+
+    # Pre-load existing RKG keys for both products
+    existing_keys: set[tuple[int, int, str]] = set()  # (product_id, round_no, kg_name)
+    for pid in all_product_ids:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT r.round_no, kg.name
+                FROM round_keyword_groups rkg
+                JOIN rounds r ON r.id = rkg.round_id AND r.product_id = %s
+                JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id AND kg.product_id = %s
+                """,
+                (pid, pid),
+            )
+            for rn, nm in cur.fetchall():
+                existing_keys.add((pid, rn, nm))
 
     # In-memory caches to avoid repeated identical DB round-trips
     category_pair_cache: dict[tuple[str, str], tuple[int, int]] = {}
     kg_cache: dict[tuple[int, str], int] = {}  # (product_id, name) -> id
-    round_cache: dict[int, int] = {}  # round_no -> id
+    round_cache: dict[tuple[int, int], int] = {}  # (product_id, round_no) -> round_id
 
     # Phase 1: upsert all unique category pairs (deduplicated)
     for row in rows:
         cat_key = (row.category_lvl1, row.category_lvl2)
         if cat_key not in category_pair_cache:
-            cat_lvl1, cat_lvl2 = row.category_lvl1, row.category_lvl2
-            category_pair_cache[cat_key] = upsert_category_pair(conn, cat_lvl1, cat_lvl2)
+            category_pair_cache[cat_key] = upsert_category_pair(conn, row.category_lvl1, row.category_lvl2)
 
-    # Phase 2: upsert all unique keyword groups (deduplicated)
+    # Phase 2: upsert all unique keyword groups (product-aware)
     for row in rows:
-        kg_key = (product_id, row.keyword_group)
+        pid = _resolve_product_id_for_row(product_id, anniversary_product_id, row.category_lvl1)
+        kg_key = (pid, row.keyword_group)
         if kg_key not in kg_cache:
             _, lvl2_id = category_pair_cache[(row.category_lvl1, row.category_lvl2)]
-            kg_cache[kg_key] = upsert_keyword_group(conn, product_id, lvl2_id, row.keyword_group)
+            kg_cache[kg_key] = upsert_keyword_group(conn, pid, lvl2_id, row.keyword_group)
 
-    # Phase 3: upsert all unique rounds (deduplicated)
+    # Phase 3: upsert all unique rounds (product-aware)
     for row in rows:
-        if row.round_no not in round_cache:
-            round_cache[row.round_no] = upsert_round(
+        pid = _resolve_product_id_for_row(product_id, anniversary_product_id, row.category_lvl1)
+        round_key = (pid, row.round_no)
+        if round_key not in round_cache:
+            round_cache[round_key] = upsert_round(
                 conn,
-                product_id=product_id,
+                product_id=pid,
                 round_no=row.round_no,
                 period_start=row.period_start,
                 period_end=row.period_end,
@@ -163,12 +195,12 @@ def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int)
             )
 
     # Phase 4: upsert all round_keyword_groups (one per row - unavoidable)
-    # Use executemany-style bulk insert for better performance
     total = inserted = updated = 0
     rkg_params = []
     for row in rows:
-        round_id = round_cache[row.round_no]
-        kg_id = kg_cache[(product_id, row.keyword_group)]
+        pid = _resolve_product_id_for_row(product_id, anniversary_product_id, row.category_lvl1)
+        round_id = round_cache[(pid, row.round_no)]
+        kg_id = kg_cache[(pid, row.keyword_group)]
         rkg_params.append(
             (
                 round_id,
@@ -180,7 +212,7 @@ def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int)
             )
         )
         total += 1
-        if (row.round_no, row.keyword_group) in existing_keys:
+        if (pid, row.round_no, row.keyword_group) in existing_keys:
             updated += 1
         else:
             inserted += 1
@@ -211,14 +243,17 @@ def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int)
 
 
 def _ingest_winning(conn: Connection, path: Path, product_id: int, run_id: int) -> IngestResult:
+    """Winning rows are routed by category, same as bid_info."""
+    anniversary_product_id = _product_id(conn, "ANNIVERSARY")
     query_date = _read_query_date(path)
     total = updated = 0
     for w_row in parse_winning_bid_csv(path):
-        rkg_id = _latest_announced_rkg(conn, product_id, w_row, query_date)
+        pid = _resolve_product_id_for_row(product_id, anniversary_product_id, w_row.category_lvl1)
+        rkg_id = _latest_announced_rkg(conn, pid, w_row, query_date)
         if rkg_id is None:
             log.warning(
                 "no round to attach winning bid",
-                product_id=product_id,
+                product_id=pid,
                 keyword_group=w_row.keyword_group,
             )
             continue

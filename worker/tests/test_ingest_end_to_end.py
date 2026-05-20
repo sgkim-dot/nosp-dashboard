@@ -4,6 +4,8 @@ import pytest
 
 from worker.ingest import ingest_csv
 
+REPO_ROOT = Path(__file__).resolve().parents[2]
+
 FIXTURES = Path(__file__).parent / "fixtures"
 pytestmark = pytest.mark.db
 
@@ -92,3 +94,42 @@ def test_ingest_is_idempotent(db_conn):
     assert r1.rows_inserted == 3
     assert r2.rows_inserted == 0
     assert r2.rows_updated == 3
+
+
+def test_ingest_routes_anniversary_rows_to_anniversary_product(db_conn):
+    """Anniversary rows (기념일/기념일) must land under ANNIVERSARY, not NEW_PRODUCT."""
+    fixture = REPO_ROOT / "predata" / "신제품_회차별입찰정보_20260205.csv"
+    if not fixture.exists():
+        pytest.skip(f"predata fixture missing: {fixture}")
+
+    ingest_csv(
+        db_conn,
+        path=fixture,
+        product_code="NEW_PRODUCT",
+        kind="bid_info",
+    )
+
+    cur = db_conn.cursor()
+    # Anniversary rows should land under product ANNIVERSARY
+    cur.execute("""
+        SELECT COUNT(*)
+        FROM round_keyword_groups rkg
+        JOIN rounds r ON r.id = rkg.round_id
+        JOIN products p ON p.id = r.product_id
+        JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
+        WHERE p.code = 'ANNIVERSARY' AND kg.name = '설날'
+    """)
+    anniv_count = cur.fetchone()[0]
+    assert anniv_count == 1, f"expected 1 anniversary row for 설날, got {anniv_count}"
+
+    # Anniversary rows should NOT have leaked into NEW_PRODUCT
+    cur.execute("""
+        SELECT COUNT(*)
+        FROM round_keyword_groups rkg
+        JOIN rounds r ON r.id = rkg.round_id
+        JOIN products p ON p.id = r.product_id
+        JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
+        WHERE p.code = 'NEW_PRODUCT' AND kg.name = '설날'
+    """)
+    np_count = cur.fetchone()[0]
+    assert np_count == 0

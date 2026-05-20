@@ -12,6 +12,7 @@ async function main() {
     .values([
       { code: "SEARCHING_VIEW", name: "서칭뷰", maxBrandsPerGroup: 1 },
       { code: "NEW_PRODUCT", name: "신제품검색", maxBrandsPerGroup: 2 },
+      { code: "ANNIVERSARY", name: "기념일 광고", maxBrandsPerGroup: 2 },
     ])
     .onConflictDoNothing({ target: products.code });
 
