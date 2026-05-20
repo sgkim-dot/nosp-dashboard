@@ -27,3 +27,12 @@ class WinningBidRow(BaseModel):
     category_lvl2: str
     keyword_group: str
     recent_winning_bid: int
+
+
+class SlotExtract(BaseModel):
+    """A single ad slot extracted from a Naver search result page."""
+
+    product: str  # "SEARCHING_VIEW" | "NEW_PRODUCT"
+    slot_no: int
+    display_name: str
+    destination_url: str | None
