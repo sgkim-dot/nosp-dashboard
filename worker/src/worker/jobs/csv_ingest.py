@@ -65,7 +65,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--product", choices=["SEARCHING_VIEW", "NEW_PRODUCT"])
     parser.add_argument("--kind", choices=["bid_info", "winning"])
     parser.add_argument("--watch", action="store_true", help="watch inbox/ folder")
+    parser.add_argument(
+        "--backfill",
+        type=Path,
+        metavar="DIR",
+        help="batch-ingest all NOSP CSVs in DIR in safe order",
+    )
     args = parser.parse_args(argv)
+
+    if args.backfill:
+        from worker.backfill import backfill_directory
+
+        backfill_directory(args.backfill)
+        return 0
 
     if args.watch:
         from worker.watcher import watch_inbox
