@@ -184,6 +184,60 @@ export async function getKeywordGroupSummary(args: {
   };
 }
 
+export type HeatmapCell = {
+  brandId: number;
+  brandDisplayName: string;
+  roundNo: number;
+  keywordGroupName: string;
+  slotNo: number;
+};
+
+export async function getBrandHeatmap(args: {
+  product: ProductCode;
+  categoryLvl1: string | null;
+  lastNRounds: number;
+}): Promise<HeatmapCell[]> {
+  const result = await db.execute<{
+    brand_id: number;
+    display_name: string;
+    round_no: number;
+    keyword_group_name: string;
+    slot_no: number;
+  }>(sql`
+    WITH recent_rounds AS (
+      SELECT r.id, r.round_no
+      FROM rounds r
+      JOIN products p ON p.id = r.product_id
+      WHERE p.code = ${args.product}
+      ORDER BY r.round_no DESC
+      LIMIT ${args.lastNRounds}
+    )
+    SELECT
+      b.id AS brand_id,
+      b.display_name,
+      r.round_no,
+      kg.name AS keyword_group_name,
+      rb.slot_no
+    FROM round_brands rb
+    JOIN round_keyword_groups rkg ON rkg.id = rb.round_keyword_group_id
+    JOIN recent_rounds r ON r.id = rkg.round_id
+    JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
+    JOIN categories c2 ON c2.id = kg.category_id
+    JOIN categories c1 ON c1.id = c2.parent_id
+    JOIN brands b ON b.id = rb.brand_id
+    WHERE 1=1
+      ${args.categoryLvl1 ? sql`AND c1.name = ${args.categoryLvl1}` : sql``}
+    ORDER BY b.display_name, r.round_no DESC
+  `);
+  return result.rows.map((r) => ({
+    brandId: r.brand_id,
+    brandDisplayName: r.display_name,
+    roundNo: r.round_no,
+    keywordGroupName: r.keyword_group_name,
+    slotNo: r.slot_no,
+  }));
+}
+
 export function computeInsights(summary: KeywordGroupSummary): Insights {
   const ratios = summary.rounds
     .map((r) => r.ratio)
