@@ -1,0 +1,117 @@
+보험상품 정보를 제공, 인터넷창구를 이용한 계약조회, 보험계약대출, 보상서비스 및 라이프케어, 멤버십서비스 등 다양한 서비스를 제공합니다, Samsung Fire &amp; Marine Insurance Homepage," />
+    <meta name="keywords" content="삼성화재, 삼성화재 해상보험, 삼성화재해상보험주식회사, samsungfire, Insurance, 보험, 보험회사, 손해보험, 자동차보험, 애니카, anycar, 좋은보험, 인터넷창구, 보험상품, 보상, 외국인보험, RC, 대출, 보험계약대출, 퇴직연금, 펀드, 운세, V3, 멤버십카드, the s" />
+    <meta name="author" content="삼성화재" />
+    <!-- CSS선언 -->
+    <link rel="stylesheet" href="/v2/resources/css/style.css" />
+    <script src="/v2/resources/js/jquery3.min.js"></script>
+    <script src="/v2/resources/js/ui.base.js"></script>
+    <script src="/sfmi/v2/ui/common/ih.common.js"></script>
+    <script>
+        $(function(){
+            var ua = navigator.userAgent;
+            var uAgent = ua.toLowerCase();
+            var _url = '';
+
+            //기업거래처PJT URL 분기처리 로직 적용
+            var cookieCorpInfo = ih.util.cookie.get("corpInfo");
+            var corpInfo = {"channel":"","corpUrl":"","homeMenu":""};
+            try{
+                if(cookieCorpInfo){
+                    corpInfo = JSON.parse(cookieCorpInfo);
+                }
+            }catch(e){
+                ih.debug("json parsing error", cookieCorpInfo);
+            }
+            
+            if(ih.env.deviceType == "PC" && corpInfo && corpInfo.channel == 'C'){
+                _url = "/vh/page/VH.RCCO0021.do?authKeyVal="+corpInfo.corpUrl;
+            }
+    
+            //모니모인 경우 URL 분기처리 로직 적용
+            if(/mblsappyn=y/.test(uAgent)){
+                _url = "/vh/page/VH.IPMN0009.do";
+            }
+            
+            // 홈으로 이동 버튼
+            var btnHome = document.querySelector('#btnHome');
+            btnHome.addEventListener('click', function(e){
+                if(!!_url){
+                    location.replace(_url);
+                }else{
+                    ih.ui.goHome();
+                }
+            })
+        })
+    </script>
+  </head>
+  <body>
+    <!-- #skip(s) -->
+    <div id="skip"></div>
+    <!--// #skip(e) -->
+
+    <!-- #baseLayer(s) -->
+    <div class="base-layer" id="baseLayer">
+      <!-- popup -->
+    </div>
+    <!--// #baseLayer(e) -->
+
+    <!-- #baseWrap(s) -->
+    <!--
+      data-page-main : 메인일 때는 true / 그외 페이지는 false
+    -->
+    <div class="wrapper" id="baseWrap" data-page-main="false" data-completed="true">
+      <span class="pgr-tit">404 에러</span>
+      <!-- #baseHeader(s) -->
+      <header class="base-header" id="baseHeader"></header>
+      <!--// #baseHeader(e) -->
+
+      <!-- #baseMain(s) -->
+      <main class="base-main" id="baseMain">
+        <!-- .content(s) -->
+        <div class="content">
+          <!-- [D] 내부 콘텐츠 영역(s) -->
+
+          <!-- .section(s) -->
+          <section class="section option-result result-info-sect">
+            <!-- .group(s) -->
+            <div class="group">
+              <h2 class="title-result">
+                <span class="ico-result fn-ani-set" data-ani-item="result-info"></span>
+                <span class="txt">
+                  페이지를<br />
+                  찾을 수 없어요
+                </span>
+              </h2>
+              <div class="result-desc">
+                페이지의 주소가 잘못 입력되었거나, 페이지가 변경 또는 삭제 되었습니다.<br />
+                <br />
+                입력하신 페이지의 주소를<br />
+                다시 한번 확인해 주세요.
+              </div>
+            </div>
+            <!--// .group(e) -->
+          </section>
+          <!--// .section(e) -->
+
+          <!-- .btn-wrap(s) -->
+          <div class="btn-wrap option-fixed">
+            <!-- [M] 2025-02-05 : 버튼명 및 갯수 수정(s) -->
+            <button type="button" class="btn primary" id="btnHome">
+              <span>홈으로 이동</span>
+            </button>
+            <!--// [M] 2025-02-05 : 버튼명 및 갯수 수정(e) -->
+          </div>
+          <!--// .btn-wrap(e) -->
+
+          <!--// [D] 내부 콘텐츠 영역(e) -->
+        </div>
+        <!--// .content(e) -->
+      </main>
+      <!--// #baseMain(e) -->
+
+      <!-- #baseFooter(s) -->
+      <footer class="base-footer" id="baseFooter"></footer>
+      <!--// #baseFooter(e) -->
+    </div>
+  </body>
+</html>
