@@ -92,6 +92,7 @@ def scrape_brands_for_active_rounds(
 
             if not slots:
                 log.info("no slots", keyword=kw, product=product_code)
+                conn.commit()
                 time.sleep(delay_seconds)
                 continue
 
@@ -124,6 +125,8 @@ def scrape_brands_for_active_rounds(
                     )
                 slots_inserted += 1
 
+            # Commit per-kg so partial results are visible while scrape runs.
+            conn.commit()
             time.sleep(delay_seconds)
 
         complete_ingest_run(
