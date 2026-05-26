@@ -89,7 +89,9 @@ def test_scrape_brands_populates_round_brands(db_conn, _two_active_rkgs):
         patch("worker.jobs.brand_scrape.scrape_brands_for_keyword", side_effect=_fake_scrape),
         patch("worker.jobs.brand_scrape.fetch_business_name", side_effect=_fake_business_name),
     ):
-        result = scrape_brands_for_active_rounds(db_conn, delay_seconds=0, rkg_ids=test_rkg_ids)
+        result = scrape_brands_for_active_rounds(
+            db_conn, delay_seconds=0, rkg_ids=test_rkg_ids, persist_conn=db_conn
+        )
 
     assert result["slots_inserted"] == 3
     assert result["keyword_groups_scraped"] == 2
