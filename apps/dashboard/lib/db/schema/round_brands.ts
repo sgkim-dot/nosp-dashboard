@@ -20,6 +20,7 @@ export const roundBrands = pgTable(
       .references(() => roundKeywordGroups.id, { onDelete: "cascade" }),
     brandId: integer("brand_id").references(() => brands.id),
     slotNo: smallint("slot_no").notNull(),
+    displayName: varchar("display_name", { length: 200 }),
     source: varchar("source", { length: 32 }).notNull(),
     confidence: doublePrecision("confidence"),
     capturedAt: timestamp("captured_at", { withTimezone: true }).defaultNow().notNull(),

@@ -117,17 +117,18 @@ def _persist_kg_brands_impl(
             cur.execute(
                 """
                 INSERT INTO round_brands (
-                    round_keyword_group_id, brand_id, slot_no, source, confidence
+                    round_keyword_group_id, brand_id, slot_no, display_name, source, confidence
                 )
-                VALUES (%s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 ON CONFLICT (round_keyword_group_id, slot_no)
                 DO UPDATE SET
                     brand_id = EXCLUDED.brand_id,
+                    display_name = EXCLUDED.display_name,
                     source = EXCLUDED.source,
                     confidence = EXCLUDED.confidence,
                     captured_at = now()
                 """,
-                (rkg_id, brand_id, slot.slot_no, source, confidence),
+                (rkg_id, brand_id, slot.slot_no, slot.display_name, source, confidence),
             )
 
 

@@ -63,9 +63,8 @@ export function TrendChart({ rounds }: { rounds: RoundRow[] }) {
           <XAxis dataKey="round" className="text-xs" />
           <YAxis
             className="text-xs"
-            tickFormatter={(v) =>
-              v >= 1_000_000 ? `${(v / 1_000_000).toFixed(1)}M` : `${Math.round(v / 1000)}k`
-            }
+            width={80}
+            tickFormatter={(v) => Number(v).toLocaleString()}
           />
           <Tooltip content={<ChartTooltip />} />
           <Legend

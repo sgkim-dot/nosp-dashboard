@@ -1,0 +1,1471 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - link "메뉴 영역으로 바로가기" [ref=e2] [cursor=pointer]:
+      - /url: "#lnb"
+      - generic [ref=e3]: 메뉴 영역으로 바로가기
+    - link "본문 영역으로 바로가기" [ref=e4] [cursor=pointer]:
+      - /url: "#content"
+      - generic [ref=e5]: 본문 영역으로 바로가기
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e11]:
+          - heading "NAVER" [level=1] [ref=e12]:
+            - link "NAVER" [ref=e13] [cursor=pointer]:
+              - /url: https://www.naver.com
+              - generic [ref=e14]: NAVER
+          - search [ref=e15]:
+            - group "검색" [ref=e16]:
+              - combobox "검색어를 입력해 주세요." [ref=e18]:
+                - text: 실비보험
+                - button "자동완성 레이어" [ref=e19] [cursor=pointer]:
+                  - generic [ref=e20]: 자동완성 레이어
+              - button "검색" [ref=e21] [cursor=pointer]:
+                - generic [ref=e22]: 검색
+              - button "한글 입력기" [ref=e24] [cursor=pointer]:
+                - generic [ref=e25]: 한글 입력기
+        - generic [ref=e26]:
+          - strong [ref=e27]: 사용자 링크
+          - list [ref=e28]:
+            - listitem [ref=e29]:
+              - link "로그인" [ref=e30] [cursor=pointer]:
+                - /url: https://nid.naver.com/nidlogin.login?url=https%3A%2F%2Fsearch.naver.com%2Fsearch.naver%3Fquery%3D%25EC%258B%25A4%25EB%25B9%2584%25EB%25B3%25B4%25ED%2597%2598
+                - generic [ref=e33]: 로그인
+            - listitem [ref=e34]:
+              - link "서비스 더보기" [ref=e35] [cursor=pointer]:
+                - /url: javascript:;
+                - generic [ref=e36]: 서비스 더보기
+      - generic [ref=e38]:
+        - generic [ref=e40]:
+          - generic [ref=e42]:
+            - tablist [ref=e43]:
+              - tab "블로그" [ref=e44] [cursor=pointer]
+              - tab "카페" [ref=e45] [cursor=pointer]
+              - tab "이미지" [ref=e46] [cursor=pointer]
+              - tab "클립" [ref=e47] [cursor=pointer]
+              - tab "지식iN" [ref=e48] [cursor=pointer]
+              - tab "인플루언서" [ref=e49] [cursor=pointer]
+              - tab "동영상" [ref=e50] [cursor=pointer]
+              - tab "쇼핑" [ref=e51] [cursor=pointer]
+              - tab "뉴스" [ref=e52] [cursor=pointer]
+              - tab "숏텐츠" [ref=e53] [cursor=pointer]
+              - tab "어학사전" [ref=e54] [cursor=pointer]
+              - tab "지도" [ref=e55] [cursor=pointer]
+              - tab "도서" [ref=e56] [cursor=pointer]
+              - tab "지식백과" [ref=e57] [cursor=pointer]
+              - tab "학술정보" [ref=e58] [cursor=pointer]
+            - button "다음" [ref=e59] [cursor=pointer]:
+              - generic [ref=e61]: 다음
+          - button "더보기" [ref=e63] [cursor=pointer]:
+            - generic [ref=e64]: 더보기
+        - list [ref=e66]:
+          - listitem [ref=e67]:
+            - button "공유" [ref=e68] [cursor=pointer]
+    - main [ref=e69]:
+      - generic [ref=e70]:
+        - heading "실비보험 검색 결과" [level=1] [ref=e71]
+        - generic [ref=e72]:
+          - generic [ref=e76]:
+            - generic [ref=e77]:
+              - generic [ref=e78]:
+                - heading "실비보험 관련 광고" [level=2] [ref=e79]:
+                  - generic [ref=e80]: 실비보험
+                  - generic [ref=e81]: 관련 광고
+                - button "이 광고가 표시된 이유" [ref=e82] [cursor=pointer]:
+                  - generic [ref=e83]: 이 광고가 표시된 이유
+              - link "등록 안내" [ref=e85] [cursor=pointer]:
+                - /url: //saedu.naver.com/adbiz/searchad/clickChoice.naver
+            - generic [ref=e86]:
+              - list [ref=e87]:
+                - listitem [ref=e88]:
+                  - generic [ref=e89]:
+                    - generic [ref=e90]:
+                      - generic [ref=e91]:
+                        - link "favicon" [ref=e92] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/26gfnkHF5txxESRPp5KGbIKFRFuqcPygWQi0xHnA1-SWHHuNn2oZCKx-EGHsbW0Fq6F4SVRuPqhd97FM5RLWC4OR_ycSfJITz32quEJ6gnxoFHT64_tlMZ78pAUFGwtePnCt2ZfqA-J6jr4E359tvc38FDbJyGxRVJw2TiOXfLNPW68JpiL7Ryywano_qVvrszgwyO3ACCguHULEfU4GvPMspMdwLFLozXW3es_HR1gnbnaDXZnVnIK6aPShCQcveJ5PL8quX6ksblHAPiCios713eYpxebzUyHB1DU68TN1wr-mSKssBB45bjyySh9pcj6GtQjELtuCGGxEvmRBIbayAbe023Epv8hNCy2_hURYZ6lhrjWCvqz8RcVpLdlMjF5OknHV16dsvQAsKO02t5wFfWKsgN_peb8kHyjsCzqHo51563wWE5TeKy0CzgAznRTgRdxVX22k_O-tvjKrGdB0Fsm3KLB23uOtaJMYUQmSIuhRZQvE80SLjF3mno-8?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e93]
+                        - img "광고" [ref=e94]:
+                          - img [ref=e95]
+                        - button "네이버 로그인" [ref=e100]:
+                          - generic [ref=e101]: 네이버 로그인
+                        - link "DB손해보험" [ref=e102] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/26gfnkHF5txxESRPp5KGbIKFRFuqcPygWQi0xHnA1-SWHHuNn2oZCKx-EGHsbW0Fq6F4SVRuPqhd97FM5RLWC4OR_ycSfJITz32quEJ6gnxoFHT64_tlMZ78pAUFGwtePnCt2ZfqA-J6jr4E359tvc38FDbJyGxRVJw2TiOXfLNPW68JpiL7Ryywano_qVvrszgwyO3ACCguHULEfU4GvPMspMdwLFLozXW3es_HR1gnbnaDXZnVnIK6aPShCQcveJ5PL8quX6ksblHAPiCios713eYpxebzUyHB1DU68TN1wr-mSKssBB45bjyySh9pcj6GtQjELtuCGGxEvmRBIbayAbe023Epv8hNCy2_hURYZ6lhrjWCvqz8RcVpLdlMjF5OknHV16dsvQAsKO02t5wFfWKsgN_peb8kHyjsCzqHo51563wWE5TeKy0CzgAznRTgRdxVX22k_O-tvjKrGdB0Fsm3KLB23uOtaJMYUQmSIuhRZQvE80SLjF3mno-8?c=naver.search.pc.plsearch&t=0
+                        - link "dbinsure.co.kr" [ref=e104] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/26gfnkHF5txxESRPp5KGbIKFRFuqcPygWQi0xHnA1-SWHHuNn2oZCKx-EGHsbW0Fq6F4SVRuPqhd97FM5RLWC4OR_ycSfJITz32quEJ6gnxoFHT64_tlMZ78pAUFGwtePnCt2ZfqA-J6jr4E359tvc38FDbJyGxRVJw2TiOXfLNPW68JpiL7Ryywano_qVvrszgwyO3ACCguHULEfU4GvPMspMdwLFLozXW3es_HR1gnbnaDXZnVnIK6aPShCQcveJ5PL8quX6ksblHAPiCios713eYpxebzUyHB1DU68TN1wr-mSKssBB45bjyySh9pcj6GtQjELtuCGGxEvmRBIbayAbe023Epv8hNCy2_hURYZ6lhrjWCvqz8RcVpLdlMjF5OknHV16dsvQAsKO02t5wFfWKsgN_peb8kHyjsCzqHo51563wWE5TeKy0CzgAznRTgRdxVX22k_O-tvjKrGdB0Fsm3KLB23uOtaJMYUQmSIuhRZQvE80SLjF3mno-8?c=naver.search.pc.plsearch&t=0
+                      - link "DB손해보험 실손의료비보험 5월 보험료 계산" [ref=e105] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/26gfnkHF5txxESRPp5KGbIKFRFuqcPygWQi0xHnA1-SWHHuNn2oZCKx-EGHsbW0Fq6F4SVRuPqhd97FM5RLWC4OR_ycSfJITz32quEJ6gnxoFHT64_tlMZ78pAUFGwtePnCt2ZfqA-J6jr4E359tvc38FDbJyGxRVJw2TiOXfLNPW68JpiL7Ryywano_qVvrszgwyO3ACCguHULEfU4GvPMspMdwLFLozXW3es_HR1gnbnaDXZnVnIK6aPShCQcveJ5PL8quX6ksblHAPiCios713eYpxebzUyHB1DU68TN1wr-mSKssBB45bjyySh9pcj6GtQjELtuCGGxEvmRBIbayAbe023Epv8hNCy2_hURYZ6lhrjWCvqz8RcVpLdlMjF5OknHV16dsvQAsKO02t5wFfWKsgN_peb8kHyjsCzqHo51563wWE5TeKy0CzgAznRTgRdxVX22k_O-tvjKrGdB0Fsm3KLB23uOtaJMYUQmSIuhRZQvE80SLjF3mno-8?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e106]:
+                          - text: DB손해
+                          - strong [ref=e107]: 보험
+                          - strong [ref=e108]: 실손
+                          - text: 의료비
+                          - strong [ref=e109]: 보험
+                        - generic [ref=e110]:
+                          - text: 5월
+                          - strong [ref=e111]: 보험
+                          - text: 료 계산
+                    - link "실속있는 5세대 실손보험이 필요하다면? 보험료 즉시확인 후 전문가와 상담해보세요!" [ref=e114] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/26gfnkHF5txxESRPp5KGbIKFRFuqcPygWQi0xHnA1-SWHHuNn2oZCKx-EGHsbW0Fq6F4SVRuPqhd97FM5RLWC4OR_ycSfJITz32quEJ6gnxoFHT64_tlMZ78pAUFGwtePnCt2ZfqA-J6jr4E359tvc38FDbJyGxRVJw2TiOXfLNPW68JpiL7Ryywano_qVvrszgwyO3ACCguHULEfU4GvPMspMdwLFLozXW3es_HR1gnbnaDXZnVnIK6aPShCQcveJ5PL8quX6ksblHAPiCios713eYpxebzUyHB1DU68TN1wr-mSKssBB45bjyySh9pcj6GtQjELtuCGGxEvmRBIbayAbe023Epv8hNCy2_hURYZ6lhrjWCvqz8RcVpLdlMjF5OknHV16dsvQAsKO02t5wFfWKsgN_peb8kHyjsCzqHo51563wWE5TeKy0CzgAznRTgRdxVX22k_O-tvjKrGdB0Fsm3KLB23uOtaJMYUQmSIuhRZQvE80SLjF3mno-8?c=naver.search.pc.plsearch&t=0
+                      - text: 실속있는 5세대
+                      - strong [ref=e115]: 실손
+                      - strong [ref=e116]: 보험
+                      - text: 이 필요하다면?
+                      - strong [ref=e117]: 보험
+                      - text: 료 즉시확인 후 전문가와 상담해보세요!
+                  - generic [ref=e118]:
+                    - link "광고 종합건강보험" [ref=e119] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/PZTk4NHIA5oU55kX0acTjJBmDnn3YmUxLCScdIq_frha1Avy6o2_ZkziH9ZRfesrxQNNYpOE0c6Z5wKrXaCSEQ7eSCHeQ8SfZkLHUS5tDAyLuBx4mXT3WyE2LyxILNXCEWDyc3bjbSezye54BWnVlUahGVww_gSew_iyuOpfAo4H5qFCQSf3FSBKyZSMhK8zB01QUhSogHnKu5rHVHa6dTYovlFEyhXdI8V6r8CxkJ7__ObXTSOmGWpcrmi6GSjq3I2rQeZrB1uEYBol3npqPn5dYRxPdkynErLDuan8v-08KFOWugd_keCiomafzZS-rjM_i0wT20uqC7Z6OHb1OS1jpaWcmIarsxvgxcGF5nOe5L33MUnLtcVTnwdz2YHI-yLqOSMCijs7W3FXSLx4xev0X6aFio1dDKLQxvzGnrlWpHWgFWj9cwmlYFRvLN350oQzmLVfod66VN7S33chzuyFfxYBpb_P1pac_SijZ7QGqJgfeOGsKS4gNr-TjStdy4zUDwpgkNILQ9STqFba_Q==?c=naver.search.pc.plsearch&t=0
+                      - img "광고" [ref=e121]
+                      - generic [ref=e122]: 종합건강보험
+                    - link "광고 간병인보험" [ref=e123] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/6k1LyuznmWqZolWVs7opeM1XVLgccm7GxlbgAV7egi0TXrfO301Th9UJM25cJtzsr4x8kRDB91vbt7sTHSlW8-ATfBx79wEjjB5bBezvtXM5GZkut4zs2CABySCcYZsxZ3iPJMqnH1CbOTEG3C2Mlmmx1bvdsCY8vnLQF_ySLLIx3CN4gFUjQXnq7xhgd1BbjBMmC6dhRfal0axbOVKdwvd-z9_cN63jVMd6gnvqv61bdUNqbo0B6wi0h3OlARHbTXXh2noBI8WF54HJroW6_A3AAO6FF0SX3IN5SGOs2g5b3mdsINJSjOoBPinxEdhzdYfkX85pfA1cRBnS32Gucif-2JgbBxyXEWiTGG72IKGMWsplE5SyHnK1I0rLyGdEy63VoMTPyu7JEzmyVLyaynt8dRxwzijZAsxAVh1XOpxALOFjJOCzueET7aeQuPfzBuAXPsQ-uBKUhOz2DYl15N0aQK45VYmcDdRKLBl9ZdjT2mM3DSN68MPC60bf-QJlnniv4K7RKredK8m9nRA1QA==?c=naver.search.pc.plsearch&t=0
+                      - img "광고" [ref=e125]
+                      - generic [ref=e126]: 간병인보험
+                    - link "광고 건강보험" [ref=e127] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/yYFXzxHAfsrO8Q0iVSzXELcoQTOV-kqFacXbWhtN0ua0SnHGZlY8DR0lxt51KZ9Syjs-pe7FkVNW87iLj-0evq8qIUSI5HuAL6YfXF5L6_6X9QJlyoK8EDy7XIm5y2XuuvwtCCGfxuHz-icXyDBGj0UWjUVuDX1hnkAdbNPg-K-ji_2ZfqlMuuW_1m4xCWqkCI7lggwU7zjy-ImV7e51PhxqzruIq4hMjTQ9Nij6x_K1A_JC3Xy7IyAHkxGZVjeVWlf4B-8YUd6Rw5HHwSjtek-agF1b_5lUYQ6I0dcRK7L7OIuXHx0oTx1Esa6onrlLLV4sald9RwR5P3vKncoHbkHBl5M5I_eSiZsBZjIVPyN3T0FiVozffPCcXuYOljbwM9JsEre7r86g-nmILFGJBgKCBxVXpRt5Mn8bv9pmUnI6R2LF0_6mvPDPf9PgOf1ukFialZBFt-0Z0wLTQx6Tc5eVknxGePpR6vxRxZy8HEgl5vcrY60iLN_5upsT_GNSg3r8QcWqXTVLU7OYY8Fn2Q==?c=naver.search.pc.plsearch&t=0
+                      - img "광고" [ref=e129]
+                      - generic [ref=e130]: 건강보험
+                - listitem [ref=e131]:
+                  - generic [ref=e132]:
+                    - generic [ref=e133]:
+                      - generic [ref=e134]:
+                        - link "favicon" [ref=e135] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/KNQD7L1HAD6lT2VIRWrxu8N5z5w9qlafzudBXBLvlCCfXYhWMqMxTaak2NHpppedgjTsCIoJ2gCoMiD-fG9-GqnCJ8vVJVuM_lROLw35UCnHraiogDXDEKNsbFmEGEH0Ri4wKzKMyek6xmimqZ9ub0uqNlBSHKmFIc3n5l9nvdsClXyXNL7Aur1MlJ4uMdbK8Mdt0z5wu-uXxAHK4Er55Vg1R8m28BGznzFymd0tSYlh8pXff_uBzSBlNczE4A2RGE_pC9lKyQ0dWdv74TD17akc_ooruEMt4Xmm3sTc_TtgmZfXb5PpKqr8zUBt8DiOS_2gS46CzAnd0CSYcVZYyOkBy_7pMlwwlX6xQ1AIGMjO-7qdYVNX9f-UL33yysEtwAgBoYgr4Bd2KbK0UdvmlSyZBk-iYXqV19ZgBXBTSYcI0voJSXfE4dW4Bl_Xqz13?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e136]
+                        - img "광고" [ref=e137]:
+                          - img [ref=e138]
+                        - link "KB손해보험다이렉트" [ref=e141] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/KNQD7L1HAD6lT2VIRWrxu8N5z5w9qlafzudBXBLvlCCfXYhWMqMxTaak2NHpppedgjTsCIoJ2gCoMiD-fG9-GqnCJ8vVJVuM_lROLw35UCnHraiogDXDEKNsbFmEGEH0Ri4wKzKMyek6xmimqZ9ub0uqNlBSHKmFIc3n5l9nvdsClXyXNL7Aur1MlJ4uMdbK8Mdt0z5wu-uXxAHK4Er55Vg1R8m28BGznzFymd0tSYlh8pXff_uBzSBlNczE4A2RGE_pC9lKyQ0dWdv74TD17akc_ooruEMt4Xmm3sTc_TtgmZfXb5PpKqr8zUBt8DiOS_2gS46CzAnd0CSYcVZYyOkBy_7pMlwwlX6xQ1AIGMjO-7qdYVNX9f-UL33yysEtwAgBoYgr4Bd2KbK0UdvmlSyZBk-iYXqV19ZgBXBTSYcI0voJSXfE4dW4Bl_Xqz13?c=naver.search.pc.plsearch&t=0
+                        - link "direct.kbinsure.co.kr" [ref=e143] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/KNQD7L1HAD6lT2VIRWrxu8N5z5w9qlafzudBXBLvlCCfXYhWMqMxTaak2NHpppedgjTsCIoJ2gCoMiD-fG9-GqnCJ8vVJVuM_lROLw35UCnHraiogDXDEKNsbFmEGEH0Ri4wKzKMyek6xmimqZ9ub0uqNlBSHKmFIc3n5l9nvdsClXyXNL7Aur1MlJ4uMdbK8Mdt0z5wu-uXxAHK4Er55Vg1R8m28BGznzFymd0tSYlh8pXff_uBzSBlNczE4A2RGE_pC9lKyQ0dWdv74TD17akc_ooruEMt4Xmm3sTc_TtgmZfXb5PpKqr8zUBt8DiOS_2gS46CzAnd0CSYcVZYyOkBy_7pMlwwlX6xQ1AIGMjO-7qdYVNX9f-UL33yysEtwAgBoYgr4Bd2KbK0UdvmlSyZBk-iYXqV19ZgBXBTSYcI0voJSXfE4dW4Bl_Xqz13?c=naver.search.pc.plsearch&t=0
+                      - link "KB다이렉트 공식 실손보험" [ref=e144] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/KNQD7L1HAD6lT2VIRWrxu8N5z5w9qlafzudBXBLvlCCfXYhWMqMxTaak2NHpppedgjTsCIoJ2gCoMiD-fG9-GqnCJ8vVJVuM_lROLw35UCnHraiogDXDEKNsbFmEGEH0Ri4wKzKMyek6xmimqZ9ub0uqNlBSHKmFIc3n5l9nvdsClXyXNL7Aur1MlJ4uMdbK8Mdt0z5wu-uXxAHK4Er55Vg1R8m28BGznzFymd0tSYlh8pXff_uBzSBlNczE4A2RGE_pC9lKyQ0dWdv74TD17akc_ooruEMt4Xmm3sTc_TtgmZfXb5PpKqr8zUBt8DiOS_2gS46CzAnd0CSYcVZYyOkBy_7pMlwwlX6xQ1AIGMjO-7qdYVNX9f-UL33yysEtwAgBoYgr4Bd2KbK0UdvmlSyZBk-iYXqV19ZgBXBTSYcI0voJSXfE4dW4Bl_Xqz13?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e145]:
+                          - text: KB다이렉트 공식
+                          - strong [ref=e146]: 실손
+                          - strong [ref=e147]: 보험
+                    - link "직전 2년 무사고에 해당된다면? KB실손보험 보험료 10% 할인받고 미리 대비! 늘어나는 평균수명 부담되는 병원비 걱정은 그만! 다이렉트로 현명하게 KB" [ref=e150] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/KNQD7L1HAD6lT2VIRWrxu8N5z5w9qlafzudBXBLvlCCfXYhWMqMxTaak2NHpppedgjTsCIoJ2gCoMiD-fG9-GqnCJ8vVJVuM_lROLw35UCnHraiogDXDEKNsbFmEGEH0Ri4wKzKMyek6xmimqZ9ub0uqNlBSHKmFIc3n5l9nvdsClXyXNL7Aur1MlJ4uMdbK8Mdt0z5wu-uXxAHK4Er55Vg1R8m28BGznzFymd0tSYlh8pXff_uBzSBlNczE4A2RGE_pC9lKyQ0dWdv74TD17akc_ooruEMt4Xmm3sTc_TtgmZfXb5PpKqr8zUBt8DiOS_2gS46CzAnd0CSYcVZYyOkBy_7pMlwwlX6xQ1AIGMjO-7qdYVNX9f-UL33yysEtwAgBoYgr4Bd2KbK0UdvmlSyZBk-iYXqV19ZgBXBTSYcI0voJSXfE4dW4Bl_Xqz13?c=naver.search.pc.plsearch&t=0
+                      - text: 직전 2년 무사고에 해당된다면? KB
+                      - strong [ref=e151]: 실손
+                      - strong [ref=e152]: 보험
+                      - strong [ref=e153]: 보험
+                      - text: 료 10% 할인받고 미리 대비! 늘어나는 평균수명 부담되는 병원비 걱정은 그만! 다이렉트로 현명하게 KB
+                    - link "이벤트 직전2년무사고10%할인 더보기" [ref=e154] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/UK9x59pbohjv_L7x7mi0IiggemPuC70sEz_cpT3LhC1ALzUj0z6SkoSwBpC6gVaCuTGyUSm1uJRksT0x_LUmJuLWD5fuh4DGpSSi0NCMrO1FZCiujEN4v3o_Oxxq5lAJm9Keor7ZgmX6MyuxEE7uhkO6_ie3hO4Qzzj6ngrM6rS2_RjZdHo4dzmq0KM1dOnnjrhcHSTJXaDO7mkUsHgh_Mss9zys7h7SSeBKeCklol19l63UtN72unDlF3cyhWAMVGbVwP0Za-LZq_pYeoWC8n9S5ParifzWwpa6ycDJ2T2o9TVmihhajIxeUgTQnSNHvkiKo1gNDJSIK_XsgjVJeWdMrBDjrtZ0E0YRPXra5tHOIK4RDdTWCKkgTk_OYD4A9YbZNnoVGFmVHqZgQoH32CU37eiRZ8imc0ogyD4TV9Te_C9iEGObRlpHegOCIKU9b-rPt05L3BfvXuS2SZUotg==?c=naver.search.pc.plsearch&t=0
+                      - generic [ref=e155]:
+                        - img [ref=e157]
+                        - generic [ref=e162]: 이벤트
+                      - generic [ref=e163]: 직전2년무사고10%할인
+                      - img "더보기" [ref=e164]:
+                        - img [ref=e165]
+                  - generic [ref=e167]:
+                    - link "광고 종합보험" [ref=e168] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/sdOgibw9a5o9xVEGH7ngb0K-pSQJVf-BxQjjTJL86PWzJ1fWm2FCeFR0QuluupvEsXhMjpBXGc_zGh8jfqNc68MrARoIhb3lQu5Mgvhww1nrWUA0ZoAi-_gJVb4ticW2QCcE3tSOMdsF2McI3JQRr2IbPwgRSnZh6JdFT-e7OvFzzUY7JkvQpdun3wqLUxNxjh_ZRudv16UVBgqHabv7Q_jDI7Vr0DMOYxfGNENvtBWdbq9w7ZKfma1puc2eIFaVO0Hna5uJwvPVKdBWl6r5-bjp7XgdSlr_oShpjR7Mx2tQZvLSW8aibGI7Fl3WV0Ni8wpwjUlMcfHjTKHxFdeYLBricip3it8-tZxn-x9izY5DuJ12Y6p9DSGCMEbIlPxaa2J4LpARto11PZC_Tfe-E7lO439UAznr9BxvdWp1DE9fUuCAXIb05wEeRyXq2UUkldfg_mEw4WJsJE8qDksPSw==?c=naver.search.pc.plsearch&t=0
+                      - img "광고" [ref=e170]
+                      - generic [ref=e171]: 종합보험
+                    - link "광고 자녀보험" [ref=e172] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/oCwUTWbku8cXxxVZivBsSTMxOKTiUY37LcZK7EgtIudHvmbbYP3BB2VF2T9ZwkB13k_EWqXU-YpwBCEFTnufNk4b9RxaveuQwyscmjM0_TyuTuQZFjZQn7wtfSKhsHhgHCnUGPfVaQvJA80Ft5GQOtni29VuDIz0VZ5LRxIHeK-YtjeKn16Z5D8cxXj1BBIBfCfsrdzwbZuk5CzdkI9tgOOu0_3mYb-o55Ob_9DT9N-WdIJc0RbPjkdeSKOlVZMZWI8brHH3wxxAsK-FN1ajAXS5dsk7iwpHDPqr-QJSutHf8LJjo6M2qx7QhcZJdXcQC1uKEa0iXp45YEGA3iAlwDoMGtmMktupN4IRwVsFGPwJFW_dd22xC7X2DI6hyjoXeBI94E1cQlXnNIRjhRCG-PSPfdqws_SvKRIrPlkY43NFTvulBEszcV4sxOINuYbqYJbfYeWU5xjowqrs-h8ajQ==?c=naver.search.pc.plsearch&t=0
+                      - img "광고" [ref=e174]
+                      - generic [ref=e175]: 자녀보험
+                    - link "광고 간편실손" [ref=e176] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/z6cNvBz1K-YofwxPD0AeOR1tx9pRJl6Z98P3UuQ-bfY-78LeLcf1eOEJ7Nkp9i-FUM5eSMt0eHGfcHkk_Im1xTu-j27c5YbNeb9VXemYavNiiTViW-f-1IFfChfaLAd5Z4Tsp16hM8ZT7XNE1jDBkOSQOX6gOgAi2Xmgv00QmVveh4ongLz5gdls7-a_r8rPzuQLqnwP2S_4VRCGDtSM4Yndkc2KdJHzgWbET4my_v_wN4zZ85V6hyzHhhoXhHqdQy2rBmNU4S3bBs3QAfCWnP97mT00RXVPNtjxj4nJ-5dqJt8gbpqJvcQJn0aPsVdf_3nrGwkTLoV4MP_PbDQw1HrQKbxUvf_5WvJxsdM71Tt0SC460HDoPe6Z11pLmvlaEdRbBYZLNOkEKl2OrRBPpbWUKPoqPmD0q9VfCgqsrj-pqKUhgPhhZ9VCs9V3tXTZK5LBoxxRoBDfOxTGpsJSSw==?c=naver.search.pc.plsearch&t=0
+                      - img "광고" [ref=e178]
+                      - generic [ref=e179]: 간편실손
+                - listitem [ref=e180]:
+                  - link "링크이미지" [ref=e181] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/aMdWMgvCMdISQiQgIStGkgrzObyAQMPhH12Af60NWbn7vMxCtr8JiK6iXXpZHp0rfLLf2xsXKak5Qg9qmmYHQYIiZ3SgrW_r-UQj2Jyz8N46C1QUEMDP_pzInxbLJz-oHQNgbM9eEaVuAneSvKxNGe7grVmyp5A_7hZHYIYDGjYADRxpPZKd6UM9fz5qy0DyhFBM_IvbHy1IjWxtrWAZzxEEuwr6HS7wyR7wzd9o0c4KTL4Veb0tSqYeTW52uPwhINfxO8QB7Ailr4PIY39G-cNhWnEJ5gByhVIDDXkSXSmE4aD7O0jdN_AFkIXXJUCd-oYuXIt9Zko_Pxb-249JtIf3t0Ajr0wx5CdHnkSFd94jS8sGQJYtmMDREEg1qeTKxSjBg6ryt0QuAQOFV3A5PwgKrjdfvuLMD_-TdF3CzPaTwJWtxHtyP_wad0oi7Ua-lYMoDA9uJnUNJnZuDIEEWwgf578mmbDVWo0TBc5luoo=?c=naver.search.pc.plsearch&t=0
+                    - img "링크이미지" [ref=e182]
+                  - generic [ref=e183]:
+                    - generic [ref=e184]:
+                      - generic [ref=e185]:
+                        - link "favicon" [ref=e186] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/Pixe7eXyuAcXNprBAK9yXHLCUAGNdQljP2f99BD-hUmlKtGSit878dfUzJK0cEqhOmG8dFuCTs-lhg3CTQNPYibrwNQJkdWfSzDthahaEZNNYweY_BxPoRZ-A6GeenKNZGh4BGwZLcmjO8ARq4zjsOly0liFY822qOjgf1ZPwslLPVw8FqMr6790w4gGOXF_plx9v9yCIwwV_6Dk1MOXdAmhFQSgtr_09n25DLW2oCiR_alwWGyZtLnf1Hhlvi-Yj9ek9vzPp32mJuvQQdNbRGzh7JQlnkVCZXgzXL78cShajhSe6i11eCRPg8Js--TpBP1a4xGtVn4uazjDcbB5ZkrtaORO0DMWsNdvxlF-yxO5PeWQ-OYQDodCiL-ScwvaVGHMpq8Nf3MB53nDoCfE-e1Ec6z7rUZXT93__vBUZrggvC1OyDAgbAcrBJ6O2tdwO5ffCXtX1zrk12SltnRD-1ke4kA9A3dhkWLQ3MeXsik=?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e187]
+                        - img "광고" [ref=e188]:
+                          - img [ref=e189]
+                        - link "DB손해보험" [ref=e192] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/Pixe7eXyuAcXNprBAK9yXHLCUAGNdQljP2f99BD-hUmlKtGSit878dfUzJK0cEqhOmG8dFuCTs-lhg3CTQNPYibrwNQJkdWfSzDthahaEZNNYweY_BxPoRZ-A6GeenKNZGh4BGwZLcmjO8ARq4zjsOly0liFY822qOjgf1ZPwslLPVw8FqMr6790w4gGOXF_plx9v9yCIwwV_6Dk1MOXdAmhFQSgtr_09n25DLW2oCiR_alwWGyZtLnf1Hhlvi-Yj9ek9vzPp32mJuvQQdNbRGzh7JQlnkVCZXgzXL78cShajhSe6i11eCRPg8Js--TpBP1a4xGtVn4uazjDcbB5ZkrtaORO0DMWsNdvxlF-yxO5PeWQ-OYQDodCiL-ScwvaVGHMpq8Nf3MB53nDoCfE-e1Ec6z7rUZXT93__vBUZrggvC1OyDAgbAcrBJ6O2tdwO5ffCXtX1zrk12SltnRD-1ke4kA9A3dhkWLQ3MeXsik=?c=naver.search.pc.plsearch&t=0
+                        - link "directdb.co.kr" [ref=e194] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/Pixe7eXyuAcXNprBAK9yXHLCUAGNdQljP2f99BD-hUmlKtGSit878dfUzJK0cEqhOmG8dFuCTs-lhg3CTQNPYibrwNQJkdWfSzDthahaEZNNYweY_BxPoRZ-A6GeenKNZGh4BGwZLcmjO8ARq4zjsOly0liFY822qOjgf1ZPwslLPVw8FqMr6790w4gGOXF_plx9v9yCIwwV_6Dk1MOXdAmhFQSgtr_09n25DLW2oCiR_alwWGyZtLnf1Hhlvi-Yj9ek9vzPp32mJuvQQdNbRGzh7JQlnkVCZXgzXL78cShajhSe6i11eCRPg8Js--TpBP1a4xGtVn4uazjDcbB5ZkrtaORO0DMWsNdvxlF-yxO5PeWQ-OYQDodCiL-ScwvaVGHMpq8Nf3MB53nDoCfE-e1Ec6z7rUZXT93__vBUZrggvC1OyDAgbAcrBJ6O2tdwO5ffCXtX1zrk12SltnRD-1ke4kA9A3dhkWLQ3MeXsik=?c=naver.search.pc.plsearch&t=0
+                      - link "DB다이렉트 공식 실비보험 우리 아이 첫 보험 임신주수 무관 태아 가입가능" [ref=e195] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/Pixe7eXyuAcXNprBAK9yXHLCUAGNdQljP2f99BD-hUmlKtGSit878dfUzJK0cEqhOmG8dFuCTs-lhg3CTQNPYibrwNQJkdWfSzDthahaEZNNYweY_BxPoRZ-A6GeenKNZGh4BGwZLcmjO8ARq4zjsOly0liFY822qOjgf1ZPwslLPVw8FqMr6790w4gGOXF_plx9v9yCIwwV_6Dk1MOXdAmhFQSgtr_09n25DLW2oCiR_alwWGyZtLnf1Hhlvi-Yj9ek9vzPp32mJuvQQdNbRGzh7JQlnkVCZXgzXL78cShajhSe6i11eCRPg8Js--TpBP1a4xGtVn4uazjDcbB5ZkrtaORO0DMWsNdvxlF-yxO5PeWQ-OYQDodCiL-ScwvaVGHMpq8Nf3MB53nDoCfE-e1Ec6z7rUZXT93__vBUZrggvC1OyDAgbAcrBJ6O2tdwO5ffCXtX1zrk12SltnRD-1ke4kA9A3dhkWLQ3MeXsik=?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e196]:
+                          - text: DB다이렉트 공식
+                          - strong [ref=e197]: 실비보험
+                        - generic [ref=e198]:
+                          - text: 우리 아이 첫
+                          - strong [ref=e199]: 보험
+                        - text: 임신주수 무관 태아 가입가능
+                    - link "아직도 없으세요? 우리 가족 병원비에 대비하는 DB다이렉트 실손보험 더 이상 미루지 마세요! 소중한 우리 아이 첫 실손보험" [ref=e202] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Pixe7eXyuAcXNprBAK9yXHLCUAGNdQljP2f99BD-hUmlKtGSit878dfUzJK0cEqhOmG8dFuCTs-lhg3CTQNPYibrwNQJkdWfSzDthahaEZNNYweY_BxPoRZ-A6GeenKNZGh4BGwZLcmjO8ARq4zjsOly0liFY822qOjgf1ZPwslLPVw8FqMr6790w4gGOXF_plx9v9yCIwwV_6Dk1MOXdAmhFQSgtr_09n25DLW2oCiR_alwWGyZtLnf1Hhlvi-Yj9ek9vzPp32mJuvQQdNbRGzh7JQlnkVCZXgzXL78cShajhSe6i11eCRPg8Js--TpBP1a4xGtVn4uazjDcbB5ZkrtaORO0DMWsNdvxlF-yxO5PeWQ-OYQDodCiL-ScwvaVGHMpq8Nf3MB53nDoCfE-e1Ec6z7rUZXT93__vBUZrggvC1OyDAgbAcrBJ6O2tdwO5ffCXtX1zrk12SltnRD-1ke4kA9A3dhkWLQ3MeXsik=?c=naver.search.pc.plsearch&t=0
+                      - text: 아직도 없으세요? 우리 가족 병원비에 대비하는 DB다이렉트
+                      - strong [ref=e203]: 실손
+                      - strong [ref=e204]: 보험
+                      - text: 더 이상 미루지 마세요! 소중한 우리 아이 첫
+                      - strong [ref=e205]: 실손
+                      - strong [ref=e206]: 보험
+                    - link "24시간 언제나 가입 가능 더보기" [ref=e207] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/f_Cco09M89976QAr2wsCzeE0lVSjt3e4uDnPSqnFFjmjKShBbqSvI60xNmusmm4pRMIGfjIbomzeWdtPnj6w9flOZUBfPv0atkm2bogD9kMvWNK3D_0Nrcy_wjqLKfkvzuR86b86lS4FaDd9xGkFWLfzyUOq8iACRyUlEhMEllh934Gn5tjfH-Bj8OIFwOs2j1-CTd4yHS-34pZOYsJ6PL4tVK1K-_ItGmjJT--UpsTCO8EcASZresKEPbahrCp_JDZkW8Y8LpvAGFvPUXSmTDCnJ0QQXr7ELB_v-S7NZ78nalVVrmLnHfJtIOQG9Za4GevvT9aZA-djjjt2kNKymKfyt9W_1I1JpwDMYl4b9lyZAd-URcyuaURu62EhLB4vo3kv1v1cKNdLy_-IIAc_d-nJGqhV4QmMaZcqt_3YElKvhaQ75e1hVxlLReROR65iQIRpoVinHS51tGyf-TRbAg8teNUBDqWHnRmUumDJMx0=?c=naver.search.pc.plsearch&t=0
+                      - img [ref=e210]
+                      - generic [ref=e212]: 24시간 언제나 가입 가능
+                      - img "더보기" [ref=e213]:
+                        - img [ref=e214]
+                    - list [ref=e216]:
+                      - listitem [ref=e217]:
+                        - link "암보험더하기" [ref=e218] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/3RKPYuTdoh0r41AwpLQMbaAQzJVB4YOAgVMf9befPeyB7KZtcHeVudmIB862LHGDmg6vNnY4_3IdwDphmzhvYySTH5VPICXjkVVEY3glwNeCSxZFrl0-y07kE3QRRAO-2U5iFnioVzorHe1VfGtYpaXeYb-aflq5uMj-166JDAQHimjV1h96IQ8THY1BzLadrNUxxB9magMrpU8z3f-SWiohL4vZwhOIIjQxBnEvcDPhcDix6JM_RDT3jwlOXh8FjtEGYkGQGRtdPhn-L9tgp_McU6YWFmTrcP4jQbyijq58ZQXxIhModD3pKqIvK5IVbqL4HzF-HhmNFGTTJg0m4iTyXbJOMN1TOvOvd8fvXfFzsSTU72EQtxXSrH8m5ZMTDPuMjsy-StDdU_TRHCywmp5JixpgR6bYSjCYoaf2mMadxQytc_DpvS8yvVm9zPw68atmfDYVz_Vy9VW6r29qajEyyVCe_01uLqGGwCAWP1Q=?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e219]:
+                        - link "365일무휴" [ref=e220] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/NJ3549LQmnmyuNRP74tnndrMQ78q76iaCY_qniPguJ6qDW4MJObZleXefyWphk3a6jQOhDtG8rLmgxXC6rlFArTRTVrgrFtcHNCkPQFH9HZ_LAz93sWEC3kJF99p6P7Rl5f4o4XaSDgQ1zVhULY_QFGojJNO0UMgseObI-Xb7k210A4-0FTfWZvbv-W6tQghOiE0gAQ0Hx7uQCeOwleOJowJ6jSZJzuqxMsmNGDeIkLa1TzjIUts7pD_ZIc6txWPkZMWccWIZQHx6Xbc_Pcwl_cyoz6vpKdZkBgAik8EsHlRO3J6IIzrC_KpK42UwnJyFt4OH7B1cPCcUaxC_0ZTvDiGRhVdlJ09A54N1ZnCh6_bHGrKcOHNpF8WHx-7HTU2LDMXoa-zM-QaLbjYsypWJ_oSwTpsv1q4wU13Ws7uJV6bbq-ja2r4ux6ZFDENuVv0yVx0_f5EBQ_oTGvfe9Rd8hpwHb332HNEAA5Is8ih_cA=?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e221]:
+                        - link "24시간가입" [ref=e222] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/NJ3549LQmnmyuNRP74tnndrMQ78q76iaCY_qniPguJ6qDW4MJObZleXefyWphk3a6jQOhDtG8rLmgxXC6rlFArTRTVrgrFtcHNCkPQFH9HZ_LAz93sWEC3kJF99p6P7Rl5f4o4XaSDgQ1zVhULY_QFGojJNO0UMgseObI-Xb7k210A4-0FTfWZvbv-W6tQghOiE0gAQ0Hx7uQCeOwleOJowJ6jSZJzuqxMsmNGDeIkLa1TzjIUts7pD_ZIc6txWPkZMWccWIZQHx6Xbc_Pcwl_cyoz6vpKdZkBgAik8EsHlRO3J6IIzrC_KpK42UwnJyFt4OH7B1cPCcUaxC_0ZTvDiGRhVdlJ09A54N1ZnCh6_bHGrKcOHNpF8WHx-7HTU2LDMXoa-zM-QaLbjYsypWJ_oSwTpsv1q4wU13Ws7uJV6bbq-ja2r4ux6ZFDENuVv0yVx0_f5EBQ_oTGvfe9Rd8hpwHb332HNEAA5Is8ih_cA=?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e223]:
+                        - link "즉시가입가능" [ref=e224] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/NJ3549LQmnmyuNRP74tnndrMQ78q76iaCY_qniPguJ6qDW4MJObZleXefyWphk3a6jQOhDtG8rLmgxXC6rlFArTRTVrgrFtcHNCkPQFH9HZ_LAz93sWEC3kJF99p6P7Rl5f4o4XaSDgQ1zVhULY_QFGojJNO0UMgseObI-Xb7k210A4-0FTfWZvbv-W6tQghOiE0gAQ0Hx7uQCeOwleOJowJ6jSZJzuqxMsmNGDeIkLa1TzjIUts7pD_ZIc6txWPkZMWccWIZQHx6Xbc_Pcwl_cyoz6vpKdZkBgAik8EsHlRO3J6IIzrC_KpK42UwnJyFt4OH7B1cPCcUaxC_0ZTvDiGRhVdlJ09A54N1ZnCh6_bHGrKcOHNpF8WHx-7HTU2LDMXoa-zM-QaLbjYsypWJ_oSwTpsv1q4wU13Ws7uJV6bbq-ja2r4ux6ZFDENuVv0yVx0_f5EBQ_oTGvfe9Rd8hpwHb332HNEAA5Is8ih_cA=?c=naver.search.pc.plsearch&t=0
+                - listitem [ref=e225]:
+                  - link "링크이미지" [ref=e226] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/N0BB-Ob8DfxMEz3D5cKMB2ZOIU6XrAyQL-SwNAx5mxYOPAhzptGd1X8k-rHjMGHw004DOqyMWSk3yvPAwvM75JiISmzbtTgS3sFLIoskIEcm_ZOUhgOT7YKGML-pTfDuoPQLTzNlk5psIEmrWxBk1ou1UT0wS2p-2gq4uhkmcJHHzxa2K8loWNoUOs_2OvD38lBt0D-ZIuEmO2-GMGfn9QtaPa3c6EFtsFLscf5GOUIS8VT-t0tgluSyNF39yrWPAOevF5Ogib26XDW02vh6qCsBbNjb-p9SmrqI-v_fzjA-hYHy6zKYqb3y88u-0gOQ2zWkVnAfktCTcC8QcLr77abHemIA1QjDIe0KNxZXu3HgavA_eb9E5w67F2n1TiEAP6zcQ-Zp98BON4ztSpk74SnCThe3-iks2e-P6ddtkHAPnfzBlFu3jhi-Kj5OBLSyduP9sUE1Wvxv5gA4dK8U4QLc_ri6RQ-ZmpK5pN0zys3B4n3ySRfCEyDAvq0xeX4vyOC9VH0OFcPleUMsLJhljvvNZO78E1yeQnRj3y99FUE=?c=naver.search.pc.plsearch&t=0
+                    - img "링크이미지" [ref=e227]
+                  - generic [ref=e228]:
+                    - generic [ref=e229]:
+                      - generic [ref=e230]:
+                        - link "favicon" [ref=e231] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/2PfVjgwMcU73BByYxlwZrmbZIK6XRmVeXzmUHebmYbNLLn1Xgad2Uqas8hVEZ8Xv_Jag50wfEw7rJfCEs7-NrOyCYasFDXBNbdVErrfU8cvZPceZzZjJY8fEt1AFMbyvy2iCMVHoqH7he-hnlO4aqF3Sw1ncZtLA_bzr5Us7ckIm4SB9EyyikRwcSGwZ-OXLmC0nrG46EG_1si6IpPsxyRhC1y1E_xkA9wOSXdloTXquA1UXsxGL1QhagSJhqxmO1xV5b_bpZJDN1g-13q0hakHYUVIzPTEAaRp3-Kr4vrwDj5f41xG3jXIbvfEhjdTo6ZRo2Sto2vEDLTO23bRbcwaUDmfUJ2V1_dmb4ugkQEuTkLmszC0LEgOSPfP5NyMsHFIIuQOY_mVrKi0pQyIMDuU_w6EHQOjes-ILsHKxSEhqWfYU9fG-0SZQWy1TvXflhsrebcwMIkQoZm9Clso64Ql0zgxNRtMM9svv97u3_XxQgFmL4GrqaulgBhrDfQhf9loxJplfsXrRVrybL8U00frRWhaBSiL5WSnNGe3KC4c=?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e232]
+                        - img "광고" [ref=e233]:
+                          - img [ref=e234]
+                        - link "KB손해보험" [ref=e237] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/2PfVjgwMcU73BByYxlwZrmbZIK6XRmVeXzmUHebmYbNLLn1Xgad2Uqas8hVEZ8Xv_Jag50wfEw7rJfCEs7-NrOyCYasFDXBNbdVErrfU8cvZPceZzZjJY8fEt1AFMbyvy2iCMVHoqH7he-hnlO4aqF3Sw1ncZtLA_bzr5Us7ckIm4SB9EyyikRwcSGwZ-OXLmC0nrG46EG_1si6IpPsxyRhC1y1E_xkA9wOSXdloTXquA1UXsxGL1QhagSJhqxmO1xV5b_bpZJDN1g-13q0hakHYUVIzPTEAaRp3-Kr4vrwDj5f41xG3jXIbvfEhjdTo6ZRo2Sto2vEDLTO23bRbcwaUDmfUJ2V1_dmb4ugkQEuTkLmszC0LEgOSPfP5NyMsHFIIuQOY_mVrKi0pQyIMDuU_w6EHQOjes-ILsHKxSEhqWfYU9fG-0SZQWy1TvXflhsrebcwMIkQoZm9Clso64Ql0zgxNRtMM9svv97u3_XxQgFmL4GrqaulgBhrDfQhf9loxJplfsXrRVrybL8U00frRWhaBSiL5WSnNGe3KC4c=?c=naver.search.pc.plsearch&t=0
+                        - link "kbinsure-online.co.kr" [ref=e239] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/2PfVjgwMcU73BByYxlwZrmbZIK6XRmVeXzmUHebmYbNLLn1Xgad2Uqas8hVEZ8Xv_Jag50wfEw7rJfCEs7-NrOyCYasFDXBNbdVErrfU8cvZPceZzZjJY8fEt1AFMbyvy2iCMVHoqH7he-hnlO4aqF3Sw1ncZtLA_bzr5Us7ckIm4SB9EyyikRwcSGwZ-OXLmC0nrG46EG_1si6IpPsxyRhC1y1E_xkA9wOSXdloTXquA1UXsxGL1QhagSJhqxmO1xV5b_bpZJDN1g-13q0hakHYUVIzPTEAaRp3-Kr4vrwDj5f41xG3jXIbvfEhjdTo6ZRo2Sto2vEDLTO23bRbcwaUDmfUJ2V1_dmb4ugkQEuTkLmszC0LEgOSPfP5NyMsHFIIuQOY_mVrKi0pQyIMDuU_w6EHQOjes-ILsHKxSEhqWfYU9fG-0SZQWy1TvXflhsrebcwMIkQoZm9Clso64Ql0zgxNRtMM9svv97u3_XxQgFmL4GrqaulgBhrDfQhf9loxJplfsXrRVrybL8U00frRWhaBSiL5WSnNGe3KC4c=?c=naver.search.pc.plsearch&t=0
+                      - link "KB손해보험 유병자 실비보험 가입시 신세계 상품권 지급! 내 보험료 확인" [ref=e240] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/2PfVjgwMcU73BByYxlwZrmbZIK6XRmVeXzmUHebmYbNLLn1Xgad2Uqas8hVEZ8Xv_Jag50wfEw7rJfCEs7-NrOyCYasFDXBNbdVErrfU8cvZPceZzZjJY8fEt1AFMbyvy2iCMVHoqH7he-hnlO4aqF3Sw1ncZtLA_bzr5Us7ckIm4SB9EyyikRwcSGwZ-OXLmC0nrG46EG_1si6IpPsxyRhC1y1E_xkA9wOSXdloTXquA1UXsxGL1QhagSJhqxmO1xV5b_bpZJDN1g-13q0hakHYUVIzPTEAaRp3-Kr4vrwDj5f41xG3jXIbvfEhjdTo6ZRo2Sto2vEDLTO23bRbcwaUDmfUJ2V1_dmb4ugkQEuTkLmszC0LEgOSPfP5NyMsHFIIuQOY_mVrKi0pQyIMDuU_w6EHQOjes-ILsHKxSEhqWfYU9fG-0SZQWy1TvXflhsrebcwMIkQoZm9Clso64Ql0zgxNRtMM9svv97u3_XxQgFmL4GrqaulgBhrDfQhf9loxJplfsXrRVrybL8U00frRWhaBSiL5WSnNGe3KC4c=?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e241]:
+                          - text: KB손해
+                          - strong [ref=e242]: 보험
+                          - text: 유병자
+                          - strong [ref=e243]: 실비보험
+                        - text: 가입시 신세계 상품권 지급!
+                        - generic [ref=e244]:
+                          - text: 내
+                          - strong [ref=e245]: 보험
+                          - text: 료 확인
+                    - link "유병자라 더 필요한 실비보험! 3가지 간편심사 통과시 가입OK(인수거절가능)" [ref=e248] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/2PfVjgwMcU73BByYxlwZrmbZIK6XRmVeXzmUHebmYbNLLn1Xgad2Uqas8hVEZ8Xv_Jag50wfEw7rJfCEs7-NrOyCYasFDXBNbdVErrfU8cvZPceZzZjJY8fEt1AFMbyvy2iCMVHoqH7he-hnlO4aqF3Sw1ncZtLA_bzr5Us7ckIm4SB9EyyikRwcSGwZ-OXLmC0nrG46EG_1si6IpPsxyRhC1y1E_xkA9wOSXdloTXquA1UXsxGL1QhagSJhqxmO1xV5b_bpZJDN1g-13q0hakHYUVIzPTEAaRp3-Kr4vrwDj5f41xG3jXIbvfEhjdTo6ZRo2Sto2vEDLTO23bRbcwaUDmfUJ2V1_dmb4ugkQEuTkLmszC0LEgOSPfP5NyMsHFIIuQOY_mVrKi0pQyIMDuU_w6EHQOjes-ILsHKxSEhqWfYU9fG-0SZQWy1TvXflhsrebcwMIkQoZm9Clso64Ql0zgxNRtMM9svv97u3_XxQgFmL4GrqaulgBhrDfQhf9loxJplfsXrRVrybL8U00frRWhaBSiL5WSnNGe3KC4c=?c=naver.search.pc.plsearch&t=0
+                      - text: 유병자라 더 필요한
+                      - strong [ref=e249]: 실비보험
+                      - text: "! 3가지 간편심사 통과시 가입OK(인수거절가능)"
+                    - list [ref=e250]:
+                      - listitem [ref=e251]:
+                        - link "실비보험" [ref=e252] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/exSHcIx9OKrZMirKHNI2Kn80P6uMYXTqy-f5FZVZXPm5xyBNzrM07koGpwA1rR9ALDo6gSz4sXJGZrj9TToKQWDg8Zge3fGfn0z4_sfXEiy81u5MWoXs4SQA46X733C0O6cqi-b0KsNEASuXqdtDRTusacm9lpdpg4L8UJBnsc-ZM594lFZCcVmQcBdIt7PVZbF6zPF_M_NGlrv47Lpifg8vFVPR8aI-sxu3mnJvjycv7QOZNpKRRwdWXJIoxIVRECCvdxUUsARWW1xAK36PkDVzsVMz496_t9ad_8xLkPw6xFtlpTFE62yFenlTxXVVZXq_UVtYTLnF-HFodRDuqr5njgXZKAKEnt0SHaR_2zlAN7IEAG7F5wtiLBteoX7fKZfkMA1PLIcfIPGWiXJcgRZJALDSCNT-NJ8jbFtcQ6JID6o7rVLLlf8eyc40OOeUSDeBbivZiJFGyeGRHBiIA3x8IaeQh2e4QzLQQ2XX-tNIh0MRDfesVNW18_ONxiiHZA6kycNWqKt80CGKuREY0UWVIpGGQNxcGd8tkxvdzONbCWrWZyFqD3ThSnUl4iAh?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e253]:
+                        - link "전화상담" [ref=e254] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/exSHcIx9OKrZMirKHNI2Kn80P6uMYXTqy-f5FZVZXPm5xyBNzrM07koGpwA1rR9ALDo6gSz4sXJGZrj9TToKQWDg8Zge3fGfn0z4_sfXEiy81u5MWoXs4SQA46X733C0O6cqi-b0KsNEASuXqdtDRTusacm9lpdpg4L8UJBnsc-ZM594lFZCcVmQcBdIt7PVZbF6zPF_M_NGlrv47Lpifg8vFVPR8aI-sxu3mnJvjycv7QOZNpKRRwdWXJIoxIVRECCvdxUUsARWW1xAK36PkBy4wq4oRXH-DcpP8Ktx1dJQwhGNwzs4yfVhmshvqGzoHJtfkkkcnWL2SW7Sc1CSnEUjPwPshBwa9VYrf9ZJpDeWmBbmFSlq2N_GXaB4KlCAXM4BzXoPVjWiexTLx16fkPGROI7AWG1P6iay4f_lndFSbnjMyt0aHwZeZSRBwcI1tFIs9w7lWd46W9-aFB51Ge8REVgotti8AEaooIrNXB9rN-wP1lTJLyT7fH9w5AIrcVtTZ8Vm2lV4VPh2JU6LmU3NwSlWB8eiy_vgTOGWefa03g9nNs7M6CcFO5I6OcpN?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e255]:
+                        - link "간편가입" [ref=e256] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/exSHcIx9OKrZMirKHNI2Kn80P6uMYXTqy-f5FZVZXPm5xyBNzrM07koGpwA1rR9ALDo6gSz4sXJGZrj9TToKQWDg8Zge3fGfn0z4_sfXEiy81u5MWoXs4SQA46X733C0O6cqi-b0KsNEASuXqdtDRTusacm9lpdpg4L8UJBnsc-ZM594lFZCcVmQcBdIt7PVZbF6zPF_M_NGlrv47Lpifg8vFVPR8aI-sxu3mnJvjycv7QOZNpKRRwdWXJIoxIVRECCvdxUUsARWW1xAK36PkKq1akwSIpHF1hWTjcs-4uX3_XrYKCC1Zff6EtrFLaB19sUXeI6f7cNB0CYAFPBcSsRmrfeGa-d3k9s55HKC9Idl4Je8j_KOpnp9zKbNPOwdYFkYpl2UoGUg38J4zFKgIz3lO3L_hINryWWwtLiIlju9YGeIF8_tCy5OD7L5qW4K78BvinnyCQUbv4TLzAIKoOJdqJPv0QjpGoQ4HYV0tDGK-1HPlxxZJL3e7PnB8bwjDJfBCSIls1sD_kUsg2SMEK8WEAW43KyyndcN-xDaV2OSuFqg6xJ9szhLOISmgJd9?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e257]:
+                        - link "보험료계산" [ref=e258] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/exSHcIx9OKrZMirKHNI2KifgCySQfjazFEzV-de5K7SNZs509Z2jmtTlMOC_UWr_wsOR60zwU9xpXkZ-FOPymTReMxfeZik-T8jqppp_o5GJWOYK7OdidORIGWA6ByrKQdAH99MVGiOFBs-0jBGlFIl_M3LSZpisP2c_PX7p-NM0Uh3Qkr-1CnXdwaxy5eemdbO-UlaQIsM01izayeIADGuSNurQqh5AgbYIYzNrDpYgpbYmaO1AeIFNb9l6TAd2urtuhGtaMlCfLvjicBANw62F5grcf-BamWOIrJ86X4So6Kcx-DjfFrI1MIGFxuy6Bv6z1jzCzJzzRLppHyyj69FMpCod9wDy2ld7o27zOajXwN33XNaPtYwKpk8T7-GgxscRTWyn3nAtUQPr5dYBPQXHaqp3guXe6C0A9w7lBbKF5sVC6D1Qal2VURkY4EeZaZrDMycbuRrf8dKA2lwzsf_nxRIexz0Zl4wkeolB13I5Z3j3F6DS6ZpTPfu601eI26IAJxIc-bvflO7koE7QX0YCFQwMoi8NGqmuJn7-MoEwDcIYVH7yv-yIOsTxvp-7?c=naver.search.pc.plsearch&t=0
+                - listitem [ref=e259]:
+                  - link "링크이미지" [ref=e260] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/ADwEeAtyQLrQy0b3muXo1rlmLHr8Sq0fjDQHc2ycFKtkv-O5yw97uG3CHgcPnL_poNvvE1eis-HUMYIegn6Zvi2VyPAU0uoQH7WZTB7uCLexlfn8sjWTMt2SHvePI9vOxXzMb2fOAGnFTAvGbd3T8EXEjCQ8KCdeHpEg_vGsPMewZ1gtyJJCJBrw4LlN7WBQ9QT0fWLJG3LQ_hMW8Ihf2ZbChsEn0jRXAEo9b-GqUGvpRB7lDq6IcIL1EJYZbdSGkUzqUXUjlrZNOomRdbr15phtW1Qa2_8fhvU77SIGP_lG9yK_3num16makwl_jqqaSvYEyaPgOQi_bKb1Fq8yRFumdKiSpr0dUFjTxMNXA3nEiPehimdcWIheiwG56pn8B3zIbe7KrCxlXFNhQq5DZ3jsqWr-doo39ZWEqPDYim3ocC9u4OoddDefX0ISBgZKLR5sZCoE_LCU3fqh5JRy2mRaH_473M6Y8aI7DQ8E66pvEwIwWqYXNsbbsNO_hWvDwno7Hiw6LVekaTWS9IdJBo3xl6waamkM94gmpOdzAt0=?c=naver.search.pc.plsearch&t=0
+                    - img "링크이미지" [ref=e261]
+                  - generic [ref=e262]:
+                    - generic [ref=e263]:
+                      - generic [ref=e264]:
+                        - link "favicon" [ref=e265] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/IOO4aIgZax6SACpPsDvAX6Bs3ahE4FH1xs-aINjAPR3Xlj42owaSGmGeQHiDhR1z9R724_gaeq5BLP4gIvgQUjipnb8-LFne4nH096y2hySoVYbrymrGuh4WIMHuDCMPfCWa5GCinfksQmT_ACqGNpkrqSb8PlrUt7ijvzbYLaNxks5E_4nwP4yQydOWT9HCQxJWsbqb60cSwh2hwMgVbBdxHI8g4SOaKCGL4OGgBUFV5HQIBrQ4HRxDQG_nKloSCx88fC7O-HmzgkLU5_IgAbMJQMwSv8iExVFM4p-sN5ozXR6sA4wE6m0qJ-GJ_S3DvVQR25w9VYYlHO4OknRat9Mj2QkOtcFJ8_cZlmQeOgFTv1tsqeZ3WwEXoN3W2_-fjJQDGMlHTL2b3tRdvg_XwXJCq2rd94fdn4tRD7As0qP14CArXz7iB59CPDWFQfV0hHtBgTO9f-dYKcftU8KAhefILyAKW1FQDiBLORf90Z_fkretLo-l-UMy5wDL408B?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e266]
+                        - img "광고" [ref=e267]:
+                          - img [ref=e268]
+                        - button "네이버 로그인" [ref=e273]:
+                          - generic [ref=e274]: 네이버 로그인
+                        - link "바로비교" [ref=e275] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/IOO4aIgZax6SACpPsDvAX6Bs3ahE4FH1xs-aINjAPR3Xlj42owaSGmGeQHiDhR1z9R724_gaeq5BLP4gIvgQUjipnb8-LFne4nH096y2hySoVYbrymrGuh4WIMHuDCMPfCWa5GCinfksQmT_ACqGNpkrqSb8PlrUt7ijvzbYLaNxks5E_4nwP4yQydOWT9HCQxJWsbqb60cSwh2hwMgVbBdxHI8g4SOaKCGL4OGgBUFV5HQIBrQ4HRxDQG_nKloSCx88fC7O-HmzgkLU5_IgAbMJQMwSv8iExVFM4p-sN5ozXR6sA4wE6m0qJ-GJ_S3DvVQR25w9VYYlHO4OknRat9Mj2QkOtcFJ8_cZlmQeOgFTv1tsqeZ3WwEXoN3W2_-fjJQDGMlHTL2b3tRdvg_XwXJCq2rd94fdn4tRD7As0qP14CArXz7iB59CPDWFQfV0hHtBgTO9f-dYKcftU8KAhefILyAKW1FQDiBLORf90Z_fkretLo-l-UMy5wDL408B?c=naver.search.pc.plsearch&t=0
+                        - link "baro-bigyo.com/" [ref=e277] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/IOO4aIgZax6SACpPsDvAX6Bs3ahE4FH1xs-aINjAPR3Xlj42owaSGmGeQHiDhR1z9R724_gaeq5BLP4gIvgQUjipnb8-LFne4nH096y2hySoVYbrymrGuh4WIMHuDCMPfCWa5GCinfksQmT_ACqGNpkrqSb8PlrUt7ijvzbYLaNxks5E_4nwP4yQydOWT9HCQxJWsbqb60cSwh2hwMgVbBdxHI8g4SOaKCGL4OGgBUFV5HQIBrQ4HRxDQG_nKloSCx88fC7O-HmzgkLU5_IgAbMJQMwSv8iExVFM4p-sN5ozXR6sA4wE6m0qJ-GJ_S3DvVQR25w9VYYlHO4OknRat9Mj2QkOtcFJ8_cZlmQeOgFTv1tsqeZ3WwEXoN3W2_-fjJQDGMlHTL2b3tRdvg_XwXJCq2rd94fdn4tRD7As0qP14CArXz7iB59CPDWFQfV0hHtBgTO9f-dYKcftU8KAhefILyAKW1FQDiBLORf90Z_fkretLo-l-UMy5wDL408B?c=naver.search.pc.plsearch&t=0
+                      - link "실비보험 간편하게 바로비교 아프기 전 보험 준비 적정 보험료 확인하기" [ref=e278] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/IOO4aIgZax6SACpPsDvAX6Bs3ahE4FH1xs-aINjAPR3Xlj42owaSGmGeQHiDhR1z9R724_gaeq5BLP4gIvgQUjipnb8-LFne4nH096y2hySoVYbrymrGuh4WIMHuDCMPfCWa5GCinfksQmT_ACqGNpkrqSb8PlrUt7ijvzbYLaNxks5E_4nwP4yQydOWT9HCQxJWsbqb60cSwh2hwMgVbBdxHI8g4SOaKCGL4OGgBUFV5HQIBrQ4HRxDQG_nKloSCx88fC7O-HmzgkLU5_IgAbMJQMwSv8iExVFM4p-sN5ozXR6sA4wE6m0qJ-GJ_S3DvVQR25w9VYYlHO4OknRat9Mj2QkOtcFJ8_cZlmQeOgFTv1tsqeZ3WwEXoN3W2_-fjJQDGMlHTL2b3tRdvg_XwXJCq2rd94fdn4tRD7As0qP14CArXz7iB59CPDWFQfV0hHtBgTO9f-dYKcftU8KAhefILyAKW1FQDiBLORf90Z_fkretLo-l-UMy5wDL408B?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e279]:
+                          - strong [ref=e280]: 실비보험
+                          - text: 간편하게 바로비교
+                        - generic [ref=e281]:
+                          - text: 아프기 전
+                          - strong [ref=e282]: 보험
+                          - text: 준비
+                        - generic [ref=e283]:
+                          - text: 적정
+                          - strong [ref=e284]: 보험
+                          - text: 료 확인하기
+                    - link "보험비교는 간편하게, 보장은 든든하게! 바로비교로 내 보험료 계산 진단비, 입원비, 수술비 등 고민이시죠? 건강할때 미리 챙겨두세요!" [ref=e287] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/IOO4aIgZax6SACpPsDvAX6Bs3ahE4FH1xs-aINjAPR3Xlj42owaSGmGeQHiDhR1z9R724_gaeq5BLP4gIvgQUjipnb8-LFne4nH096y2hySoVYbrymrGuh4WIMHuDCMPfCWa5GCinfksQmT_ACqGNpkrqSb8PlrUt7ijvzbYLaNxks5E_4nwP4yQydOWT9HCQxJWsbqb60cSwh2hwMgVbBdxHI8g4SOaKCGL4OGgBUFV5HQIBrQ4HRxDQG_nKloSCx88fC7O-HmzgkLU5_IgAbMJQMwSv8iExVFM4p-sN5ozXR6sA4wE6m0qJ-GJ_S3DvVQR25w9VYYlHO4OknRat9Mj2QkOtcFJ8_cZlmQeOgFTv1tsqeZ3WwEXoN3W2_-fjJQDGMlHTL2b3tRdvg_XwXJCq2rd94fdn4tRD7As0qP14CArXz7iB59CPDWFQfV0hHtBgTO9f-dYKcftU8KAhefILyAKW1FQDiBLORf90Z_fkretLo-l-UMy5wDL408B?c=naver.search.pc.plsearch&t=0
+                      - strong [ref=e288]: 보험
+                      - text: 비교는 간편하게, 보장은 든든하게! 바로비교로 내
+                      - strong [ref=e289]: 보험
+                      - text: 료 계산 진단비, 입원비, 수술비 등 고민이시죠? 건강할때 미리 챙겨두세요!
+                    - list [ref=e290]:
+                      - listitem [ref=e291]:
+                        - link "내보험료계산" [ref=e292] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/6w3-4DHfTJ2j429hlqw5BXRbGu61eVljxwRx-tg4Mj_d6UWCp3cbhbEWCsihVXfFsVyWOOQcUfGrMSEsIjfkBanm70ayedARFykCukKX-VcNPJdTuCzXOL-7j95avM146-5Ikx6vG_YWuA02Tz1uXCcovFlC77Ie8TEHj-AYCk9T4Pd241UvXfPAwbsM8jB3Dpccf8dhkwfPAxh8Xa1evEC16t_pFUjgH6ndMcSySIMUKOehDOk6LnjffpGu9ymeFLTDa10QZmKIl1jQT93U90wDeFSDwk9oBnZe04C-O97cBxpUxGC7dTT9nvrLecTRBDxvYs_1q1EjxRKc1cK2BURzDb4dhuyrWiQq5aA0Ch5m52XMqbPjjdf8zHogbHY-cVaROywKL--Rb16FjOBrkjYfIPyz4LNVYPjFiE-_mVwfUTeRVtp4CzvpVyYWQdi1AFs1eds3IPzP-qmoUMChJEZudXy9Fa9SrvSaZiSBoEi4FGLbx3KLIIl9zqgxMBInoW4M53rJxwwwEA-fqLXo7oBPTlsbXVas-A7dsrBkxSY=?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e293]:
+                        - link "간편상담신청" [ref=e294] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/3eWvLtxivBBCM3LdPWH8Y3Gz5ZPLqOdC-7ZfvFKFBNU9P43wU0QbVvNLaGIUFdl7lZNkDXIoo97aQq5jBBVnUCLN8rWw_1KsSQlbVGg4IMj7MdXf15igRsrb6fbPYp16tlZDXiO5K1Zjz9x9Otp5jpm2tilhac6TzfC6u8ShEn6PQjjgQX-lxowd5BBZx0muGYI_-YABuqzF-1we3-vboCHyQo5MpdYIovG0g11ps6_fy-_VI051_i4KcXSbSoK_8FF9hDuQTsfxITkaBH1qIAVrqKuTsmFZaMXeGE88rK68Z_z4nccdF7jm6EITjXpGlfgddkkcfG6u6zVkI8eqWSaW_d3TfaH-AWH8u3xNdCpbDvCJ1awOdhtqS6lrpYwZqAtmynTM2aIC5jGlZJ_pkXUsg8Lt7VYb2llFF5aN3rb110OIKJt4S6hWiRs-oXLhz7QkKYn8p9aL7_WMaTRdSVHfHNFQpNaOilYP45Mkw3I0NNbEV9Kr-4On2o6uLmfjsvXE1crSFlLCNbQopf-KVg41T2h0E6ofcKW78Bod4WWfqhddNG_Jl3kW18eusIh3?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e295]:
+                        - link "유병자 상담" [ref=e296] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/Ohp7iGkq30v1ayIa3HMt4k7Z5qO1XKURECnDM0lwLCGzeC0OFBkhxOwE64XYH7zYimKO6OqKFPdqvW_Vb1UVXpKmX3r3fjxtg0g-eVWIYqmB389pEbC-JrLYqWLRNhxkRGn61nDWrSkLffNcYdA7leIptk7fJhCAV0vzscJTvM42M6Q3BXPJtB7i8M9GcCvHwx1MLalW_b1PzXel1Ahnx4n13M1kIbhrDKpYQI0RDDbIq6DvI8DqrqEC-dkwx-IPisrnXIoh04XgEF8d5cHlqyMClU1XTXMG1BfDbdRWZ9H7YNKHzf2dK4DEAzILZqiW59xd-xx4lfwREiSPcINpzni234rkzU-KeFZpvJWS3T5uzlKDoRUxUAVle_vC5MrxtmHm_Jt_nUKFUIlDjPOY8y1TZnBdv_8nbryB09iUI-zkyPTr7qy-lsZDarzwP3iEOjKXuIk6_qJf_TTwqChDv9G_RqG1bQRz85jK3aYDTZWpqVD6D1D0eCcOJfiTwnzQiLyPJcX8nm02gbhzYO4MAYO8diRMWWmXYmM3BB8Mp_Y=?c=naver.search.pc.plsearch&t=0
+                      - listitem [ref=e297]:
+                        - link "건강+실비" [ref=e298] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/slaaO8huJJtJG5n6zAOvDYDhgq-4yaC7ZeIYnH_dsIFF7UZfvTkujM36TZKu2S943Z5sQqB9D_Q3W5qHJlqJsn6CuuBr-qMORosCcXRyTP6-EiN5wPnzAnaiZ4_jpmvopH4S-i8XEnorZ8EPx2EShibkM4gUVhXWkI9JSsvAdqESlILX4HYxEGzC21O_r9zU7wL3fuGpVUqVjdU0CSgYsuTny7WlLVfblFi5Ls7ljJT5TtamVKqolwsT-ZP-CqkSd1bmkFMRBMJbs8pSy97FZ3uxd_c5GWm_4cjg4GiCtJ3_9_8ApC0nLesJ0sQX1LORuzMdl6yAnUwQrhQ4tEe08MG462Bmfpah4jIZ6oFgoS1E_Vlobz8wJi69_7N4TFWEpBVlzM67vckTN0FVKGJILi9hvHDA_OMw02dFxbcDF6ujkmoDbIV0_rxE5M-yyCmeHpeg_KDt6i1zfQHIB7GtPQcljmMGXpvJkvIRvWKLMQmlgO4Ly1bc2basrq9x_VdwHo7rUAzr9REGIIaxiCge5ifchAZFiSBN4HE5yWz7RXU=?c=naver.search.pc.plsearch&t=0
+                - listitem [ref=e299]:
+                  - link "링크이미지" [ref=e300] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/XzijYexsmhqGFrrnsaxEtV5yamSmvy598_G8fd6IpHN79GeZD__R3ImQmzmgRxGCa4F4TjMMZM55Qrj4BeaaY9VCFDOt52kHlXgOhJgy62uEuFaGnLy8kR6Taprc1XLTjI_Yc0lbdvjZJtcGESDEfaqHQM5IDd3GOet5EgCShTH05rRERZdCotb1DsGVbaP2V_cvuh5iOJYJJEcTQsDBxVJse0LEMn7LUK-jLXdxb2pS5jHQ5yEIyVJ6vvXpjllUdERB9I2IQcEZ_nwx1qvxChG88Qj-ATSfZ5_NBAwZD2WTOXCqC82WdI7Raleme6wgOM7CNYpM_DWA-v6Yumn_o61nCFXIQn2KioDZW7o7ifYVzrbL4ZciIRfakiUMJ2-PYih6U-9NwlMc9WJKyoYZkb8t9fUQQ1IfpW1HFoseIOlgYeYItuiJXuY99oW6j0PcU_CFuV7N4EgrLmz-eOio4MnkOo6F9WHlbwAMOQFXWr0IRyGxKmyPG11Rk2agtr-mIMcG_BY_fCPppobnbwZzOr5DVXlyOo2hLC9Tiyg245c=?c=naver.search.pc.plsearch&t=0
+                    - img "링크이미지" [ref=e301]
+                  - generic [ref=e302]:
+                    - generic [ref=e303]:
+                      - generic [ref=e304]:
+                        - link "favicon" [ref=e305] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/rBdHomsiYYR_-djEH_v_YRF0vWbNGFEM9qV9Lfuz6hjrLSqcjFf4x9mlkOwGnbsvqM_tFI5dWQhLMK7sSzQi6C_FwttmMaJ_a69TL1ABqL7uQZGwahT-igaSnBImq2XFVLl89eoyOtxC_9059vw_FWeTuscbne7xaK7M8K2NZ_lhGnQxQC3KaxbCkYgAA-Q8-mAwO6TqEAkFxhpU-xoohpkd5PlKShcFaJf53nSKAPSKtUtFRTXZZUBhp7LawEVRu8_7CNxJnA0CMTquYAU368-IVVPZgm6PUTBLpgj5iMhbUmhHcLL-RWJ82ZfdESjQO0wQk3uJMKV4qBHAmIcwx5Vf_2DFw10Y2_iviw7hctwJST0V7xqzDkwTwNbKMOYEEnM64W0fPsIOgMldolbs2gPLo_xkJmyYuKb_s76y_utTFZLW_zxbO345sBeGRNhN7lETaxXrAjSwq5GSBxBOEgilD-Tp841T7TlgL6xFAQupau3ibTjEzRpE8vXozSZ8WVAyae5UBYrevYZH_eWlfQ==?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e306]
+                        - img "광고" [ref=e307]:
+                          - img [ref=e308]
+                        - button "네이버 로그인" [ref=e313]:
+                          - generic [ref=e314]: 네이버 로그인
+                        - link "보험클리닉" [ref=e315] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/rBdHomsiYYR_-djEH_v_YRF0vWbNGFEM9qV9Lfuz6hjrLSqcjFf4x9mlkOwGnbsvqM_tFI5dWQhLMK7sSzQi6C_FwttmMaJ_a69TL1ABqL7uQZGwahT-igaSnBImq2XFVLl89eoyOtxC_9059vw_FWeTuscbne7xaK7M8K2NZ_lhGnQxQC3KaxbCkYgAA-Q8-mAwO6TqEAkFxhpU-xoohpkd5PlKShcFaJf53nSKAPSKtUtFRTXZZUBhp7LawEVRu8_7CNxJnA0CMTquYAU368-IVVPZgm6PUTBLpgj5iMhbUmhHcLL-RWJ82ZfdESjQO0wQk3uJMKV4qBHAmIcwx5Vf_2DFw10Y2_iviw7hctwJST0V7xqzDkwTwNbKMOYEEnM64W0fPsIOgMldolbs2gPLo_xkJmyYuKb_s76y_utTFZLW_zxbO345sBeGRNhN7lETaxXrAjSwq5GSBxBOEgilD-Tp841T7TlgL6xFAQupau3ibTjEzRpE8vXozSZ8WVAyae5UBYrevYZH_eWlfQ==?c=naver.search.pc.plsearch&t=0
+                        - link "bohumclinic.com" [ref=e317] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/rBdHomsiYYR_-djEH_v_YRF0vWbNGFEM9qV9Lfuz6hjrLSqcjFf4x9mlkOwGnbsvqM_tFI5dWQhLMK7sSzQi6C_FwttmMaJ_a69TL1ABqL7uQZGwahT-igaSnBImq2XFVLl89eoyOtxC_9059vw_FWeTuscbne7xaK7M8K2NZ_lhGnQxQC3KaxbCkYgAA-Q8-mAwO6TqEAkFxhpU-xoohpkd5PlKShcFaJf53nSKAPSKtUtFRTXZZUBhp7LawEVRu8_7CNxJnA0CMTquYAU368-IVVPZgm6PUTBLpgj5iMhbUmhHcLL-RWJ82ZfdESjQO0wQk3uJMKV4qBHAmIcwx5Vf_2DFw10Y2_iviw7hctwJST0V7xqzDkwTwNbKMOYEEnM64W0fPsIOgMldolbs2gPLo_xkJmyYuKb_s76y_utTFZLW_zxbO345sBeGRNhN7lETaxXrAjSwq5GSBxBOEgilD-Tp841T7TlgL6xFAQupau3ibTjEzRpE8vXozSZ8WVAyae5UBYrevYZH_eWlfQ==?c=naver.search.pc.plsearch&t=0
+                      - link "나에게 딱 맞는! 보험클리닉 불필요한 보험료 내고있나요?" [ref=e318] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/rBdHomsiYYR_-djEH_v_YRF0vWbNGFEM9qV9Lfuz6hjrLSqcjFf4x9mlkOwGnbsvqM_tFI5dWQhLMK7sSzQi6C_FwttmMaJ_a69TL1ABqL7uQZGwahT-igaSnBImq2XFVLl89eoyOtxC_9059vw_FWeTuscbne7xaK7M8K2NZ_lhGnQxQC3KaxbCkYgAA-Q8-mAwO6TqEAkFxhpU-xoohpkd5PlKShcFaJf53nSKAPSKtUtFRTXZZUBhp7LawEVRu8_7CNxJnA0CMTquYAU368-IVVPZgm6PUTBLpgj5iMhbUmhHcLL-RWJ82ZfdESjQO0wQk3uJMKV4qBHAmIcwx5Vf_2DFw10Y2_iviw7hctwJST0V7xqzDkwTwNbKMOYEEnM64W0fPsIOgMldolbs2gPLo_xkJmyYuKb_s76y_utTFZLW_zxbO345sBeGRNhN7lETaxXrAjSwq5GSBxBOEgilD-Tp841T7TlgL6xFAQupau3ibTjEzRpE8vXozSZ8WVAyae5UBYrevYZH_eWlfQ==?c=naver.search.pc.plsearch&t=0
+                        - text: 나에게 딱 맞는!
+                        - generic [ref=e319]:
+                          - strong [ref=e320]: 보험
+                          - text: 클리닉
+                        - generic [ref=e321]:
+                          - text: 불필요한
+                          - strong [ref=e322]: 보험
+                          - text: 료 내고있나요?
+                    - link "부담되는 보험료, 이제 필요한 만큼만 내세요 고객님께 딱 맞는 보험 찾아드려요 지금 바로 신청하세요" [ref=e325] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/rBdHomsiYYR_-djEH_v_YRF0vWbNGFEM9qV9Lfuz6hjrLSqcjFf4x9mlkOwGnbsvqM_tFI5dWQhLMK7sSzQi6C_FwttmMaJ_a69TL1ABqL7uQZGwahT-igaSnBImq2XFVLl89eoyOtxC_9059vw_FWeTuscbne7xaK7M8K2NZ_lhGnQxQC3KaxbCkYgAA-Q8-mAwO6TqEAkFxhpU-xoohpkd5PlKShcFaJf53nSKAPSKtUtFRTXZZUBhp7LawEVRu8_7CNxJnA0CMTquYAU368-IVVPZgm6PUTBLpgj5iMhbUmhHcLL-RWJ82ZfdESjQO0wQk3uJMKV4qBHAmIcwx5Vf_2DFw10Y2_iviw7hctwJST0V7xqzDkwTwNbKMOYEEnM64W0fPsIOgMldolbs2gPLo_xkJmyYuKb_s76y_utTFZLW_zxbO345sBeGRNhN7lETaxXrAjSwq5GSBxBOEgilD-Tp841T7TlgL6xFAQupau3ibTjEzRpE8vXozSZ8WVAyae5UBYrevYZH_eWlfQ==?c=naver.search.pc.plsearch&t=0
+                      - text: 부담되는
+                      - strong [ref=e326]: 보험
+                      - text: 료, 이제 필요한 만큼만 내세요 고객님께 딱 맞는
+                      - strong [ref=e327]: 보험
+                      - text: 찾아드려요 지금 바로 신청하세요
+                - listitem [ref=e328]:
+                  - link "링크이미지" [ref=e329] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/rRBUjcGxk88dTxNAIQwtSucbSgC4yue5RMeTwZ0Evd3182FnwZoQ6zy3Q-kA1kifwZu_BJT_DZuvj6LHPuwhJX1CCp87Tc-tNkdZkxMfnowILX9SfcDArKxeLRELjSSHB819Q57V3qG4zgQMY---z4m6jy6YOPTK1UmbJlMdAP1qGCZqmymV-Cua5BOTUGEFzZduqyGa32rbiX4YyCj3srFcVD8vcS8t94EYOPc2Of6k62UWtvxIBR0uPJ5UGwEdiEDPiA54--nJ26TLTfel0omzKTOLfxu8EOebJvx0XiIInMxrdZlvd4cN0dhrcx9czXFfOYaPTAxFH-1moqJ7hEeBBW98FLlJLRqOAzyKXj6BT4lydz5heIzraRNeusNF5S2GFejCkaadglhWqHt7zWcqRjdHJZ4WMFkkOevI_y_9xMXoX-sCMa_oTJAA1uwnFQ79ETEiIHGgoC9ZL2-aBA==?c=naver.search.pc.plsearch&t=1
+                    - img "링크이미지" [ref=e330]
+                  - generic [ref=e331]:
+                    - generic [ref=e332]:
+                      - generic [ref=e333]:
+                        - link "favicon" [ref=e334] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/8eU_cAjQdyD7pYfV608dPCr5h8FLngew0zGVuStX6uNQftlxXfCmI6zDxE3I5rhTXoyVnO1MgbxnxO6ZfpjjB84TJQDtMovUjJF7UwcsfLRhRkbD2KbgmiYsoRNRRYLeGJOookKHLWfVf2QU5018UdW-4I5QtTnp_qsKvFogsdyWoOz46n5vBpiyqbjdCIY-2Sg6j2iN7bHGXqU7EmS9JSTZgIvweq7ZxIJ3zrhBd-YrOdQeLoK7vZD7e7XvpAzIIHx9WoDUV5jh5q7rSj0wVwQ9VVpTX33Q1lSUJYmjjgoDlsjfZs6oPRK7WMN3BclNPdUwGCd9buEm9d_xLMSWS9LdoizKHgu65XjrEY46IJAhml992M6ka_y-PK1v9wptfBB2FmAoiZF4OsIB700dm6kkWzhu89zRX9EFGqD79Bkh4TIL4CzZVhfiKgvhYJQidOw3B-MdWQYFUM5n77zNmA==?c=naver.search.pc.plsearch&t=1
+                          - img "favicon" [ref=e335]
+                        - img "광고" [ref=e336]:
+                          - img [ref=e337]
+                        - link "굿리치보험몰" [ref=e340] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/8eU_cAjQdyD7pYfV608dPCr5h8FLngew0zGVuStX6uNQftlxXfCmI6zDxE3I5rhTXoyVnO1MgbxnxO6ZfpjjB84TJQDtMovUjJF7UwcsfLRhRkbD2KbgmiYsoRNRRYLeGJOookKHLWfVf2QU5018UdW-4I5QtTnp_qsKvFogsdyWoOz46n5vBpiyqbjdCIY-2Sg6j2iN7bHGXqU7EmS9JSTZgIvweq7ZxIJ3zrhBd-YrOdQeLoK7vZD7e7XvpAzIIHx9WoDUV5jh5q7rSj0wVwQ9VVpTX33Q1lSUJYmjjgoDlsjfZs6oPRK7WMN3BclNPdUwGCd9buEm9d_xLMSWS9LdoizKHgu65XjrEY46IJAhml992M6ka_y-PK1v9wptfBB2FmAoiZF4OsIB700dm6kkWzhu89zRX9EFGqD79Bkh4TIL4CzZVhfiKgvhYJQidOw3B-MdWQYFUM5n77zNmA==?c=naver.search.pc.plsearch&t=1
+                        - link "silbi.goodrich-insumall.com/" [ref=e342] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/8eU_cAjQdyD7pYfV608dPCr5h8FLngew0zGVuStX6uNQftlxXfCmI6zDxE3I5rhTXoyVnO1MgbxnxO6ZfpjjB84TJQDtMovUjJF7UwcsfLRhRkbD2KbgmiYsoRNRRYLeGJOookKHLWfVf2QU5018UdW-4I5QtTnp_qsKvFogsdyWoOz46n5vBpiyqbjdCIY-2Sg6j2iN7bHGXqU7EmS9JSTZgIvweq7ZxIJ3zrhBd-YrOdQeLoK7vZD7e7XvpAzIIHx9WoDUV5jh5q7rSj0wVwQ9VVpTX33Q1lSUJYmjjgoDlsjfZs6oPRK7WMN3BclNPdUwGCd9buEm9d_xLMSWS9LdoizKHgu65XjrEY46IJAhml992M6ka_y-PK1v9wptfBB2FmAoiZF4OsIB700dm6kkWzhu89zRX9EFGqD79Bkh4TIL4CzZVhfiKgvhYJQidOw3B-MdWQYFUM5n77zNmA==?c=naver.search.pc.plsearch&t=1
+                      - link "굿리치 실비보험 비교사이트! 실비보험료 바로 계산하기" [ref=e343] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/8eU_cAjQdyD7pYfV608dPCr5h8FLngew0zGVuStX6uNQftlxXfCmI6zDxE3I5rhTXoyVnO1MgbxnxO6ZfpjjB84TJQDtMovUjJF7UwcsfLRhRkbD2KbgmiYsoRNRRYLeGJOookKHLWfVf2QU5018UdW-4I5QtTnp_qsKvFogsdyWoOz46n5vBpiyqbjdCIY-2Sg6j2iN7bHGXqU7EmS9JSTZgIvweq7ZxIJ3zrhBd-YrOdQeLoK7vZD7e7XvpAzIIHx9WoDUV5jh5q7rSj0wVwQ9VVpTX33Q1lSUJYmjjgoDlsjfZs6oPRK7WMN3BclNPdUwGCd9buEm9d_xLMSWS9LdoizKHgu65XjrEY46IJAhml992M6ka_y-PK1v9wptfBB2FmAoiZF4OsIB700dm6kkWzhu89zRX9EFGqD79Bkh4TIL4CzZVhfiKgvhYJQidOw3B-MdWQYFUM5n77zNmA==?c=naver.search.pc.plsearch&t=1
+                        - generic [ref=e344]:
+                          - text: 굿리치
+                          - strong [ref=e345]: 실비보험
+                          - text: 비교사이트!
+                        - generic [ref=e346]:
+                          - strong [ref=e347]: 실비보험
+                          - text: 료 바로 계산하기
+                    - link "실비보험 비교는 굿리치에서! 여러 보험사의 보험료 견적 및 보장분석까지 한번에" [ref=e350] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/8eU_cAjQdyD7pYfV608dPCr5h8FLngew0zGVuStX6uNQftlxXfCmI6zDxE3I5rhTXoyVnO1MgbxnxO6ZfpjjB84TJQDtMovUjJF7UwcsfLRhRkbD2KbgmiYsoRNRRYLeGJOookKHLWfVf2QU5018UdW-4I5QtTnp_qsKvFogsdyWoOz46n5vBpiyqbjdCIY-2Sg6j2iN7bHGXqU7EmS9JSTZgIvweq7ZxIJ3zrhBd-YrOdQeLoK7vZD7e7XvpAzIIHx9WoDUV5jh5q7rSj0wVwQ9VVpTX33Q1lSUJYmjjgoDlsjfZs6oPRK7WMN3BclNPdUwGCd9buEm9d_xLMSWS9LdoizKHgu65XjrEY46IJAhml992M6ka_y-PK1v9wptfBB2FmAoiZF4OsIB700dm6kkWzhu89zRX9EFGqD79Bkh4TIL4CzZVhfiKgvhYJQidOw3B-MdWQYFUM5n77zNmA==?c=naver.search.pc.plsearch&t=1
+                      - strong [ref=e351]: 실비보험
+                      - text: 비교는 굿리치에서! 여러
+                      - strong [ref=e352]: 보험
+                      - text: 사의
+                      - strong [ref=e353]: 보험
+                      - text: 료 견적 및 보장분석까지 한번에
+                    - list [ref=e354]:
+                      - listitem [ref=e355]:
+                        - link "보험리모델링" [ref=e356] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/uVR4jDCcyG8TNtCR4P0_wO8sOtBBx59g5pTSwALU9_z94Eo3lH9gFABruD5g_kqikYxPrHGKz7I4LOlUdk8Ul6jy_ENOTwpaa6yzlsAReAnK-wqYsE2fvAqPTw5NZyhV_k0lfSptizlTmFlSl9a4Dj0w4jc_DtakloxbQoxlA78DSvHWIiEs7rZ-FQ-kcDHhYLRegBhbIIA0UuuSTyTIjBmWk3tljRWTLslfqa913OBKq1a2FpRcQz7rusJlAP8ZWIDYmlehL9rZd-d9VKgYK_SRwEt5nnLbVhIljsdlfgWkqohZMHMV7iGu2GsgP4lBlpGm6qq6b5gtr0QIYacdyTUs9UzlLGxULegNB4XbgPeSi4_-rwjwgPgrGvn2KSDmIs3J5c-OafnJUnIbVnkckTxmT-fmX0PqFTJ45MVewzmLBB5YRRY07UhVS2V8EoQhoaXYK8v3PhSYuZQel1kRAQ==?c=naver.search.pc.plsearch&t=1
+                      - listitem [ref=e357]:
+                        - link "보험추천" [ref=e358] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/uVR4jDCcyG8TNtCR4P0_wO8sOtBBx59g5pTSwALU9_z94Eo3lH9gFABruD5g_kqikYxPrHGKz7I4LOlUdk8Ul6jy_ENOTwpaa6yzlsAReAnK-wqYsE2fvAqPTw5NZyhV_k0lfSptizlTmFlSl9a4Dj0w4jc_DtakloxbQoxlA78DSvHWIiEs7rZ-FQ-kcDHhYLRegBhbIIA0UuuSTyTIjBmWk3tljRWTLslfqa913OBKq1a2FpRcQz7rusJlAP8ZWIDYmlehL9rZd-d9VKgYK_SRwEt5nnLbVhIljsdlfgWkqohZMHMV7iGu2GsgP4lBlpGm6qq6b5gtr0QIYacdyTUs9UzlLGxULegNB4XbgPeSi4_-rwjwgPgrGvn2KSDmIs3J5c-OafnJUnIbVnkckTxmT-fmX0PqFTJ45MVewzmLBB5YRRY07UhVS2V8EoQhoaXYK8v3PhSYuZQel1kRAQ==?c=naver.search.pc.plsearch&t=1
+                      - listitem [ref=e359]:
+                        - link "보험료비교" [ref=e360] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/uVR4jDCcyG8TNtCR4P0_wO8sOtBBx59g5pTSwALU9_z94Eo3lH9gFABruD5g_kqikYxPrHGKz7I4LOlUdk8Ul6jy_ENOTwpaa6yzlsAReAnK-wqYsE2fvAqPTw5NZyhV_k0lfSptizlTmFlSl9a4Dj0w4jc_DtakloxbQoxlA78DSvHWIiEs7rZ-FQ-kcDHhYLRegBhbIIA0UuuSTyTIjBmWk3tljRWTLslfqa913OBKq1a2FpRcQz7rusJlAP8ZWIDYmlehL9rZd-d9VKgYK_SRwEt5nnLbVhIljsdlfgWkqohZMHMV7iGu2GsgP4lBlpGm6qq6b5gtr0QIYacdyTUs9UzlLGxULegNB4XbgPeSi4_-rwjwgPgrGvn2KSDmIs3J5c-OafnJUnIbVnkckTxmT-fmX0PqFTJ45MVewzmLBB5YRRY07UhVS2V8EoQhoaXYK8v3PhSYuZQel1kRAQ==?c=naver.search.pc.plsearch&t=1
+                - listitem [ref=e361]:
+                  - generic [ref=e362]:
+                    - generic [ref=e363]:
+                      - generic [ref=e364]:
+                        - link "favicon" [ref=e365] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/zszdylKeOyiG3GwWszv4fY_T51GJPA78XmecEc7lai1qa_23W1ILTgjaSRF_xJzz9ky0IEgJL8ldIMCkrOosKGUffAB5j4lGZiqGTl9DOvXYPU8aklG-AB3O-A8ulN7mpYWcXFEISFJjsU7vvTm3JVRYtOwa4Md7_v5KfSiAO_jRgRAHOEpibY9SYBOEQcrCHYzaPJWcdwQZKdnnga9WbUAn6Ky7elbLcA6mTyKVALLvYBPR6NH2bgA3oZbfEbehkFKRDAjfXcZnaycMVH_x-fH1pQS6A8JtisjvgayCKrBLazB14iqGBmh7VxtwX7tv2OTsHV4lnbJfRGW2tszdcgpUu-CChqzKYRYq4v-VxZ6Q1nhSZhkIcft5IZoba7y4EIkJnj0E_EXB8_yd72v8LbgEj-w1faPTXRsmfi_PGhxHNmpxPSLB7QirzA2RcR6V?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e366]
+                        - img "광고" [ref=e367]:
+                          - img [ref=e368]
+                        - link "굿리치" [ref=e371] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/zszdylKeOyiG3GwWszv4fY_T51GJPA78XmecEc7lai1qa_23W1ILTgjaSRF_xJzz9ky0IEgJL8ldIMCkrOosKGUffAB5j4lGZiqGTl9DOvXYPU8aklG-AB3O-A8ulN7mpYWcXFEISFJjsU7vvTm3JVRYtOwa4Md7_v5KfSiAO_jRgRAHOEpibY9SYBOEQcrCHYzaPJWcdwQZKdnnga9WbUAn6Ky7elbLcA6mTyKVALLvYBPR6NH2bgA3oZbfEbehkFKRDAjfXcZnaycMVH_x-fH1pQS6A8JtisjvgayCKrBLazB14iqGBmh7VxtwX7tv2OTsHV4lnbJfRGW2tszdcgpUu-CChqzKYRYq4v-VxZ6Q1nhSZhkIcft5IZoba7y4EIkJnj0E_EXB8_yd72v8LbgEj-w1faPTXRsmfi_PGhxHNmpxPSLB7QirzA2RcR6V?c=naver.search.pc.plsearch&t=0
+                        - link "silbi.goodrichmall.com" [ref=e373] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/zszdylKeOyiG3GwWszv4fY_T51GJPA78XmecEc7lai1qa_23W1ILTgjaSRF_xJzz9ky0IEgJL8ldIMCkrOosKGUffAB5j4lGZiqGTl9DOvXYPU8aklG-AB3O-A8ulN7mpYWcXFEISFJjsU7vvTm3JVRYtOwa4Md7_v5KfSiAO_jRgRAHOEpibY9SYBOEQcrCHYzaPJWcdwQZKdnnga9WbUAn6Ky7elbLcA6mTyKVALLvYBPR6NH2bgA3oZbfEbehkFKRDAjfXcZnaycMVH_x-fH1pQS6A8JtisjvgayCKrBLazB14iqGBmh7VxtwX7tv2OTsHV4lnbJfRGW2tszdcgpUu-CChqzKYRYq4v-VxZ6Q1nhSZhkIcft5IZoba7y4EIkJnj0E_EXB8_yd72v8LbgEj-w1faPTXRsmfi_PGhxHNmpxPSLB7QirzA2RcR6V?c=naver.search.pc.plsearch&t=0
+                      - link "굿리치몰 실비보험 비교사이트 실비보험료 계산 바로가기" [ref=e374] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/zszdylKeOyiG3GwWszv4fY_T51GJPA78XmecEc7lai1qa_23W1ILTgjaSRF_xJzz9ky0IEgJL8ldIMCkrOosKGUffAB5j4lGZiqGTl9DOvXYPU8aklG-AB3O-A8ulN7mpYWcXFEISFJjsU7vvTm3JVRYtOwa4Md7_v5KfSiAO_jRgRAHOEpibY9SYBOEQcrCHYzaPJWcdwQZKdnnga9WbUAn6Ky7elbLcA6mTyKVALLvYBPR6NH2bgA3oZbfEbehkFKRDAjfXcZnaycMVH_x-fH1pQS6A8JtisjvgayCKrBLazB14iqGBmh7VxtwX7tv2OTsHV4lnbJfRGW2tszdcgpUu-CChqzKYRYq4v-VxZ6Q1nhSZhkIcft5IZoba7y4EIkJnj0E_EXB8_yd72v8LbgEj-w1faPTXRsmfi_PGhxHNmpxPSLB7QirzA2RcR6V?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e375]:
+                          - text: 굿리치몰
+                          - strong [ref=e376]: 실비보험
+                          - text: 비교사이트
+                        - generic [ref=e377]:
+                          - strong [ref=e378]: 실비보험
+                          - text: 료 계산 바로가기
+                    - link "실비보험 비교 선택은 이곳에서! 수 많은 보험사와 보험료 비교견적을 한번에 상담!" [ref=e381] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/zszdylKeOyiG3GwWszv4fY_T51GJPA78XmecEc7lai1qa_23W1ILTgjaSRF_xJzz9ky0IEgJL8ldIMCkrOosKGUffAB5j4lGZiqGTl9DOvXYPU8aklG-AB3O-A8ulN7mpYWcXFEISFJjsU7vvTm3JVRYtOwa4Md7_v5KfSiAO_jRgRAHOEpibY9SYBOEQcrCHYzaPJWcdwQZKdnnga9WbUAn6Ky7elbLcA6mTyKVALLvYBPR6NH2bgA3oZbfEbehkFKRDAjfXcZnaycMVH_x-fH1pQS6A8JtisjvgayCKrBLazB14iqGBmh7VxtwX7tv2OTsHV4lnbJfRGW2tszdcgpUu-CChqzKYRYq4v-VxZ6Q1nhSZhkIcft5IZoba7y4EIkJnj0E_EXB8_yd72v8LbgEj-w1faPTXRsmfi_PGhxHNmpxPSLB7QirzA2RcR6V?c=naver.search.pc.plsearch&t=0
+                      - strong [ref=e382]: 실비보험
+                      - text: 비교 선택은 이곳에서! 수 많은
+                      - strong [ref=e383]: 보험
+                      - text: 사와
+                      - strong [ref=e384]: 보험
+                      - text: 료 비교견적을 한번에 상담!
+                - listitem [ref=e385]:
+                  - generic [ref=e386]:
+                    - generic [ref=e387]:
+                      - generic [ref=e388]:
+                        - link "favicon" [ref=e389] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/6BX40py6q_U7-iQBXnbyrdQMZHZRXJ0mEkL8oX9FBVtlzwnVWoqjCgol9N2n4D8QeQl9TgZUoTp4QuRfHSc7cHE5_oZW2Ck_9bVb9Ak5vQAMMD8VrpmJLTagvkVMLNAsokvaS3s31rTVPXhVS58-kpql2bHw3NrBmuvz9xND7aKLTfqjnzPewnYzwNsQBpFH_psbjJW9pDSBMq96OI3JiFilBhtqCvaYsHgeqU8_-KLxvfwxEUe8RYM7Uko_TuKRwBhDrjIXlmX3NrmAn6XCgsDiutlJcwSp99IIh7qw8jd38cTc7uujsfs8_tG5_dbLDBtgobvQNEjIeBgZ7MHiSVFwfH_jm_JJwpb4czz9YVHKragQ00lShZIt08Rtz7MqKhd1qHDbdNIPPJpA7QMxEncIv3VnqfxZcT4-AsxVyHAyALiyoM4WFQVwXrXClZDSm3_muU05GV2lnH9ZtJLo7Rd4jY7hk_ygnV_mp5uAoss_0z1UWPS6HUEYnZyqe4u_b3KF3ejnf5tsbUttYTKZz-QkRKXCefro5BOQszHgM3rkJ-lxV_mtXULfX-VNbYH1jAzyVo_gfyR4W0o8c03CuMoK-VaF8W5h8AXWgXDf-lc=?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e390]
+                        - img "광고" [ref=e391]:
+                          - img [ref=e392]
+                        - link "AIA생명보험" [ref=e395] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/6BX40py6q_U7-iQBXnbyrdQMZHZRXJ0mEkL8oX9FBVtlzwnVWoqjCgol9N2n4D8QeQl9TgZUoTp4QuRfHSc7cHE5_oZW2Ck_9bVb9Ak5vQAMMD8VrpmJLTagvkVMLNAsokvaS3s31rTVPXhVS58-kpql2bHw3NrBmuvz9xND7aKLTfqjnzPewnYzwNsQBpFH_psbjJW9pDSBMq96OI3JiFilBhtqCvaYsHgeqU8_-KLxvfwxEUe8RYM7Uko_TuKRwBhDrjIXlmX3NrmAn6XCgsDiutlJcwSp99IIh7qw8jd38cTc7uujsfs8_tG5_dbLDBtgobvQNEjIeBgZ7MHiSVFwfH_jm_JJwpb4czz9YVHKragQ00lShZIt08Rtz7MqKhd1qHDbdNIPPJpA7QMxEncIv3VnqfxZcT4-AsxVyHAyALiyoM4WFQVwXrXClZDSm3_muU05GV2lnH9ZtJLo7Rd4jY7hk_ygnV_mp5uAoss_0z1UWPS6HUEYnZyqe4u_b3KF3ejnf5tsbUttYTKZz-QkRKXCefro5BOQszHgM3rkJ-lxV_mtXULfX-VNbYH1jAzyVo_gfyR4W0o8c03CuMoK-VaF8W5h8AXWgXDf-lc=?c=naver.search.pc.plsearch&t=0
+                        - link "sales.hr.aia.co.kr/event" [ref=e397] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/6BX40py6q_U7-iQBXnbyrdQMZHZRXJ0mEkL8oX9FBVtlzwnVWoqjCgol9N2n4D8QeQl9TgZUoTp4QuRfHSc7cHE5_oZW2Ck_9bVb9Ak5vQAMMD8VrpmJLTagvkVMLNAsokvaS3s31rTVPXhVS58-kpql2bHw3NrBmuvz9xND7aKLTfqjnzPewnYzwNsQBpFH_psbjJW9pDSBMq96OI3JiFilBhtqCvaYsHgeqU8_-KLxvfwxEUe8RYM7Uko_TuKRwBhDrjIXlmX3NrmAn6XCgsDiutlJcwSp99IIh7qw8jd38cTc7uujsfs8_tG5_dbLDBtgobvQNEjIeBgZ7MHiSVFwfH_jm_JJwpb4czz9YVHKragQ00lShZIt08Rtz7MqKhd1qHDbdNIPPJpA7QMxEncIv3VnqfxZcT4-AsxVyHAyALiyoM4WFQVwXrXClZDSm3_muU05GV2lnH9ZtJLo7Rd4jY7hk_ygnV_mp5uAoss_0z1UWPS6HUEYnZyqe4u_b3KF3ejnf5tsbUttYTKZz-QkRKXCefro5BOQszHgM3rkJ-lxV_mtXULfX-VNbYH1jAzyVo_gfyR4W0o8c03CuMoK-VaF8W5h8AXWgXDf-lc=?c=naver.search.pc.plsearch&t=0
+                      - link "종합건강보험은 AIA생명 아직 실비보험만 있다면?" [ref=e398] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/6BX40py6q_U7-iQBXnbyrdQMZHZRXJ0mEkL8oX9FBVtlzwnVWoqjCgol9N2n4D8QeQl9TgZUoTp4QuRfHSc7cHE5_oZW2Ck_9bVb9Ak5vQAMMD8VrpmJLTagvkVMLNAsokvaS3s31rTVPXhVS58-kpql2bHw3NrBmuvz9xND7aKLTfqjnzPewnYzwNsQBpFH_psbjJW9pDSBMq96OI3JiFilBhtqCvaYsHgeqU8_-KLxvfwxEUe8RYM7Uko_TuKRwBhDrjIXlmX3NrmAn6XCgsDiutlJcwSp99IIh7qw8jd38cTc7uujsfs8_tG5_dbLDBtgobvQNEjIeBgZ7MHiSVFwfH_jm_JJwpb4czz9YVHKragQ00lShZIt08Rtz7MqKhd1qHDbdNIPPJpA7QMxEncIv3VnqfxZcT4-AsxVyHAyALiyoM4WFQVwXrXClZDSm3_muU05GV2lnH9ZtJLo7Rd4jY7hk_ygnV_mp5uAoss_0z1UWPS6HUEYnZyqe4u_b3KF3ejnf5tsbUttYTKZz-QkRKXCefro5BOQszHgM3rkJ-lxV_mtXULfX-VNbYH1jAzyVo_gfyR4W0o8c03CuMoK-VaF8W5h8AXWgXDf-lc=?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e399]:
+                          - text: 종합건강
+                          - strong [ref=e400]: 보험
+                          - text: 은 AIA생명
+                        - generic [ref=e401]:
+                          - text: 아직
+                          - strong [ref=e402]: 실비보험
+                          - text: 만 있다면?
+                    - link "실손보험만으로 괜찮을까? 입원비,수술비보장 종합건강보험(특약,2년내50%지급)" [ref=e405] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/6BX40py6q_U7-iQBXnbyrdQMZHZRXJ0mEkL8oX9FBVtlzwnVWoqjCgol9N2n4D8QeQl9TgZUoTp4QuRfHSc7cHE5_oZW2Ck_9bVb9Ak5vQAMMD8VrpmJLTagvkVMLNAsokvaS3s31rTVPXhVS58-kpql2bHw3NrBmuvz9xND7aKLTfqjnzPewnYzwNsQBpFH_psbjJW9pDSBMq96OI3JiFilBhtqCvaYsHgeqU8_-KLxvfwxEUe8RYM7Uko_TuKRwBhDrjIXlmX3NrmAn6XCgsDiutlJcwSp99IIh7qw8jd38cTc7uujsfs8_tG5_dbLDBtgobvQNEjIeBgZ7MHiSVFwfH_jm_JJwpb4czz9YVHKragQ00lShZIt08Rtz7MqKhd1qHDbdNIPPJpA7QMxEncIv3VnqfxZcT4-AsxVyHAyALiyoM4WFQVwXrXClZDSm3_muU05GV2lnH9ZtJLo7Rd4jY7hk_ygnV_mp5uAoss_0z1UWPS6HUEYnZyqe4u_b3KF3ejnf5tsbUttYTKZz-QkRKXCefro5BOQszHgM3rkJ-lxV_mtXULfX-VNbYH1jAzyVo_gfyR4W0o8c03CuMoK-VaF8W5h8AXWgXDf-lc=?c=naver.search.pc.plsearch&t=0
+                      - strong [ref=e406]: 실손
+                      - strong [ref=e407]: 보험
+                      - text: 만으로 괜찮을까? 입원비,수술비보장 종합건강
+                      - strong [ref=e408]: 보험
+                      - text: (특약,2년내50%지급)
+                - listitem [ref=e409]:
+                  - generic [ref=e410]:
+                    - generic [ref=e411]:
+                      - generic [ref=e412]:
+                        - link "favicon" [ref=e413] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/Ssj0GqJFjjBzYkwuZm379IQL2fmeRHntTO9wdYF76AGHYcI42o9FjnQpy9PdN0b1plXg9rDqnUTg5i3vzY49_CDaFo5Wrj4vzdF1QSu1tcyd6dNgO6ix0wHMbLNKieMJtUg0rOMBuylEtFaKIumECoU-HxkqNwpSfwIZl9JFynPq9aBfukG7zNU2HsefJmTyzOFKJWHbuOvnL6NkBmF2pJJfi7D9wVz0mMZHULjk4rhLGJvEwIK3-S4x2YhoxSyVOcOWjtZeIcgIr2CONYc6kjbgawC5MwlNfWLfcl1BlFo7h7p_417E5-8tyoYLSZD-lddTowvFWxPV8P-JoxEc6d6Ra4xF3ygGWFXPMPYCPzpo7DcaWF1dhIb6Q2YAsw-Al4PsqdGicPOAdLZKW-XFaA==?c=naver.search.pc.plsearch&t=0
+                          - img "favicon" [ref=e414]
+                        - img "광고" [ref=e415]:
+                          - img [ref=e416]
+                        - link "DB손해보험다이렉트" [ref=e419] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/Ssj0GqJFjjBzYkwuZm379IQL2fmeRHntTO9wdYF76AGHYcI42o9FjnQpy9PdN0b1plXg9rDqnUTg5i3vzY49_CDaFo5Wrj4vzdF1QSu1tcyd6dNgO6ix0wHMbLNKieMJtUg0rOMBuylEtFaKIumECoU-HxkqNwpSfwIZl9JFynPq9aBfukG7zNU2HsefJmTyzOFKJWHbuOvnL6NkBmF2pJJfi7D9wVz0mMZHULjk4rhLGJvEwIK3-S4x2YhoxSyVOcOWjtZeIcgIr2CONYc6kjbgawC5MwlNfWLfcl1BlFo7h7p_417E5-8tyoYLSZD-lddTowvFWxPV8P-JoxEc6d6Ra4xF3ygGWFXPMPYCPzpo7DcaWF1dhIb6Q2YAsw-Al4PsqdGicPOAdLZKW-XFaA==?c=naver.search.pc.plsearch&t=0
+                        - link "directidb.co.kr" [ref=e421] [cursor=pointer]:
+                          - /url: https://ader.naver.com/v1/Ssj0GqJFjjBzYkwuZm379IQL2fmeRHntTO9wdYF76AGHYcI42o9FjnQpy9PdN0b1plXg9rDqnUTg5i3vzY49_CDaFo5Wrj4vzdF1QSu1tcyd6dNgO6ix0wHMbLNKieMJtUg0rOMBuylEtFaKIumECoU-HxkqNwpSfwIZl9JFynPq9aBfukG7zNU2HsefJmTyzOFKJWHbuOvnL6NkBmF2pJJfi7D9wVz0mMZHULjk4rhLGJvEwIK3-S4x2YhoxSyVOcOWjtZeIcgIr2CONYc6kjbgawC5MwlNfWLfcl1BlFo7h7p_417E5-8tyoYLSZD-lddTowvFWxPV8P-JoxEc6d6Ra4xF3ygGWFXPMPYCPzpo7DcaWF1dhIb6Q2YAsw-Al4PsqdGicPOAdLZKW-XFaA==?c=naver.search.pc.plsearch&t=0
+                      - link "DB다이렉트 공식 실비보험 우리 아이 첫 보험 다이렉트로 간편한 가입" [ref=e422] [cursor=pointer]:
+                        - /url: https://ader.naver.com/v1/Ssj0GqJFjjBzYkwuZm379IQL2fmeRHntTO9wdYF76AGHYcI42o9FjnQpy9PdN0b1plXg9rDqnUTg5i3vzY49_CDaFo5Wrj4vzdF1QSu1tcyd6dNgO6ix0wHMbLNKieMJtUg0rOMBuylEtFaKIumECoU-HxkqNwpSfwIZl9JFynPq9aBfukG7zNU2HsefJmTyzOFKJWHbuOvnL6NkBmF2pJJfi7D9wVz0mMZHULjk4rhLGJvEwIK3-S4x2YhoxSyVOcOWjtZeIcgIr2CONYc6kjbgawC5MwlNfWLfcl1BlFo7h7p_417E5-8tyoYLSZD-lddTowvFWxPV8P-JoxEc6d6Ra4xF3ygGWFXPMPYCPzpo7DcaWF1dhIb6Q2YAsw-Al4PsqdGicPOAdLZKW-XFaA==?c=naver.search.pc.plsearch&t=0
+                        - generic [ref=e423]:
+                          - text: DB다이렉트 공식
+                          - strong [ref=e424]: 실비보험
+                        - generic [ref=e425]:
+                          - text: 우리 아이 첫
+                          - strong [ref=e426]: 보험
+                        - text: 다이렉트로 간편한 가입
+                    - link "새로운 가정을 꾸리는 30대라면? 온가족 가입 가능한 DB다이렉트 실손 가입하세요" [ref=e429] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Ssj0GqJFjjBzYkwuZm379IQL2fmeRHntTO9wdYF76AGHYcI42o9FjnQpy9PdN0b1plXg9rDqnUTg5i3vzY49_CDaFo5Wrj4vzdF1QSu1tcyd6dNgO6ix0wHMbLNKieMJtUg0rOMBuylEtFaKIumECoU-HxkqNwpSfwIZl9JFynPq9aBfukG7zNU2HsefJmTyzOFKJWHbuOvnL6NkBmF2pJJfi7D9wVz0mMZHULjk4rhLGJvEwIK3-S4x2YhoxSyVOcOWjtZeIcgIr2CONYc6kjbgawC5MwlNfWLfcl1BlFo7h7p_417E5-8tyoYLSZD-lddTowvFWxPV8P-JoxEc6d6Ra4xF3ygGWFXPMPYCPzpo7DcaWF1dhIb6Q2YAsw-Al4PsqdGicPOAdLZKW-XFaA==?c=naver.search.pc.plsearch&t=0
+                      - text: 새로운 가정을 꾸리는 30대라면? 온가족 가입 가능한 DB다이렉트
+                      - strong [ref=e430]: 실손
+                      - text: 가입하세요
+              - link "더보기" [ref=e432] [cursor=pointer]:
+                - /url: https://ad.search.naver.com/search.naver?where=ad&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&referenceId=jl1iawqX6IdssiWg6Mw-180585
+                - generic [ref=e433]: 더보기
+          - generic [ref=e437]:
+            - heading "'실비보험' 관련 브랜드 콘텐츠" [level=2] [ref=e441]
+            - generic [ref=e442]:
+              - generic [ref=e444]:
+                - generic [ref=e445]:
+                  - generic [ref=e446]:
+                    - link [ref=e448] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizISxPSOa6g2VqwBKvTIYXpIEZh2CXefI16OcJGHkuBBd0lGsALBfN-G1jSIT5b6COAk9VVChMKLMOqAU4OV_TdkJlJF0ScJNgAaK-af78aBZS4ihwcdhmPl2kdH5WvzT865-wd13BgYf5JLVqD8KoAka9wzk_hh2kVRBBWzz5AScyFXLnuFGW5x2SLhY4mLMQtCXty3yW5SBFeic_lk7bMwfyeklIuJSCkx-stWHojVdA==?c=naver.search.pc.pwc_itb&t=0
+                    - link "트리원즈" [ref=e453] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizISxPSOa6g2VqwBKvTIYXpIEZh2CXefI16OcJGHkuBBd0lGsALBfN-G1jSIT5b6COAk9VVChMKLMOqAU4OV_TdkJlJF0ScJNgAaK-af78aBZS4ihwcdhmPl2kdH5WvzT865-wd13BgYf5JLVqD8KoAka9wzk_hh2kVRBBWzz5AScyFXLnuFGW5x2SLhY4mLMQtCXty3yW5SBFeic_lk7bMwfyeklIuJSCkx-stWHojVdA==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e454]: 트리원즈
+                    - generic [ref=e457]: 2026.04.13.
+                  - link [ref=e458] [cursor=pointer]:
+                    - /url: https://help.naver.com/alias/search/integration/integration_66.naver
+                    - img [ref=e459]
+                - generic [ref=e466]:
+                  - generic [ref=e467]:
+                    - link "필수보험인 실비보험 비교 후, 저렴하게 가입하려면" [ref=e468] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizISxPSOa6g2VqwBKvTIYXpIEZh2CXefI16OcJGHkuBBd0lGsALBfN-G1jSIT5b6COAk9VVChMKLMOqAU4OV_TdkJlJF0ScJNgAaK-af78aBZS4ihwcdhmPl2kdH5WvzT865-wd13BgYf5JLVqD8KoAka9wzk_hh2kVRBBWzz5AScyFXLnuFGW5x2SLhY4mLMQtCXty3yW5SBFeic_lk7bMwfyeklIuJSCkx-stWHojVdA==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e469]:
+                        - text: 필수
+                        - mark [ref=e470]: 보험
+                        - text: 인
+                        - mark [ref=e471]: 실비보험
+                        - text: 비교 후, 저렴하게 가입하려면
+                    - link "병원비, 정말 아깝지 않나요? 단순 감기 진료부터 X-ray, MRI, 도수치료, 입원비까지. 병원비 부담을 줄이기 위해 국민 4명 중 3명이 가입한 실비보험부터 비교해보세요!..." [ref=e473] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizISxPSOa6g2VqwBKvTIYXpIEZh2CXefI16OcJGHkuBBd0lGsALBfN-G1jSIT5b6COAk9VVChMKLMOqAU4OV_TdkJlJF0ScJNgAaK-af78aBZS4ihwcdhmPl2kdH5WvzT865-wd13BgYf5JLVqD8KoAka9wzk_hh2kVRBBWzz5AScyFXLnuFGW5x2SLhY4mLMQtCXty3yW5SBFeic_lk7bMwfyeklIuJSCkx-stWHojVdA==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e474]:
+                        - text: 병원비, 정말 아깝지 않나요? 단순 감기 진료부터 X-ray, MRI, 도수치료, 입원비까지. 병원비 부담을 줄이기 위해 국민 4명 중 3명이 가입한
+                        - mark [ref=e475]: 실비보험
+                        - text: 부터 비교해보세요!...
+                  - link [ref=e476] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizISxPSOa6g2VqwBKvTIYXpIEZh2CXefI16OcJGHkuBBd0lGsALBfN-G1jSIT5b6COAk9VVChMKLMOqAU4OV_TdkJlJF0ScJNgAaK-af78aBZS4ihwcdhmPl2kdH5WvzT865-wd13BgYf5JLVqD8KoAka9wzk_hh2kVRBBWzz5AScyFXLnuFGW5x2SLhY4mLMQtCXty3yW5SBFeic_lk7bMwfyeklIuJSCkx-stWHojVdA==?c=naver.search.pc.pwc_itb&t=0
+                    - img [ref=e479]
+              - generic [ref=e483]:
+                - generic [ref=e484]:
+                  - generic [ref=e485]:
+                    - link [ref=e487] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizIbKLbBKOcObYdlvIvgbRSJ3NyEZlAhd-3CAKen2ZkHnJ3aNq6X1ftlly38wJB7qkq3ZQdaUq4W7Dbn9orTXr1wne7ivswKNnWPKMOCkiJBpKTIRrEi-N5abxVYbNLWTOQqW70_0ga7AK8Igd0wNkq7X20vSyWFzwk2ypr2c-1p9OE8a0lck2C99x8GQM0LqsA8GaZhQHbE41cERHyEUXr4ijsGbrex6cSfWM3PkTmhrw==?c=naver.search.pc.pwc_itb&t=0
+                    - link "굿리치보험몰" [ref=e492] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizIbKLbBKOcObYdlvIvgbRSJ3NyEZlAhd-3CAKen2ZkHnJ3aNq6X1ftlly38wJB7qkq3ZQdaUq4W7Dbn9orTXr1wne7ivswKNnWPKMOCkiJBpKTIRrEi-N5abxVYbNLWTOQqW70_0ga7AK8Igd0wNkq7X20vSyWFzwk2ypr2c-1p9OE8a0lck2C99x8GQM0LqsA8GaZhQHbE41cERHyEUXr4ijsGbrex6cSfWM3PkTmhrw==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e493]: 굿리치보험몰
+                    - generic [ref=e496]: 2026.01.09.
+                  - link [ref=e497] [cursor=pointer]:
+                    - /url: https://help.naver.com/alias/search/integration/integration_66.naver
+                    - img [ref=e498]
+                - generic [ref=e505]:
+                  - generic [ref=e506]:
+                    - link "2026년 NEW 실비보험 가입추천 순위" [ref=e507] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizIbKLbBKOcObYdlvIvgbRSJ3NyEZlAhd-3CAKen2ZkHnJ3aNq6X1ftlly38wJB7qkq3ZQdaUq4W7Dbn9orTXr1wne7ivswKNnWPKMOCkiJBpKTIRrEi-N5abxVYbNLWTOQqW70_0ga7AK8Igd0wNkq7X20vSyWFzwk2ypr2c-1p9OE8a0lck2C99x8GQM0LqsA8GaZhQHbE41cERHyEUXr4ijsGbrex6cSfWM3PkTmhrw==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e508]:
+                        - text: 2026년 NEW
+                        - mark [ref=e509]: 실비보험
+                        - text: 가입추천 순위
+                    - link "실손의료보험(실비보험)은 처음 설계/판매된 이후 국민의 약 75%(3,900만명)가 가입하였는데, 이런 실손보험은 환자 본인 부담금 중에서, 급여(주계약) 80%와 비급여(특약) 70%까지 보장하..." [ref=e511] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizIbKLbBKOcObYdlvIvgbRSJ3NyEZlAhd-3CAKen2ZkHnJ3aNq6X1ftlly38wJB7qkq3ZQdaUq4W7Dbn9orTXr1wne7ivswKNnWPKMOCkiJBpKTIRrEi-N5abxVYbNLWTOQqW70_0ga7AK8Igd0wNkq7X20vSyWFzwk2ypr2c-1p9OE8a0lck2C99x8GQM0LqsA8GaZhQHbE41cERHyEUXr4ijsGbrex6cSfWM3PkTmhrw==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e512]:
+                        - text: 실손의료
+                        - mark [ref=e513]: 보험
+                        - text: (
+                        - mark [ref=e514]: 실비보험
+                        - text: )은 처음 설계/판매된 이후 국민의 약 75%(3,900만명)가 가입하였는데, 이런 실손
+                        - mark [ref=e515]: 보험
+                        - text: 은 환자 본인 부담금 중에서, 급여(주계약) 80%와 비급여(특약) 70%까지 보장하...
+                  - link "5" [ref=e516] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizIbKLbBKOcObYdlvIvgbRSJ3NyEZlAhd-3CAKen2ZkHnJ3aNq6X1ftlly38wJB7qkq3ZQdaUq4W7Dbn9orTXr1wne7ivswKNnWPKMOCkiJBpKTIRrEi-N5abxVYbNLWTOQqW70_0ga7AK8Igd0wNkq7X20vSyWFzwk2ypr2c-1p9OE8a0lck2C99x8GQM0LqsA8GaZhQHbE41cERHyEUXr4ijsGbrex6cSfWM3PkTmhrw==?c=naver.search.pc.pwc_itb&t=0
+                    - generic [ref=e518]:
+                      - img [ref=e519]
+                      - generic [ref=e523]: "5"
+              - generic [ref=e526]:
+                - generic [ref=e527]:
+                  - generic [ref=e528]:
+                    - link [ref=e530] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizI_692_IsVQ2NV6Piuyj-iwva2x-Mt3wJUx9_AfMQEqi9IKuCH8DfjjZ7woyQqn83UIKgXkK_dULObB5uTqslEsiB7qHb-YSPScw7f8sTxbBkRbWBrhMTwTyelAIkyIA_hmenj1x6SmjXFUhmsge4zfxGAl2s04vcJF-gH_-IlvDFkm0VPq44X5pb_ms0Xrn7Nu2bYDm0it-kzB2lQWk1naVJ2__yr8GmkR3GQHvEgk7w==?c=naver.search.pc.pwc_itb&t=0
+                    - link "굿리치" [ref=e535] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizI_692_IsVQ2NV6Piuyj-iwva2x-Mt3wJUx9_AfMQEqi9IKuCH8DfjjZ7woyQqn83UIKgXkK_dULObB5uTqslEsiB7qHb-YSPScw7f8sTxbBkRbWBrhMTwTyelAIkyIA_hmenj1x6SmjXFUhmsge4zfxGAl2s04vcJF-gH_-IlvDFkm0VPq44X5pb_ms0Xrn7Nu2bYDm0it-kzB2lQWk1naVJ2__yr8GmkR3GQHvEgk7w==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e536]: 굿리치
+                    - generic [ref=e539]: 2026.03.09.
+                  - link [ref=e540] [cursor=pointer]:
+                    - /url: https://help.naver.com/alias/search/integration/integration_66.naver
+                    - img [ref=e541]
+                - generic [ref=e548]:
+                  - generic [ref=e549]:
+                    - link "실비보험, 어떤 기준으로 선택해야 할까?" [ref=e550] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizI_692_IsVQ2NV6Piuyj-iwva2x-Mt3wJUx9_AfMQEqi9IKuCH8DfjjZ7woyQqn83UIKgXkK_dULObB5uTqslEsiB7qHb-YSPScw7f8sTxbBkRbWBrhMTwTyelAIkyIA_hmenj1x6SmjXFUhmsge4zfxGAl2s04vcJF-gH_-IlvDFkm0VPq44X5pb_ms0Xrn7Nu2bYDm0it-kzB2lQWk1naVJ2__yr8GmkR3GQHvEgk7w==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e551]:
+                        - mark [ref=e552]: 실비보험
+                        - text: ", 어떤 기준으로 선택해야 할까?"
+                    - link "실비보험으로도 불리는 실손의료보험은 질병이나 상해로 병원에 입원 및 통원치료를 받거나 처방전을 받았을 때 실제 부담한 의료비의 일부를 보장하는 보험입니다.국민의 약 75%가 가입하셨습니다...." [ref=e554] [cursor=pointer]:
+                      - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizI_692_IsVQ2NV6Piuyj-iwva2x-Mt3wJUx9_AfMQEqi9IKuCH8DfjjZ7woyQqn83UIKgXkK_dULObB5uTqslEsiB7qHb-YSPScw7f8sTxbBkRbWBrhMTwTyelAIkyIA_hmenj1x6SmjXFUhmsge4zfxGAl2s04vcJF-gH_-IlvDFkm0VPq44X5pb_ms0Xrn7Nu2bYDm0it-kzB2lQWk1naVJ2__yr8GmkR3GQHvEgk7w==?c=naver.search.pc.pwc_itb&t=0
+                      - generic [ref=e555]:
+                        - mark [ref=e556]: 실비보험
+                        - text: 으로도 불리는 실손의료
+                        - mark [ref=e557]: 보험
+                        - text: 은 질병이나 상해로 병원에 입원 및 통원치료를 받거나 처방전을 받았을 때 실제 부담한 의료비의 일부를 보장하는
+                        - mark [ref=e558]: 보험
+                        - text: 입니다.국민의 약 75%가 가입하셨습니다....
+                  - link [ref=e559] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/Nkes2ua21RrfgCrAkVdOmiUI8AQvgtxufcmtScZoizI_692_IsVQ2NV6Piuyj-iwva2x-Mt3wJUx9_AfMQEqi9IKuCH8DfjjZ7woyQqn83UIKgXkK_dULObB5uTqslEsiB7qHb-YSPScw7f8sTxbBkRbWBrhMTwTyelAIkyIA_hmenj1x6SmjXFUhmsge4zfxGAl2s04vcJF-gH_-IlvDFkm0VPq44X5pb_ms0Xrn7Nu2bYDm0it-kzB2lQWk1naVJ2__yr8GmkR3GQHvEgk7w==?c=naver.search.pc.pwc_itb&t=0
+                    - img [ref=e562]
+            - link "브랜드 콘텐츠 더보기" [ref=e565] [cursor=pointer]:
+              - /url: "#lb_api=https%3A%2F%2Fs.search.naver.com%2Fp%2Fintentblock%2F36%2Fapi%3Fac%3D0%26aq%3D0%26bid%3DPWC-0000000000008750%26display%3D10%26lgl_lat%3D37.490119%26lgl_long%3D127.019508%26lgl_rcode%3D09650108%26ngn_country%3DKR%26nlu_query%3D%257B%2522nquery%2522%253A%2522%25EC%258B%25A4%25EB%25B9%2584%25EB%25B3%25B4%25ED%2597%2598%2522%252C%2522concept%2522%253A%255B%257B%2522text%2522%253A%2522%25EC%258B%25A4%25EB%25B9%2584%2522%252C%2522fps%2522%253A0%252C%2522lps%2522%253A5%257D%252C%257B%2522text%2522%253A%2522%25EC%258B%25A4%25EB%25B9%2584%25EB%25B3%25B4%25ED%2597%2598%2522%252C%2522entity%2522%253Atrue%252C%2522class%2522%253A%255B155%255D%252C%2522fps%2522%253A0%252C%2522lps%2522%253A11%257D%252C%257B%2522text%2522%253A%2522%25EB%25B3%25B4%25ED%2597%2598%2522%252C%2522fps%2522%253A6%252C%2522lps%2522%253A11%257D%255D%252C%2522query-form%2522%253A1%257D%26query%3D%25EC%258B%25A4%25EB%25B9%2584%25EB%25B3%25B4%25ED%2597%2598%26sm%3D%26ssc%3Dtab.itb.pwc%26start%3D1%26where%3Dnx_bridge_more_fender_api"
+              - generic [ref=e568]:
+                - generic [ref=e570]:
+                  - generic [ref=e571]: 브랜드 콘텐츠
+                  - generic [ref=e572]: 더보기
+                - img [ref=e574]
+          - generic [ref=e579]:
+            - generic [ref=e581]:
+              - heading "이미지" [level=2] [ref=e583]
+              - button "이미지 신고하기" [ref=e586] [cursor=pointer]:
+                - generic [ref=e587]: 이미지 신고하기
+            - generic [ref=e588]:
+              - generic [ref=e589]:
+                - generic [ref=e590]:
+                  - link "세대" [ref=e591] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EC%84%B8%EB%8C%80&sm=tab_imt&where=image"
+                    - generic [ref=e593]:
+                      - img [ref=e595]
+                      - generic [ref=e597]: 세대
+                  - link "유병자" [ref=e598] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%9C%A0%EB%B3%91%EC%9E%90+%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&sm=tab_imt&where=image"
+                    - generic [ref=e600]:
+                      - img [ref=e602]
+                      - generic [ref=e604]: 유병자
+                  - link "변천사" [ref=e605] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EB%B3%80%EC%B2%9C%EC%82%AC&sm=tab_imt&where=image"
+                    - generic [ref=e607]:
+                      - img [ref=e609]
+                      - generic [ref=e611]: 변천사
+                  - link "비교" [ref=e612] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EB%B9%84%EA%B5%90&sm=tab_imt&where=image"
+                    - generic [ref=e614]:
+                      - img [ref=e616]
+                      - generic [ref=e618]: 비교
+                  - link "청구서류" [ref=e619] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EC%B2%AD%EA%B5%AC%EC%84%9C%EB%A5%98&sm=tab_imt&where=image"
+                    - generic [ref=e621]:
+                      - img [ref=e623]
+                      - generic [ref=e625]: 청구서류
+                  - link "서류" [ref=e626] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EC%84%9C%EB%A5%98&sm=tab_imt&where=image"
+                    - generic [ref=e628]:
+                      - img [ref=e630]
+                      - generic [ref=e632]: 서류
+                  - link "비급여" [ref=e633] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EB%B9%84%EA%B8%89%EC%97%AC+%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&sm=tab_imt&where=image"
+                    - generic [ref=e635]:
+                      - img [ref=e637]
+                      - generic [ref=e639]: 비급여
+                  - link "순위" [ref=e640] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EC%88%9C%EC%9C%84&sm=tab_imt&where=image"
+                    - generic [ref=e642]:
+                      - img [ref=e644]
+                      - generic [ref=e646]: 순위
+                  - link "현대해상" [ref=e647] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%ED%98%84%EB%8C%80%ED%95%B4%EC%83%81+%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&sm=tab_imt&where=image"
+                    - generic [ref=e649]:
+                      - img [ref=e651]
+                      - generic [ref=e653]: 현대해상
+                  - link "가입" [ref=e654] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EA%B0%80%EC%9E%85&sm=tab_imt&where=image"
+                    - generic [ref=e656]:
+                      - img [ref=e658]
+                      - generic [ref=e660]: 가입
+                  - link "뜻" [ref=e661] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EB%9C%BB&sm=tab_imt&where=image"
+                    - generic [ref=e663]:
+                      - img [ref=e665]
+                      - generic [ref=e667]: 뜻
+                  - link "메리츠" [ref=e668] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EB%A9%94%EB%A6%AC%EC%B8%A0+%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&sm=tab_imt&where=image"
+                    - generic [ref=e670]:
+                      - img [ref=e672]
+                      - generic [ref=e674]: 메리츠
+                  - link "보장내용" [ref=e675] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EB%B3%B4%EC%9E%A5%EB%82%B4%EC%9A%A9&sm=tab_imt&where=image"
+                    - generic [ref=e677]:
+                      - img [ref=e679]
+                      - generic [ref=e681]: 보장내용
+                  - link "금액" [ref=e682] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EA%B8%88%EC%95%A1&sm=tab_imt&where=image"
+                    - generic [ref=e684]:
+                      - img [ref=e686]
+                      - generic [ref=e688]: 금액
+                  - link "삼성화재" [ref=e689] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%82%BC%EC%84%B1%ED%99%94%EC%9E%AC+%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&sm=tab_imt&where=image"
+                    - generic [ref=e691]:
+                      - img [ref=e693]
+                      - generic [ref=e695]: 삼성화재
+                  - link "종류" [ref=e696] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EC%A2%85%EB%A5%98&sm=tab_imt&where=image"
+                    - generic [ref=e698]:
+                      - img [ref=e700]
+                      - generic [ref=e702]: 종류
+                  - link "태아" [ref=e703] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%ED%83%9C%EC%95%84+%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&sm=tab_imt&where=image"
+                    - generic [ref=e705]:
+                      - img [ref=e707]
+                      - generic [ref=e709]: 태아
+                  - link "고지의무" [ref=e710] [cursor=pointer]:
+                    - /url: "?pq=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98+%EA%B3%A0%EC%A7%80%EC%9D%98%EB%AC%B4&sm=tab_imt&where=image"
+                    - generic [ref=e712]:
+                      - img [ref=e714]
+                      - generic [ref=e716]: 고지의무
+                - button [ref=e717] [cursor=pointer]:
+                  - img [ref=e718]
+              - generic [ref=e720]:
+                - generic:
+                  - button "유병자 일반 실비 보험 가입하기":
+                    - img "유병자 일반 실비 보험 가입하기"
+                - generic:
+                  - button "실비보험 다모아 - 실손의료보험 가입 보험료 비교견적 - Google Play 앱":
+                    - img "실비보험 다모아 - 실손의료보험 가입 보험료 비교견적 - Google Play 앱"
+                - generic:
+                  - button "비만 치료 실비보험 보상 여부":
+                    - img "비만 치료 실비보험 보상 여부"
+                - generic:
+                  - button "암보험과 실비보험 보장 중복 가능한가요?":
+                    - img "암보험과 실비보험 보장 중복 가능한가요?"
+                - generic:
+                  - button "실비보험 (실손보험) 갱신 및 전환 가이드 (feat. 세대별 비교)":
+                    - img "실비보험 (실손보험) 갱신 및 전환 가이드 (feat. 세대별 비교)"
+                - generic:
+                  - button "실비보험청구가능기간 및 실비보험청구처리기간 살펴봅시다":
+                    - img "실비보험청구가능기간 및 실비보험청구처리기간 살펴봅시다"
+                - generic:
+                  - button "의료실비 서류 가입조건 정보 상해의료실비보험비교":
+                    - img "의료실비 서류 가입조건 정보 상해의료실비보험비교"
+                - generic:
+                  - button "실비보험 보험료 낮추는 법":
+                    - img "실비보험 보험료 낮추는 법"
+                - generic:
+                  - button "실비보험, 치아보험 보험비교사이트에서 보장 내역 감액기간, 면책기간까지 꼼꼼하게 체크하기":
+                    - img "실비보험, 치아보험 보험비교사이트에서 보장 내역 감액기간, 면책기간까지 꼼꼼하게 체크하기"
+                - generic:
+                  - button "실비보험만 있으면 되는거 아닌가요?":
+                    - img "실비보험만 있으면 되는거 아닌가요?"
+            - link "이미지 더보기" [ref=e722] [cursor=pointer]:
+              - /url: "?nso=so%3Ar%2Cp%3Aall&query=%EC%8B%A4%EB%B9%84%EB%B3%B4%ED%97%98&sm=tab_nmr&ssc=tab.image.all&where=image"
+              - generic [ref=e725]:
+                - generic [ref=e727]:
+                  - generic [ref=e728]: 이미지
+                  - generic [ref=e729]: 더보기
+                - img [ref=e731]
+          - generic [ref=e733]:
+            - generic [ref=e739]:
+              - generic [ref=e740]:
+                - link "나무위키 namu.wiki›실손의료보험" [ref=e741] [cursor=pointer]:
+                  - /url: https://namu.wiki/w/%EC%8B%A4%EC%86%90%EC%9D%98%EB%A3%8C%EB%B3%B4%ED%97%98
+                  - generic [ref=e743]:
+                    - generic [ref=e748]: 나무위키
+                    - generic [ref=e752]: namu.wiki›실손의료보험
+                - button "옵션 메뉴 열기" [ref=e754] [cursor=pointer]:
+                  - img [ref=e755]
+              - generic [ref=e759]:
+                - link "실손의료보험 - 나무위키" [ref=e761] [cursor=pointer]:
+                  - /url: https://namu.wiki/w/%EC%8B%A4%EC%86%90%EC%9D%98%EB%A3%8C%EB%B3%B4%ED%97%98
+                  - generic [ref=e762]:
+                    - mark [ref=e763]: 실손
+                    - text: 의료
+                    - mark [ref=e764]: 보험
+                    - text: "- 나무위키"
+                - link "실손의료보험(實損醫療保險)은 질병 혹은 상해로 치료 시 보험가입자에게 발생한 실제 의료비를 보상하는 보험 상품이다." [ref=e766] [cursor=pointer]:
+                  - /url: https://namu.wiki/w/%EC%8B%A4%EC%86%90%EC%9D%98%EB%A3%8C%EB%B3%B4%ED%97%98
+                  - generic [ref=e767]:
+                    - mark [ref=e768]: 실손
+                    - text: 의료
+                    - mark [ref=e769]: 보험
+                    - text: (實損醫療保險)은 질병 혹은 상해로 치료 시
+                    - mark [ref=e770]: 보험
+                    - text: 가입자에게 발생한 실제 의료비를 보상하는
+                    - mark [ref=e771]: 보험
+                    - text: 상품이다.
+            - generic [ref=e777]:
+              - generic [ref=e778]:
+                - link "실손24 www.silson24.or.kr" [ref=e779] [cursor=pointer]:
+                  - /url: https://www.silson24.or.kr/
+                  - generic [ref=e781]:
+                    - generic [ref=e786]: 실손24
+                    - generic [ref=e790]: www.silson24.or.kr
+                - button "옵션 메뉴 열기" [ref=e792] [cursor=pointer]:
+                  - img [ref=e793]
+              - generic [ref=e797]:
+                - link "실손24" [ref=e799] [cursor=pointer]:
+                  - /url: https://www.silson24.or.kr/
+                  - generic [ref=e800]:
+                    - mark [ref=e801]: 실손
+                    - text: "24"
+                - link "실손24, 나의 실손청구서류 발급 없이 간편하게, 나의 자녀청구내 자녀의 보험청구,나의부모/제3자 청구대리인 청구도 한번에, 청구한 이력확인" [ref=e803] [cursor=pointer]:
+                  - /url: https://www.silson24.or.kr/
+                  - generic [ref=e804]:
+                    - mark [ref=e805]: 실손
+                    - text: 24, 나의
+                    - mark [ref=e806]: 실손
+                    - text: 청구서류 발급 없이 간편하게, 나의 자녀청구내 자녀의
+                    - mark [ref=e807]: 보험
+                    - text: 청구,나의부모/제3자 청구대리인 청구도 한번에, 청구한 이력확인
+            - generic [ref=e813]:
+              - generic [ref=e814]:
+                - generic [ref=e815]:
+                  - link [ref=e817] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/engmstudy
+                  - generic [ref=e820]:
+                    - link "● 짠돌이카페 ● 짠돌이부자되기(재테크,절약,보험료줄이기)" [ref=e822] [cursor=pointer]:
+                      - /url: https://cafe.naver.com/engmstudy
+                      - generic [ref=e823]: ● 짠돌이카페 ● 짠돌이부자되기(재테크,절약,보험료줄이기)
+                    - img [ref=e824]
+                  - generic [ref=e829]: 2주 전
+                - button "옵션 메뉴 열기" [ref=e831] [cursor=pointer]:
+                  - img [ref=e832]
+              - generic [ref=e837]:
+                - generic [ref=e838]:
+                  - link "도수치료, 실비보험으로 제대로 보험금 받아보세요" [ref=e839] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/engmstudy/3127495?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6ImVuZ21zdHVkeSIsImFydGljbGVJZCI6MzEyNzQ5NSwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.B96MbqdUGLbjxFpjLBnOMDJ5eeqJxRBf0ccUbwoY2yQ
+                    - generic [ref=e840]:
+                      - text: 도수치료,
+                      - mark [ref=e841]: 실비보험
+                      - text: 으로 제대로
+                      - mark [ref=e842]: 보험
+                      - text: 금 받아보세요
+                  - link "보장 조건 함께 알아보기 도수치료를 실비보험으로 청구할 수 있다는 이야기, 한 번쯤 들어보셨을 텐데요. 다만 최근에는 비급여 치료 이용 증가로 인해 보험사별 심사 기준이나 보장 조건이 조금 더 세분화되는 추세입니다. 오늘은 도수치료와 실손의료보험 관련 내용을 쉽게 정리해서 알려드릴게요 1. 도수치료란 도수치료란? 도수치료는 의료진의 판단에 따라 근육과..." [ref=e844] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/engmstudy/3127495?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6ImVuZ21zdHVkeSIsImFydGljbGVJZCI6MzEyNzQ5NSwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.B96MbqdUGLbjxFpjLBnOMDJ5eeqJxRBf0ccUbwoY2yQ
+                    - generic [ref=e845]:
+                      - text: 보장 조건 함께 알아보기 도수치료를
+                      - mark [ref=e846]: 실비보험
+                      - text: 으로 청구할 수 있다는 이야기, 한 번쯤 들어보셨을 텐데요. 다만 최근에는 비급여 치료 이용 증가로 인해
+                      - mark [ref=e847]: 보험
+                      - text: 사별 심사 기준이나 보장 조건이 조금 더 세분화되는 추세입니다. 오늘은 도수치료와
+                      - mark [ref=e848]: 실손
+                      - text: 의료
+                      - mark [ref=e849]: 보험
+                      - text: 관련 내용을 쉽게 정리해서 알려드릴게요 1. 도수치료란 도수치료란? 도수치료는 의료진의 판단에 따라 근육과...
+                - link "5" [ref=e850] [cursor=pointer]:
+                  - /url: https://cafe.naver.com/engmstudy/3127495?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6ImVuZ21zdHVkeSIsImFydGljbGVJZCI6MzEyNzQ5NSwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.B96MbqdUGLbjxFpjLBnOMDJ5eeqJxRBf0ccUbwoY2yQ
+                  - generic [ref=e852]:
+                    - img [ref=e853]
+                    - generic [ref=e857]: "5"
+              - generic [ref=e858]:
+                - generic [ref=e860]:
+                  - link "RE 요즘 정형외과 한번가보면 도수실비 보험이 꼭 필수같아요. 정보 감사합니다 ~" [ref=e861] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/engmstudy/3127495?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6ImVuZ21zdHVkeSIsImFydGljbGVJZCI6MzEyNzQ5NSwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.B96MbqdUGLbjxFpjLBnOMDJ5eeqJxRBf0ccUbwoY2yQ
+                    - generic [ref=e864]:
+                      - generic [ref=e865]: RE
+                      - generic [ref=e866]:
+                        - text: 요즘 정형외과 한번가보면 도수
+                        - mark [ref=e867]: 실비 보험
+                        - text: 이 꼭 필수같아요. 정보 감사합니다 ~
+                  - link "RE 어제부터 도수 치료 받고 있는데 자세한 설명이 도움되었습니다 감사합니다 ^^" [ref=e868] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/engmstudy/3127495?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6ImVuZ21zdHVkeSIsImFydGljbGVJZCI6MzEyNzQ5NSwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.B96MbqdUGLbjxFpjLBnOMDJ5eeqJxRBf0ccUbwoY2yQ
+                    - generic [ref=e871]:
+                      - generic [ref=e872]: RE
+                      - text: 어제부터 도수 치료 받고 있는데 자세한 설명이 도움되었습니다 감사합니다 ^^
+                - button "다음 버튼" [ref=e873] [cursor=pointer]:
+                  - img [ref=e875]
+            - generic [ref=e882]:
+              - generic [ref=e883]:
+                - generic [ref=e884]:
+                  - link [ref=e886] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/wgang
+                  - generic [ref=e889]:
+                    - link "[우갱] 우아한 갱년기(40대 50대 여성 커뮤니티/성형/패션/뷰티)" [ref=e891] [cursor=pointer]:
+                      - /url: https://cafe.naver.com/wgang
+                      - generic [ref=e892]: "[우갱] 우아한 갱년기(40대 50대 여성 커뮤니티/성형/패션/뷰티)"
+                    - img [ref=e893]
+                  - generic [ref=e898]: 1주 전
+                - button "옵션 메뉴 열기" [ref=e900] [cursor=pointer]:
+                  - img [ref=e901]
+              - generic [ref=e907]:
+                - link "2세대 실비보험 갖고계신분?" [ref=e908] [cursor=pointer]:
+                  - /url: https://cafe.naver.com/wgang/420214?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6IndnYW5nIiwiYXJ0aWNsZUlkIjo0MjAyMTQsImlzc3VlZEF0IjoxNzc5MjU5MzUwNzEwfQ.hWI-H53WZw-11BTqSkyl5rMnAVPYHqZTvnKesLIpM7M
+                  - generic [ref=e909]:
+                    - text: 2세대
+                    - mark [ref=e910]: 실비보험
+                    - text: 갖고계신분?
+                - link "제가 2010년도에 가입한 실비보험이 있어요. 2,3년전 까지는 3만원대를 납입했는데 지금은 거의 9만원입니다. 보험사 문의하니 2세대라서 자기부담이 10프로라 보험료가 많이 오른거라며 앞으로 60-70세정도되면 거의 2-30만원정도까지 오르니 5세대(자기부담 50프로)로 갈아타는게 낫다고 하는데 정말인가요? 60-70세면 퇴직도하고 수입도 없는데 그 높은 보험료를..." [ref=e912] [cursor=pointer]:
+                  - /url: https://cafe.naver.com/wgang/420214?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6IndnYW5nIiwiYXJ0aWNsZUlkIjo0MjAyMTQsImlzc3VlZEF0IjoxNzc5MjU5MzUwNzEwfQ.hWI-H53WZw-11BTqSkyl5rMnAVPYHqZTvnKesLIpM7M
+                  - generic [ref=e913]:
+                    - text: 제가 2010년도에 가입한
+                    - mark [ref=e914]: 실비보험
+                    - text: 이 있어요. 2,3년전 까지는 3만원대를 납입했는데 지금은 거의 9만원입니다.
+                    - mark [ref=e915]: 보험
+                    - text: 사 문의하니 2세대라서 자기부담이 10프로라
+                    - mark [ref=e916]: 보험
+                    - text: 료가 많이 오른거라며 앞으로 60-70세정도되면 거의 2-30만원정도까지 오르니 5세대(자기부담 50프로)로 갈아타는게 낫다고 하는데 정말인가요? 60-70세면 퇴직도하고 수입도 없는데 그 높은
+                    - mark [ref=e917]: 보험
+                    - text: 료를...
+              - generic [ref=e918]:
+                - generic [ref=e920]:
+                  - link "RE 2009넌가입 지금10만원넘게 내고있지만 무조건유지합니다. 5년전 갑자가 아파서 2년치보험료 탔고 작년 오십견으로 탄 보험료가 3년치가" [ref=e921] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/wgang/420214?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6IndnYW5nIiwiYXJ0aWNsZUlkIjo0MjAyMTQsImlzc3VlZEF0IjoxNzc5MjU5MzUwNzEwfQ.hWI-H53WZw-11BTqSkyl5rMnAVPYHqZTvnKesLIpM7M
+                    - generic [ref=e924]:
+                      - generic [ref=e925]: RE
+                      - generic [ref=e926]:
+                        - text: 2009넌가입 지금10만원넘게 내고있지만 무조건유지합니다. 5년전 갑자가 아파서 2년치
+                        - mark [ref=e927]: 보험
+                        - text: 료 탔고 작년 오십견으로 탄
+                        - mark [ref=e928]: 보험
+                        - text: 료가 3년치가
+                  - link "RE 저도 2세대 인데 그냥 유지요 이제 50넘어 병원자주가고 계속 정기검진도 오라하고 ㅠ" [ref=e929] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/wgang/420214?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6IndnYW5nIiwiYXJ0aWNsZUlkIjo0MjAyMTQsImlzc3VlZEF0IjoxNzc5MjU5MzUwNzEwfQ.hWI-H53WZw-11BTqSkyl5rMnAVPYHqZTvnKesLIpM7M
+                    - generic [ref=e932]:
+                      - generic [ref=e933]: RE
+                      - text: 저도 2세대 인데 그냥 유지요 이제 50넘어 병원자주가고 계속 정기검진도 오라하고 ㅠ
+                  - link "RE 안녕하세요! 비안67님께서 말씀해 주신 내용 참고해 보시면 좋을거 같아요 ^^ 언젠가는 1~2세대(13년 3월 31일까지 가입한) 유지못합니다ㅜ" [ref=e934] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/wgang/420214?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6IndnYW5nIiwiYXJ0aWNsZUlkIjo0MjAyMTQsImlzc3VlZEF0IjoxNzc5MjU5MzUwNzEwfQ.hWI-H53WZw-11BTqSkyl5rMnAVPYHqZTvnKesLIpM7M
+                    - generic [ref=e937]:
+                      - generic [ref=e938]: RE
+                      - text: 안녕하세요! 비안67님께서 말씀해 주신 내용 참고해 보시면 좋을거 같아요 ^^ 언젠가는 1~2세대(13년 3월 31일까지 가입한) 유지못합니다ㅜ
+                  - link "RE 저 2015년도에 가입했는데 아마도 3세대? 그때당시 10만원 (암보험+실비)정도 였는데 지금 24만원 솔직히 부담되네요. 그래도 갈수록 병원" [ref=e939] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/wgang/420214?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6IndnYW5nIiwiYXJ0aWNsZUlkIjo0MjAyMTQsImlzc3VlZEF0IjoxNzc5MjU5MzUwNzEwfQ.hWI-H53WZw-11BTqSkyl5rMnAVPYHqZTvnKesLIpM7M
+                    - generic [ref=e942]:
+                      - generic [ref=e943]: RE
+                      - generic [ref=e944]:
+                        - text: 저 2015년도에 가입했는데 아마도 3세대? 그때당시 10만원 (암
+                        - mark [ref=e945]: 보험
+                        - text: +
+                        - mark [ref=e946]: 실비
+                        - text: )정도 였는데 지금 24만원 솔직히 부담되네요. 그래도 갈수록 병원
+                  - link "RE 저는 정기검진 진료가 있어서 2세대 10만원 좀 넘는데 유지중입니다. 검진시 문제있으면 바로 시술이든 수술이든 해야해서...최대한 버틸때" [ref=e947] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/wgang/420214?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6IndnYW5nIiwiYXJ0aWNsZUlkIjo0MjAyMTQsImlzc3VlZEF0IjoxNzc5MjU5MzUwNzEwfQ.hWI-H53WZw-11BTqSkyl5rMnAVPYHqZTvnKesLIpM7M
+                    - generic [ref=e950]:
+                      - generic [ref=e951]: RE
+                      - text: 저는 정기검진 진료가 있어서 2세대 10만원 좀 넘는데 유지중입니다. 검진시 문제있으면 바로 시술이든 수술이든 해야해서...최대한 버틸때
+                - button "다음 버튼" [ref=e952] [cursor=pointer]:
+                  - img [ref=e954]
+            - generic [ref=e961]:
+              - generic [ref=e962]:
+                - link "DB손해보험 www.idbins.com" [ref=e963] [cursor=pointer]:
+                  - /url: https://www.idbins.com/FWMALV0723.do
+                  - generic [ref=e965]:
+                    - generic [ref=e970]: DB손해보험
+                    - generic [ref=e974]: www.idbins.com
+                - button "옵션 메뉴 열기" [ref=e976] [cursor=pointer]:
+                  - img [ref=e977]
+              - generic [ref=e981]:
+                - link "<mark>실손</mark>의료비<mark>보험</mark> - DB손해<mark>보험</mark>의 이미지" [ref=e982] [cursor=pointer]:
+                  - /url: https://www.idbins.com/FWMALV0723.do
+                  - img "<mark>실손</mark>의료비<mark>보험</mark> - DB손해<mark>보험</mark>의 이미지" [ref=e984]
+                - link "실손의료비보험 - DB손해보험" [ref=e987] [cursor=pointer]:
+                  - /url: https://www.idbins.com/FWMALV0723.do
+                  - generic [ref=e988]:
+                    - mark [ref=e989]: 실손
+                    - text: 의료비
+                    - mark [ref=e990]: 보험
+                    - text: "- DB손해"
+                    - mark [ref=e991]: 보험
+                - link "국민건강보험이 보장하지 않는 비급여 항목도 보장! (특약가입시) 실손의료비보험으로 의료비 부담을 덜어보세요.(일부 자기부담금 공제)" [ref=e993] [cursor=pointer]:
+                  - /url: https://www.idbins.com/FWMALV0723.do
+                  - generic [ref=e994]:
+                    - text: 국민건강
+                    - mark [ref=e995]: 보험
+                    - text: 이 보장하지 않는 비급여 항목도 보장! (특약가입시)
+                    - mark [ref=e996]: 실손
+                    - text: 의료비
+                    - mark [ref=e997]: 보험
+                    - text: 으로 의료비 부담을 덜어보세요.(일부 자기부담금 공제)
+            - generic [ref=e1003]:
+              - generic [ref=e1004]:
+                - link "KB손해보험 www.kbinsure.co.kr" [ref=e1005] [cursor=pointer]:
+                  - /url: https://www.kbinsure.co.kr/CG302090001.ec
+                  - generic [ref=e1007]:
+                    - generic [ref=e1012]: KB손해보험
+                    - generic [ref=e1016]: www.kbinsure.co.kr
+                - button "옵션 메뉴 열기" [ref=e1018] [cursor=pointer]:
+                  - img [ref=e1019]
+              - generic [ref=e1023]:
+                - link "KB 손보 <mark>실손</mark>의료비보장<mark>보험</mark>(상품안내) | KB손해<mark>보험</mark> [A]의 이미지" [ref=e1024] [cursor=pointer]:
+                  - /url: https://www.kbinsure.co.kr/CG302090001.ec
+                  - img "KB 손보 <mark>실손</mark>의료비보장<mark>보험</mark>(상품안내) | KB손해<mark>보험</mark> [A]의 이미지" [ref=e1026]
+                - link "KB 손보 실손의료비보장보험(상품안내) | KB손해보험 [A]" [ref=e1029] [cursor=pointer]:
+                  - /url: https://www.kbinsure.co.kr/CG302090001.ec
+                  - generic [ref=e1030]:
+                    - text: KB 손보
+                    - mark [ref=e1031]: 실손
+                    - text: 의료비보장
+                    - mark [ref=e1032]: 보험
+                    - text: (상품안내) | KB손해
+                    - mark [ref=e1033]: 보험
+                    - text: "[A]"
+                - 'link "보험료 간편하게 확인해보세요! ; 나이 : 세, 성별 : 남 여 . 매년 연령증가, 의료수가의 변동, 기초율(위험률 등)의 변동, 요율 상대도(할인 ·할증요율) 적용에 따라 보험료가 인상될 수 있음" [ref=e1035] [cursor=pointer]':
+                  - /url: https://www.kbinsure.co.kr/CG302090001.ec
+                  - generic [ref=e1036]:
+                    - mark [ref=e1037]: 보험
+                    - text: "료 간편하게 확인해보세요! ; 나이 : 세, 성별 : 남 여 . 매년 연령증가, 의료수가의 변동, 기초율(위험률 등)의 변동, 요율 상대도(할인 ·할증요율) 적용에 따라"
+                    - mark [ref=e1038]: 보험
+                    - text: 료가 인상될 수 있음
+            - generic [ref=e1044]:
+              - generic [ref=e1045]:
+                - generic [ref=e1046]:
+                  - link [ref=e1048] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79
+                  - generic [ref=e1051]:
+                    - link "해돌 해피돌싱/올드싱글/이혼카페/재혼/양육비/상간소송/소개팅" [ref=e1053] [cursor=pointer]:
+                      - /url: https://cafe.naver.com/move79
+                      - generic [ref=e1054]: 해돌 해피돌싱/올드싱글/이혼카페/재혼/양육비/상간소송/소개팅
+                    - img [ref=e1055]
+                  - generic [ref=e1060]: 5일 전
+                - button "옵션 메뉴 열기" [ref=e1062] [cursor=pointer]:
+                  - img [ref=e1063]
+              - generic [ref=e1068]:
+                - generic [ref=e1069]:
+                  - link "삼성화재실비보험 보장 비교 어떤가요?" [ref=e1070] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                    - generic [ref=e1071]:
+                      - text: 삼성화재
+                      - mark [ref=e1072]: 실비보험
+                      - text: 보장 비교 어떤가요?
+                  - link "특히 삼성화재실비보험 알아보시는 분들은 어디서 비교해보세요? 광고처럼 보이는 글은 너무 많고 실제 가입해본 분들 후기 찾는 것도 쉽지가 않더라고요. 저는 이번에 갱신 시기 다가오면서 삼성화재실비보험 쪽도 같이 보고 있는데 주변에서는 병원 자주 가는 편이면 체크해보라고 해서 더 고민되는 중이에요. 근데 막상 혼자 보려니까 특약 같은 용어도 어렵고 뭐를 먼저..." [ref=e1074] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                    - generic [ref=e1075]:
+                      - text: 특히 삼성화재
+                      - mark [ref=e1076]: 실비보험
+                      - text: 알아보시는 분들은 어디서 비교해보세요? 광고처럼 보이는 글은 너무 많고 실제 가입해본 분들 후기 찾는 것도 쉽지가 않더라고요. 저는 이번에 갱신 시기 다가오면서 삼성화재
+                      - mark [ref=e1077]: 실비보험
+                      - text: 쪽도 같이 보고 있는데 주변에서는 병원 자주 가는 편이면 체크해보라고 해서 더 고민되는 중이에요. 근데 막상 혼자 보려니까 특약 같은 용어도 어렵고 뭐를 먼저...
+                - link "2" [ref=e1078] [cursor=pointer]:
+                  - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                  - generic [ref=e1080]:
+                    - img [ref=e1081]
+                    - generic [ref=e1085]: "2"
+              - generic [ref=e1086]:
+                - generic [ref=e1088]:
+                  - link "RE 병원 자주 가는 편이면 실비보험 꼭 체크해보는 게 좋죠. 저도 최근에 가입했는데, 청구 편의성이 정말 중요해요." [ref=e1089] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                    - generic [ref=e1092]:
+                      - generic [ref=e1093]: RE
+                      - generic [ref=e1094]:
+                        - text: 병원 자주 가는 편이면
+                        - mark [ref=e1095]: 실비보험
+                        - text: 꼭 체크해보는 게 좋죠. 저도 최근에 가입했는데, 청구 편의성이 정말 중요해요.
+                  - link "RE 삼성화재 실비보험은 납입금이 다른 회사보다 괜찮은 것 같아요. 비교 사이트 이용하니까 쉽게 찾을 수 있더라고요." [ref=e1096] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                    - generic [ref=e1099]:
+                      - generic [ref=e1100]: RE
+                      - generic [ref=e1101]:
+                        - text: 삼성화재
+                        - mark [ref=e1102]: 실비보험
+                        - text: 은 납입금이 다른 회사보다 괜찮은 것 같아요. 비교 사이트 이용하니까 쉽게 찾을 수 있더라고요.
+                  - link "RE 저도 상담 받아봤는데, 상담사님이 특약 설명을 많이 해주셔서 도움이 되었어요. 처음엔 어렵지만 차근차근 이해되더라고요." [ref=e1103] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                    - generic [ref=e1106]:
+                      - generic [ref=e1107]: RE
+                      - text: 저도 상담 받아봤는데, 상담사님이 특약 설명을 많이 해주셔서 도움이 되었어요. 처음엔 어렵지만 차근차근 이해되더라고요.
+                  - link "RE 주변에서 삼성화재 실비보험 추천 많이 하던데, 실제 가입해보신 분들은 어떤 점이 좋았는지 궁금해요." [ref=e1108] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                    - generic [ref=e1111]:
+                      - generic [ref=e1112]: RE
+                      - generic [ref=e1113]:
+                        - text: 주변에서 삼성화재
+                        - mark [ref=e1114]: 실비보험
+                        - text: 추천 많이 하던데, 실제 가입해보신 분들은 어떤 점이 좋았는지 궁금해요.
+                  - link "RE 저도 비교 사이트 이용해봤는데, 조건이 잘 정리되어 있어서 편했어요. 여러 군데 비교해보는 게 중요하더라고요." [ref=e1115] [cursor=pointer]:
+                    - /url: https://cafe.naver.com/move79/6064714?art=ZXh0ZXJuYWwtc2VydmljZS1uYXZlci1zZWFyY2gtY2FmZS1wcg.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYWZlVHlwZSI6IkNBRkVfVVJMIiwiY2FmZVVybCI6Im1vdmU3OSIsImFydGljbGVJZCI6NjA2NDcxNCwiaXNzdWVkQXQiOjE3NzkyNTkzNTA3MTB9.Umz_CLao4OckfVQLkHDQF7Fw_7foFPnhlj6VKgiYnvM
+                    - generic [ref=e1118]:
+                      - generic [ref=e1119]: RE
+                      - text: 저도 비교 사이트 이용해봤는데, 조건이 잘 정리되어 있어서 편했어요. 여러 군데 비교해보는 게 중요하더라고요.
+                - button "다음 버튼" [ref=e1120] [cursor=pointer]:
+                  - img [ref=e1122]
+            - generic [ref=e1128]:
+              - generic [ref=e1129]:
+                - generic [ref=e1132]:
+                  - link "네이버 지식iN" [ref=e1134] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                    - img "네이버 지식iN" [ref=e1137]
+                  - link "네이버 지식iN" [ref=e1140] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                    - generic [ref=e1141]: 네이버 지식iN
+                  - generic [ref=e1144]: 2주 전
+                - button "옵션 메뉴 열기" [ref=e1147] [cursor=pointer]:
+                  - img [ref=e1148]
+              - generic [ref=e1152]:
+                - generic [ref=e1153]:
+                  - generic [ref=e1154]:
+                    - img [ref=e1155]
+                    - link "5년이내 입원 이력 있으면 유병자 실비 보험 가입해야하나요?" [ref=e1158] [cursor=pointer]:
+                      - /url: https://kin.naver.com/qna/detail.naver?dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                      - generic [ref=e1159]:
+                        - text: 5년이내 입원 이력 있으면 유병자
+                        - mark [ref=e1160]: 실비 보험
+                        - text: 가입해야하나요?
+                  - link "수술은 안했고 뇌수막염이였구 1달도 입원 안했어요 유병자랑 일반 실비 랑 너무 차이 나네요 ㅠ" [ref=e1161] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                    - generic [ref=e1162]:
+                      - text: 수술은 안했고 뇌수막염이였구 1달도 입원 안했어요 유병자랑 일반
+                      - mark [ref=e1163]: 실비
+                      - text: 랑 너무 차이 나네요 ㅠ
+                - generic [ref=e1165]:
+                  - link "실비보험이 꼭히 필요하다면 알단은 유병자보험에 가입한 후 고지사항이 있지 않을 때 건강체보험으로 갈아타는 것도 생각해볼 수 있습니다. 다만, 실비보험의 경우 가입자의 일부(10% 미만)만 낸 보험료보다 받은 보험금이 많을 뿐 거의 대부분의 가입자는 밴 돈 보다 받은 돈이 더 적다는 부분은 충분히 고려해봐야 합니다." [ref=e1166] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?answerNo=4&dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY#answer4
+                    - generic [ref=e1167]: 실비보험이 꼭히 필요하다면 알단은 유병자보험에 가입한 후 고지사항이 있지 않을 때 건강체보험으로 갈아타는 것도 생각해볼 수 있습니다. 다만, 실비보험의 경우 가입자의 일부(10% 미만)만 낸 보험료보다 받은 보험금이 많을 뿐 거의 대부분의 가입자는 밴 돈 보다 받은 돈이 더 적다는 부분은 충분히 고려해봐야 합니다.
+                  - generic [ref=e1169]:
+                    - link "alt" [ref=e1171] [cursor=pointer]:
+                      - /url: https://kin.naver.com/search/profileLink?answerNo=4&dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb
+                      - img "alt" [ref=e1174]
+                    - generic [ref=e1175]:
+                      - link "박한석 손해사정사" [ref=e1177] [cursor=pointer]:
+                        - /url: https://kin.naver.com/search/profileLink?answerNo=4&dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb
+                        - generic [ref=e1178]: 박한석 손해사정사
+                      - generic [ref=e1179]:
+                        - link "손해사정사" [ref=e1181] [cursor=pointer]:
+                          - /url: https://kin.naver.com/search/profileLink?answerNo=4&dirId=401030201&docId=493202976&kinsrch_src=pc_nx_urb
+                          - generic [ref=e1182]: 손해사정사
+                        - generic [ref=e1183]: 손해사정
+                    - generic [ref=e1186]: 2주 전
+            - generic [ref=e1192]:
+              - generic [ref=e1193]:
+                - generic [ref=e1194]:
+                  - link [ref=e1196] [cursor=pointer]:
+                    - /url: https://blog.naver.com/sealom2
+                  - link "최군의 보험스토리" [ref=e1201] [cursor=pointer]:
+                    - /url: https://blog.naver.com/sealom2
+                    - generic [ref=e1202]: 최군의 보험스토리
+                  - generic [ref=e1205]: 2주 전
+                - button "옵션 메뉴 열기" [ref=e1207] [cursor=pointer]:
+                  - img [ref=e1208]
+              - generic [ref=e1213]:
+                - generic [ref=e1214]:
+                  - link "족저근막염 치료방법 체외충격파 효과와 실비 보험 청구 서류 확인" [ref=e1215] [cursor=pointer]:
+                    - /url: https://blog.naver.com/sealom2/224273106560
+                    - generic [ref=e1216]:
+                      - text: 족저근막염 치료방법 체외충격파 효과와
+                      - mark [ref=e1217]: 실비 보험
+                      - text: 청구 서류 확인
+                  - link "실비 보험 청구 가능한 족저근막염 치료 항목과 보상 범위 많은 분이 궁금해하시는 점이 비급여 치료인 체외충격파가 정말 실비 처리가 되느냐는 것입니다. 결론부터 말씀드리면 질병코드 M72.2를 부여받고 의학적으로 필요한 치료임이 증명된다면 대부분 보상이 가능합니다. 다만 가입하신 실손 보험의 시기에 따라 보상 비율은 달라집니다. 과거에 가입한 상품은 5천..." [ref=e1219] [cursor=pointer]:
+                    - /url: https://blog.naver.com/sealom2/224273106560
+                    - generic [ref=e1220]:
+                      - mark [ref=e1221]: 실비 보험
+                      - text: 청구 가능한 족저근막염 치료 항목과 보상 범위 많은 분이 궁금해하시는 점이 비급여 치료인 체외충격파가 정말
+                      - mark [ref=e1222]: 실비
+                      - text: 처리가 되느냐는 것입니다. 결론부터 말씀드리면 질병코드 M72.2를 부여받고 의학적으로 필요한 치료임이 증명된다면 대부분 보상이 가능합니다. 다만 가입하신
+                      - mark [ref=e1223]: 실손
+                      - mark [ref=e1224]: 보험
+                      - text: 의 시기에 따라 보상 비율은 달라집니다. 과거에 가입한 상품은 5천...
+                - link "8" [ref=e1225] [cursor=pointer]:
+                  - /url: https://blog.naver.com/sealom2/224273106560
+                  - generic [ref=e1227]:
+                    - img [ref=e1228]
+                    - generic [ref=e1232]: "8"
+              - link "구내염 원인 피로 누적 외에 다양한 이유와 실비 보험 청구 여부 확인" [ref=e1236] [cursor=pointer]:
+                - /url: https://blog.naver.com/sealom2/224273304058
+                - generic [ref=e1237]:
+                  - text: 구내염 원인 피로 누적 외에 다양한 이유와
+                  - mark [ref=e1238]: 실비 보험
+                  - text: 청구 여부 확인
+            - generic [ref=e1244]:
+              - generic [ref=e1245]:
+                - generic [ref=e1246]:
+                  - link [ref=e1248] [cursor=pointer]:
+                    - /url: https://blog.naver.com/dooobooo2019
+                  - link "두부집사의 건강라이프" [ref=e1253] [cursor=pointer]:
+                    - /url: https://blog.naver.com/dooobooo2019
+                    - generic [ref=e1254]: 두부집사의 건강라이프
+                  - generic [ref=e1257]: 3주 전
+                - button "옵션 메뉴 열기" [ref=e1259] [cursor=pointer]:
+                  - img [ref=e1260]
+              - generic [ref=e1265]:
+                - generic [ref=e1266]:
+                  - link "내 실비는 몇세대 일까 (+실손보험 '세대' 확인하는 방법)" [ref=e1267] [cursor=pointer]:
+                    - /url: https://blog.naver.com/dooobooo2019/224269046774
+                    - generic [ref=e1268]:
+                      - text: 내
+                      - mark [ref=e1269]: 실비
+                      - text: 는 몇세대 일까 (+
+                      - mark [ref=e1270]: 실손
+                      - mark [ref=e1271]: 보험
+                      - text: "'세대' 확인하는 방법)"
+                  - link "갱신을 앞두고 보험료가 2배 이상 뛴 분들은 지금 당장 내 세대를 확인하고 전문가 상담이나 조회를 통해 최적의 대안을 찾아야 합니다. 자세한 세대 확인 방법은 아래 링크에서 바로 확인하실 수 있습니다. ▶ 내 실비 실손보험 세대 확인하기 * 본 포스팅은 일반적인 정보 제공을 목적으로 한 단순한 참고용으로, 정확한 사항은 해당 기관이나 전문가와 상의하세요." [ref=e1273] [cursor=pointer]:
+                    - /url: https://blog.naver.com/dooobooo2019/224269046774
+                    - generic [ref=e1274]:
+                      - text: 갱신을 앞두고
+                      - mark [ref=e1275]: 보험
+                      - text: 료가 2배 이상 뛴 분들은 지금 당장 내 세대를 확인하고 전문가 상담이나 조회를 통해 최적의 대안을 찾아야 합니다. 자세한 세대 확인 방법은 아래 링크에서 바로 확인하실 수 있습니다. ▶ 내
+                      - mark [ref=e1276]: 실비
+                      - mark [ref=e1277]: 실손
+                      - mark [ref=e1278]: 보험
+                      - text: 세대 확인하기 * 본 포스팅은 일반적인 정보 제공을 목적으로 한 단순한 참고용으로, 정확한 사항은 해당 기관이나 전문가와 상의하세요.
+                - link [ref=e1279] [cursor=pointer]:
+                  - /url: https://blog.naver.com/dooobooo2019/224269046774
+                  - img [ref=e1282]
+              - link "4세대 실손보험 유지할까? 5세대로 갈아탈까? (4세대 vs 5세대 실비보험 비교하기)" [ref=e1287] [cursor=pointer]:
+                - /url: https://blog.naver.com/dooobooo2019/224265509222
+                - generic [ref=e1288]:
+                  - text: 4세대
+                  - mark [ref=e1289]: 실손
+                  - mark [ref=e1290]: 보험
+                  - text: 유지할까? 5세대로 갈아탈까? (4세대 vs 5세대
+                  - mark [ref=e1291]: 실비보험
+                  - text: 비교하기)
+            - generic [ref=e1296]:
+              - generic [ref=e1297]:
+                - generic [ref=e1300]:
+                  - link "네이버 지식iN" [ref=e1302] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                    - img "네이버 지식iN" [ref=e1305]
+                  - link "네이버 지식iN" [ref=e1308] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                    - generic [ref=e1309]: 네이버 지식iN
+                  - generic [ref=e1312]: 1주 전
+                - button "옵션 메뉴 열기" [ref=e1315] [cursor=pointer]:
+                  - img [ref=e1316]
+              - generic [ref=e1320]:
+                - generic [ref=e1321]:
+                  - generic [ref=e1322]:
+                    - img [ref=e1323]
+                    - link "약봉투가 실비보험으로 청구하는데 도움이 되나요?" [ref=e1326] [cursor=pointer]:
+                      - /url: https://kin.naver.com/qna/detail.naver?dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                      - generic [ref=e1327]:
+                        - text: 약봉투가
+                        - mark [ref=e1328]: 실비보험
+                        - text: 으로 청구하는데 도움이 되나요?
+                  - link "실비보험 으로 청구하는데 도움이 되나요?" [ref=e1329] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                    - generic [ref=e1330]:
+                      - mark [ref=e1331]: 실비보험
+                      - text: 으로 청구하는데 도움이 되나요?
+                - generic [ref=e1333]:
+                  - link [ref=e1335] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY
+                    - img [ref=e1337]
+                  - link "본인부담금이 7,950원이로군요. 통원 약제비의 1일당 공제금액이 높지 않다면 (5,000원이라면) 사진 첨부한 약 봉투에 기재된 약제비계산서,영수증에 의해 2,950원을 보상받을 수 있으며 통원 1일당 약제비 공제금이 8,000원이라면 안타깝게도 보상받을 금액이 있지 아니합니다." [ref=e1338] [cursor=pointer]:
+                    - /url: https://kin.naver.com/qna/detail.naver?answerNo=5&dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb&qb=7Iuk67mE67O07ZeY#answer5
+                    - generic [ref=e1339]: 본인부담금이 7,950원이로군요. 통원 약제비의 1일당 공제금액이 높지 않다면 (5,000원이라면) 사진 첨부한 약 봉투에 기재된 약제비계산서,영수증에 의해 2,950원을 보상받을 수 있으며 통원 1일당 약제비 공제금이 8,000원이라면 안타깝게도 보상받을 금액이 있지 아니합니다.
+                  - generic [ref=e1341]:
+                    - link "alt" [ref=e1343] [cursor=pointer]:
+                      - /url: https://kin.naver.com/search/profileLink?answerNo=5&dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb
+                      - img "alt" [ref=e1346]
+                    - generic [ref=e1347]:
+                      - link "박한석 손해사정사" [ref=e1349] [cursor=pointer]:
+                        - /url: https://kin.naver.com/search/profileLink?answerNo=5&dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb
+                        - generic [ref=e1350]: 박한석 손해사정사
+                      - generic [ref=e1351]:
+                        - link "손해사정사" [ref=e1353] [cursor=pointer]:
+                          - /url: https://kin.naver.com/search/profileLink?answerNo=5&dirId=401030203&docId=493324722&kinsrch_src=pc_nx_urb
+                          - generic [ref=e1354]: 손해사정사
+                        - generic [ref=e1355]: 손해사정
+                    - generic [ref=e1358]: 1주 전
+            - generic [ref=e1364]:
+              - generic [ref=e1365]:
+                - generic [ref=e1366]:
+                  - link "보험메이트" [ref=e1368] [cursor=pointer]:
+                    - /url: https://www.youtube.com/channel/UCzrRPgR-_8RWJZwn1ZFtcrQ
+                    - img "보험메이트" [ref=e1371]
+                  - generic [ref=e1372]:
+                    - link "보험메이트" [ref=e1374] [cursor=pointer]:
+                      - /url: https://www.youtube.com/channel/UCzrRPgR-_8RWJZwn1ZFtcrQ
+                      - generic [ref=e1375]: 보험메이트
+                    - img [ref=e1376]
+                  - generic [ref=e1378]:
+                    - link "YouTube" [ref=e1381] [cursor=pointer]:
+                      - /url: https://www.youtube.com
+                      - generic [ref=e1382]: YouTube
+                    - generic [ref=e1385]: 2025.09.24.
+                - button "옵션 메뉴 열기" [ref=e1387] [cursor=pointer]:
+                  - img [ref=e1388]
+              - generic [ref=e1392]:
+                - generic [ref=e1393]:
+                  - link "실손보험 청구 바로 하지 마세요! 이거 모르면 손해 볼 수도.. 실비보험 청구 꿀팁 공개" [ref=e1394] [cursor=pointer]:
+                    - /url: https://www.youtube.com/watch?v=Gmr48kZfI4k
+                    - generic [ref=e1395]:
+                      - mark [ref=e1396]: 실손
+                      - mark [ref=e1397]: 보험
+                      - text: 청구 바로 하지 마세요! 이거 모르면 손해 볼 수도..
+                      - mark [ref=e1398]: 실비보험
+                      - text: 청구 꿀팁 공개
+                  - 'link "암·뇌·심장 같은 중증질환자는 예외 산정특례 대상자 및 노인장기요양 1~2등급은 할증 제외 00:00 인트로 00:40 실비보험이란? 01:04 실비청구 바로 하면 안되는 이유(1) 03:09 실비청구 바로 하면 안되는 이유(2) 04:38 보험료 할증 피할 수 있는 팁 05:42 마무리 05:54 상담안내 #실손보험 #실비보험 #실손청구 #보험금청구" [ref=e1399] [cursor=pointer]':
+                    - /url: https://www.youtube.com/watch?v=Gmr48kZfI4k
+                    - generic [ref=e1400]:
+                      - text: 암·뇌·심장 같은 중증질환자는 예외 산정특례 대상자 및 노인장기요양 1~2등급은 할증 제외 00:00 인트로 00:40
+                      - mark [ref=e1401]: 실비보험
+                      - text: 이란? 01:04
+                      - mark [ref=e1402]: 실비
+                      - text: 청구 바로 하면 안되는 이유(1) 03:09
+                      - mark [ref=e1403]: 실비
+                      - text: 청구 바로 하면 안되는 이유(2) 04:38
+                      - mark [ref=e1404]: 보험
+                      - text: "료 할증 피할 수 있는 팁 05:42 마무리 05:54 상담안내 #"
+                      - mark [ref=e1405]: 실손
+                      - mark [ref=e1406]: 보험
+                      - text: "#"
+                      - mark [ref=e1407]: 실비보험
+                      - text: "#"
+                      - mark [ref=e1408]: 실손
+                      - text: "청구 #"
+                      - mark [ref=e1409]: 보험
+                      - text: 금청구
+                - link "실손보험 청구 바로 하지 마세요! 이거 모르면 손해 볼 수도.. 실비보험 청구 꿀팁 공개 06:36" [ref=e1411] [cursor=pointer]:
+                  - /url: https://www.youtube.com/watch?v=Gmr48kZfI4k
+                  - img "실손보험 청구 바로 하지 마세요! 이거 모르면 손해 볼 수도.. 실비보험 청구 꿀팁 공개" [ref=e1412]
+                  - generic [ref=e1413]:
+                    - img [ref=e1415]
+                    - generic [ref=e1418]: 06:36
+            - generic [ref=e1424]:
+              - generic [ref=e1425]:
+                - generic [ref=e1426]:
+                  - link "금융상품연구소" [ref=e1428] [cursor=pointer]:
+                    - /url: https://www.youtube.com/channel/UCvDigULicg0iGXgALkLzGZw
+                    - img "금융상품연구소" [ref=e1431]
+                  - link "금융상품연구소" [ref=e1434] [cursor=pointer]:
+                    - /url: https://www.youtube.com/channel/UCvDigULicg0iGXgALkLzGZw
+                    - generic [ref=e1435]: 금융상품연구소
+                  - generic [ref=e1436]:
+                    - link "YouTube" [ref=e1439] [cursor=pointer]:
+                      - /url: https://www.youtube.com
+                      - generic [ref=e1440]: YouTube
+                    - generic [ref=e1443]: 2025.09.08.
+                - button "옵션 메뉴 열기" [ref=e1445] [cursor=pointer]:
+                  - img [ref=e1446]
+              - generic [ref=e1450]:
+                - generic [ref=e1451]:
+                  - link "실비보험 4세대 전환 해야 할까? 1세대, 2세대, 3세대 보장과 특징 총정리!" [ref=e1452] [cursor=pointer]:
+                    - /url: https://www.youtube.com/watch?v=GYZsIR2MuNI
+                    - generic [ref=e1453]:
+                      - mark [ref=e1454]: 실비보험
+                      - text: 4세대 전환 해야 할까? 1세대, 2세대, 3세대 보장과 특징 총정리!
+                  - 'link "오픈채팅 ※ 오픈채팅에서는 보험사, 상품명이 공개된 정보가 실시간으로 공유됩니다. 보험에 대해 더 정확한 정보를 원하시는 분들은 입장해주세요. (일반인방)4321 https://open.kakao.com/o/g6896Uvf (설계사방) 4321 https://open.kakao.com/o/gHBaeVvf #실비보험4세대전환 #실손보험 #4세대실손 #자기부담금 #보험전환 #실비보험비교 #실비보험 청구 #4세대실손보험료" [ref=e1455] [cursor=pointer]':
+                    - /url: https://www.youtube.com/watch?v=GYZsIR2MuNI
+                    - generic [ref=e1456]:
+                      - text: 오픈채팅 ※ 오픈채팅에서는
+                      - mark [ref=e1457]: 보험
+                      - text: 사, 상품명이 공개된 정보가 실시간으로 공유됩니다.
+                      - mark [ref=e1458]: 보험
+                      - text: "에 대해 더 정확한 정보를 원하시는 분들은 입장해주세요. (일반인방)4321 https://open.kakao.com/o/g6896Uvf (설계사방) 4321 https://open.kakao.com/o/gHBaeVvf #"
+                      - mark [ref=e1459]: 실비보험
+                      - text: "4세대전환 #"
+                      - mark [ref=e1460]: 실손
+                      - mark [ref=e1461]: 보험
+                      - text: "#4세대"
+                      - mark [ref=e1462]: 실손
+                      - text: "#자기부담금 #"
+                      - mark [ref=e1463]: 보험
+                      - text: "전환 #"
+                      - mark [ref=e1464]: 실비보험
+                      - text: "비교 #"
+                      - mark [ref=e1465]: 실비보험
+                      - text: "청구 #4세대"
+                      - mark [ref=e1466]: 실손
+                      - mark [ref=e1467]: 보험
+                      - text: 료
+                - link "실비보험 4세대 전환 해야 할까? 1세대, 2세대, 3세대 보장과 특징 총정리! 13:12" [ref=e1469] [cursor=pointer]:
+                  - /url: https://www.youtube.com/watch?v=GYZsIR2MuNI
+                  - img "실비보험 4세대 전환 해야 할까? 1세대, 2세대, 3세대 보장과 특징 총정리!" [ref=e1470]
+                  - generic [ref=e1471]:
+                    - img [ref=e1473]
+                    - generic [ref=e1476]: 13:12
+            - generic [ref=e1482]:
+              - generic [ref=e1483]:
+                - link "www.myanycar.com›mall" [ref=e1484] [cursor=pointer]:
+                  - /url: https://www.myanycar.com/mall/PP030404_001.html
+                  - generic [ref=e1492]: www.myanycar.com›mall
+                - button "옵션 메뉴 열기" [ref=e1494] [cursor=pointer]:
+                  - img [ref=e1495]
+              - generic [ref=e1499]:
+                - link "<mark>실손</mark>의료비<mark>보험</mark> | <mark>보험</mark>상품 - 삼성화재 다이렉트 착의 이미지" [ref=e1500] [cursor=pointer]:
+                  - /url: https://www.myanycar.com/mall/PP030404_001.html
+                  - img "<mark>실손</mark>의료비<mark>보험</mark> | <mark>보험</mark>상품 - 삼성화재 다이렉트 착의 이미지" [ref=e1502]
+                - link "실손의료비보험 | 보험상품 - 삼성화재 다이렉트 착" [ref=e1505] [cursor=pointer]:
+                  - /url: https://www.myanycar.com/mall/PP030404_001.html
+                  - generic [ref=e1506]:
+                    - mark [ref=e1507]: 실손
+                    - text: 의료비
+                    - mark [ref=e1508]: 보험
+                    - text: "|"
+                    - mark [ref=e1509]: 보험
+                    - text: 상품 - 삼성화재 다이렉트 착
+                - link "직전 2년간 비중증 비급여 보험금 지급이 없었다면 갱신 시 영업 보험료 10% 할인 보험기간 종료 3개월 전으로부터 직전 2년간" [ref=e1511] [cursor=pointer]:
+                  - /url: https://www.myanycar.com/mall/PP030404_001.html
+                  - generic [ref=e1512]:
+                    - text: 직전 2년간 비중증 비급여
+                    - mark [ref=e1513]: 보험
+                    - text: 금 지급이 없었다면 갱신 시 영업
+                    - mark [ref=e1514]: 보험
+                    - text: 료 10% 할인
+                    - mark [ref=e1515]: 보험
+                    - text: 기간 종료 3개월 전으로부터 직전 2년간
+            - generic [ref=e1521]:
+              - generic [ref=e1522]:
+                - link "pay.naver.com›mymoney" [ref=e1523] [cursor=pointer]:
+                  - /url: https://pay.naver.com/mymoney/insurance/contents/16
+                  - generic [ref=e1531]: pay.naver.com›mymoney
+                - button "옵션 메뉴 열기" [ref=e1533] [cursor=pointer]:
+                  - img [ref=e1534]
+              - generic [ref=e1538]:
+                - link "<mark>실손</mark><mark>보험</mark>의 ‘급여’, ‘비급여’ 이게 다 무슨 말인가요? - 네이버페이의 이미지" [ref=e1539] [cursor=pointer]:
+                  - /url: https://pay.naver.com/mymoney/insurance/contents/16
+                  - img "<mark>실손</mark><mark>보험</mark>의 ‘급여’, ‘비급여’ 이게 다 무슨 말인가요? - 네이버페이의 이미지" [ref=e1541]
+                - link "실손보험의 ‘급여’, ‘비급여’ 이게 다 무슨 말인가요? - 네이버페이" [ref=e1544] [cursor=pointer]:
+                  - /url: https://pay.naver.com/mymoney/insurance/contents/16
+                  - generic [ref=e1545]:
+                    - mark [ref=e1546]: 실손
+                    - mark [ref=e1547]: 보험
+                    - text: 의 ‘급여’, ‘비급여’ 이게 다 무슨 말인가요? - 네이버페이
+                - link "병원에 다녀오고 난 후 진료비 계산서나 영수증을 받아보신 적 있으실 거에요. 혹시 진료비 계산서나 영수증을 자세히 보신 적 있으세요? 급여, 비급여, 본인부담금 등 이해하기 어려운 말들이 많이 적혀있는데요. 알기 쉽게 설명해드릴게요! 우리가 받는 진료비 계산서는 크게 건강보험이 적용되는 급여항목과 건강보험이 적용되지 않는 비급여항목으로 나누어져 있어요. 그리....." [ref=e1549] [cursor=pointer]:
+                  - /url: https://pay.naver.com/mymoney/insurance/contents/16
+                  - generic [ref=e1550]:
+                    - text: 병원에 다녀오고 난 후 진료비 계산서나 영수증을 받아보신 적 있으실 거에요. 혹시 진료비 계산서나 영수증을 자세히 보신 적 있으세요? 급여, 비급여, 본인부담금 등 이해하기 어려운 말들이 많이 적혀있는데요. 알기 쉽게 설명해드릴게요! 우리가 받는 진료비 계산서는 크게 건강
+                    - mark [ref=e1551]: 보험
+                    - text: 이 적용되는 급여항목과 건강
+                    - mark [ref=e1552]: 보험
+                    - text: 이 적용되지 않는 비급여항목으로 나누어져 있어요. 그리.....
+          - generic [ref=e1554]:
+            - button "이전" [disabled] [ref=e1555]:
+              - generic [ref=e1556]: 이전
+            - generic [ref=e1557]:
+              - button "1" [pressed] [ref=e1558] [cursor=pointer]
+              - button "2" [ref=e1559] [cursor=pointer]
+              - button "3" [ref=e1560] [cursor=pointer]
+              - button "4" [ref=e1561] [cursor=pointer]
+              - button "5" [ref=e1562] [cursor=pointer]
+              - button "6" [ref=e1563] [cursor=pointer]
+              - button "7" [ref=e1564] [cursor=pointer]
+              - button "8" [ref=e1565] [cursor=pointer]
+              - button "9" [ref=e1566] [cursor=pointer]
+              - button "10" [ref=e1567] [cursor=pointer]
+            - button "다음" [ref=e1568] [cursor=pointer]:
+              - generic [ref=e1569]: 다음
+        - generic [ref=e1570]:
+          - generic [ref=e1571]:
+            - generic [ref=e1572]:
+              - heading "브랜드 검색" [level=2] [ref=e1573]
+              - img "광고" [ref=e1574]:
+                - img [ref=e1575]
+              - link "삼성화재 다이렉트 실손의료비보험" [ref=e1577] [cursor=pointer]:
+                - /url: https://ader.naver.com/v1/kY_NPHYG9IFmah2ZZFHlVbx5KzWVvc9R-Z1ieAi9jyMK89FrgAi5IVrKwrOXBCpFUCEVbPjgPO9gEzxCCxn-aQkFqdfyhSYln6VWl6SfTrNWvpwtR7WYmRemoh42yvnOKWgNNF1pTdu4jSF2eSA4tkXTnrpTps2BoXsxdjldePZ8tZ_UgshQngUNH2xVY9Er9tlD2rxaEaWUNDy0q6ElRmpwLkH3ctAq-TPweS-gsk6CgpQNeAyQ_Q7bmkdx_155hkJ-mRq9oY4Dhu0krtnE89h42g24ZHP3uKRGXCTGhVlVtO6C-cV57F1BYUQX-Q8-KtiGU14_ZQkFNGB27nMSMubvjzlWV3_u1_WuMMY9EoL_1CiscSBPPhekLNyYyJByHuprgMt88FyuJ5OEJKZYXk_DSRDyuyHCfD0vmDNEq7DtbSRCTknrk_ThgHRFK5xFert0QWqXujGDfDEtO3GCYVjXHaXfnSpai5Ngm8PvIWQXhZa2zaOed1qU7ECsR8GdWxZBHu-iR5AojXrRHusEWK41cA71WeHJ64HiL_jM4jM=?c=naver.search.pc.sv&t=0
+            - generic [ref=e1578]:
+              - link "임시 이미지" [ref=e1581] [cursor=pointer]:
+                - /url: https://ader.naver.com/v1/5geLPyNT5c1JsR8DcVW2OOLO_hz4Ku52NY-XHiv6lnSCLMk1Em-LX1iNK7UpCwXvhLbbTRd5eqAdQVc1PIH999fjPM23SNIfTBcXg14mHEpJUAxj261Vh6h7mrKLuiPSI5gXwISovFL7fEhGcaay4PMgXJ-Jm3KX4ypL_K6oMwBSMWuS_u9Qlz_habyHR6Vitef03VfTAE2QF29gmzv5DVJvGpyjNqngq5blPvgTHsvXsT3BPheOcBxI3qAypWNWAmuKgtE570r6wj0R1gfEfQZAtampTmANpZTX22PiW2mH-d0K3YdcZJ_SjLs-wOwFY0qBWXKyYerLVcOBJsGSfzle2kddnNvgrvMcpex8WV5q33Av4mfFu5OkpHdlmuhsfcZn7LnWWAs-8gktl58oC0QZ7qJkFnQsuf08fwr5yMvwqzTfa0ybq-vqtoDXJdyumSr-ngREPfCrbiLXwcYaDhCXYMlclB2VuxJ1YjTq5co-zXjR6IxyHeFu6p_5uA1KrneV7OeC_YWj43ggrvvogq_7zpwz3GeHok3NWIiNo4E=?c=naver.search.pc.sv&t=0
+                - img "임시 이미지" [ref=e1582]
+              - list [ref=e1583]:
+                - listitem [ref=e1584]:
+                  - link "썸네일 간편계산" [ref=e1585] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/EXPI0VHpnr2lEZiQ4ZU2ern7ieiMUWF1dspoHvJlBJyFqy6RupHvUUT6dUAY3FSQvZKqQs3HOENTnJor7xbtSerRWUetfO1ZdMx3D7vP0-cdkNzDXi2ns06YrYM2vyVO9InanIQ-AggaTgzICT3Wj8VsDaSPloMp3KJYn5LGh6wzZlGXiRA0j9AYjumq1n89eK-1UlP_cZhIas1TaOsLIDf7AauF_xjFuLTHEYvAaIpFBOtNGPoPZkC7v023-IrHhj_bIk13d_wYI07MbkUP8s-CvrVBDcPAt9-xRHFxwhs1Zb4rtEK2emKnaoxh75z-K7hrbi901P8lCFH4sNz9ce_mDodgY2SFC8auM3GSl5TeWfbdc_HqrV2K-Fb7XAujiZSEHMeDzA8C51oF0JsxP_RKLXXR7q9GIAPkudhSROzTLiP-BMpUVgB5loRjVmpgYdz3vgpGfSeXkVMvh7n3K1v3qU7I9AfEMlcB_mCBx5ZZZHMihmfOaAB-Zf_183KRXKvFOLzoVtpFdGHzLxzGBaEG-OjjFH8NaqB_-KqcUXY=?c=naver.search.pc.sv&t=0
+                    - img "썸네일" [ref=e1587]
+                    - paragraph [ref=e1588]: 간편계산
+                - listitem [ref=e1589]:
+                  - link "썸네일 즉시가입가능" [ref=e1590] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/aoTvFhXJd42rcQXk1MKp4wRtea8W0_P9V4gSTmzJZLNQ0ovA8bFAZEsyhJ7VLV4PWXZDc461cQLYCSR3NST4PlEhpsxilDm2kDu2JPIzlhfPBj92jTihCEOF18RsA64UY_2zEfPBbYz-oKNZg2q_NXZ1ITpc4iS8R5obY-gk1RGh8vkdRS7gpAM9DHAfjndWweyJXxblx2vIMJQB-zr9vb9CuVHwMj071C054QpwzOHUfQMcp4FztLmovmo1h0pOzPu5c3bm_YjGJA4hXZIFEKpvTeGlsk3xN2L8s3z4LydDXBLEOvHYWf4Y7KDsGSjL5mRrtyMoG67wyP7pjzybZgl09hz1pAHn1hQxutEcHPoqdzLaWmyE5-bfwu1h-jdcWqhEus0clJM9aXIutQsOagMcdvIuL99VB1pAeo2zeXYAVFvN8LY6peEAlqXrI2kq6wCJhNRE_4BCp0qQeSZ5c_t7iOFH0pkn4Z9kn-_AufsZsSWnrYn0w1-j-K89HqZSDuWqjxblJdoR1UbBc-ljElicIUzjUhJ3Ud7LyjlR4t0=?c=naver.search.pc.sv&t=0
+                    - img "썸네일" [ref=e1592]
+                    - paragraph [ref=e1593]: 즉시가입가능
+                - listitem [ref=e1594]:
+                  - link "썸네일 보장내용확인" [ref=e1595] [cursor=pointer]:
+                    - /url: https://ader.naver.com/v1/C7Bb2b-CnrkuFTtddrr96RB-TfJToLFtXDUakkECMdOhH817mRe9Lk8JGK3Ha1MBVRudFwjlOgtER19X4OwW98BTwG7oeDaTt5yf8Dh88BJ6Owla0-Pm_9pcprtINOJBfvrJPHCV7BRJiJ0yUv16fjFMGjKZ7RXZYyfigktgfkvb_YqpfbrLpCwStruCOH6morVLz7dymhaoDyTZ6AfGULAH4_LOr8mUWSzz8o4leLdL8rqZ2D-UpgtsT2pkwo6ntUlTgLnCTa81UWLcK17U6hRg-GSNTZQSDoqpJvs5ac7_1THYSWTi6yNEyG26Dj9B4zvNrpUDtTshH6NB_6AFKr1HpZnh-Jx7IjGProlrOHsOoTG8PLcHSWuPCbV6thmDlT7RX2OC_Z3jZhhA5NultpVww0ujzWqmHtjhO0WRTTYclxc9VwDlpGUvMEcGpZHHS5xXiVLTtYENoZe-rHSsCW8oZkKCWgxBnTf9K705pksxFoNmoL_EthH73mTD5oaZc3QYXePdS9enrIzjGxRhMocBrzyukJQX0oDxklE4ThIP-R7ZQn16d1M-a1THAK2G?c=naver.search.pc.sv&t=0
+                    - img "썸네일" [ref=e1597]
+                    - paragraph [ref=e1598]: 보장내용확인
+          - generic [ref=e1601]:
+            - link "좋아하는 건 누구나 남기고 싶으니까 클립 올리면 매주 쌓이는 Npay 포인트" [ref=e1602] [cursor=pointer]:
+              - /url: https://mkt.naver.com/p1/atrb?channel_id=naver_pcsearchmktbanner&campaign_id=2603-naverclip-001&target=https%3A%2F%2Fclipcreators.naver.com%2Fpromotion%2Ftoday%3Fdtm_source%3Dnaver_pcsearchmktbanner%26dtm_medium%3Dmktatrb_etc%26dtm_campaign%3D2603-naverclip-001
+              - generic [ref=e1604]:
+                - strong [ref=e1605]: 좋아하는 건 누구나 남기고 싶으니까
+                - paragraph [ref=e1606]: 클립 올리면 매주 쌓이는 Npay 포인트
+            - link "모두가 찜하고 싶은 스토어의 발견" [ref=e1607] [cursor=pointer]:
+              - /url: https://mkt.naver.com/p1/atrb?channel_id=naver_pcsearchmktbanner&campaign_id=2512-shopping-024&material=J&target=https%3A%2F%2Fmkt.naver.com%2Fstore_discovery%3Fdtm_detail%3DJ%26dtm_source%3Dnaver_pcsearchmktbanner%26dtm_medium%3Dmktatrb_etc%26dtm_campaign%3D2512-shopping-024
+              - generic [ref=e1609]:
+                - strong [ref=e1610]: 모두가 찜하고 싶은
+                - paragraph [ref=e1611]: 스토어의 발견
+            - link "컬리N마트 5O% 첫 구매 혜택 반값 쿠폰 받고 최대 2만원 적립까지" [ref=e1612] [cursor=pointer]:
+              - /url: https://mkt.naver.com/p1/atrb?channel_id=naver_pcsearchmktbanner&campaign_id=2604-shopping-033&target=https%3A%2F%2Fshopping.naver.com%2Ffesta%2Fonsale%2Ffood%2F69e0ad173cda702a9b5553dc%3Fdtm_source%3Dnaver_pcsearchmktbanner%26dtm_medium%3Dmktatrb_etc%26dtm_campaign%3D2604-shopping-033
+              - generic [ref=e1614]:
+                - strong [ref=e1615]: 컬리N마트 5O% 첫 구매 혜택
+                - paragraph [ref=e1616]: 반값 쿠폰 받고 최대 2만원 적립까지
+            - link "네이버가 더 편해지는 순간 웨일 브라우저 알아보기" [ref=e1617] [cursor=pointer]:
+              - /url: https://naver.me/FWTmTscE
+              - generic [ref=e1619]:
+                - strong [ref=e1620]: 네이버가 더 편해지는 순간
+                - paragraph [ref=e1621]: 웨일 브라우저 알아보기
+    - generic [ref=e1622]:
+      - link "맨위로" [ref=e1624] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=e1625]: 맨위로
+      - generic [ref=e1627]:
+        - link "전체서비스" [ref=e1629] [cursor=pointer]:
+          - /url: https://www.naver.com/more.html
+        - link "이용약관" [ref=e1631] [cursor=pointer]:
+          - /url: https://policy.naver.com/policy/service.html
+        - link "개인정보처리방침" [ref=e1633] [cursor=pointer]:
+          - /url: https://policy.naver.com/policy/privacy.html
+          - strong [ref=e1634]: 개인정보처리방침
+        - link "검색 고객센터" [ref=e1636] [cursor=pointer]:
+          - /url: https://help.naver.com/alias/search/integration/main.naver
+        - link "© NAVER Corp." [ref=e1638] [cursor=pointer]:
+          - /url: https://www.navercorp.com/

@@ -18,8 +18,8 @@ export function RoundTable({ rounds }: { rounds: RoundRow[] }) {
           <TableRow>
             <TableHead className="w-24">회차</TableHead>
             <TableHead className="w-40">집행기간</TableHead>
-            <TableHead className="text-right">최저</TableHead>
-            <TableHead className="text-right">낙찰</TableHead>
+            <TableHead className="text-right">최저 (VAT-)</TableHead>
+            <TableHead className="text-right">낙찰 (VAT-)</TableHead>
             <TableHead className="text-right">배수</TableHead>
             <TableHead className="text-right w-20">공실</TableHead>
             <TableHead className="w-40">집행 브랜드</TableHead>

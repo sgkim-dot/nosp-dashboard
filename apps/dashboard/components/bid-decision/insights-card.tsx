@@ -14,7 +14,7 @@ export function InsightsCard({ insights }: { insights: Insights }) {
         <Stat label="평균 낙찰/최저 배수" value={formatRatio(insights.meanRatio)} />
         <Stat label="공실 발생률" value={vacancyPct} />
         <Stat
-          label="추천 입찰가 레인지"
+          label="추천 입찰가 레인지 (VAT-)"
           value={
             insights.recommendedLow && insights.recommendedHigh
               ? `${formatKRW(insights.recommendedLow)} ~ ${formatKRW(insights.recommendedHigh)}`

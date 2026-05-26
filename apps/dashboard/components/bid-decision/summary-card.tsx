@@ -19,7 +19,7 @@ export function SummaryCard({ summary }: { summary: KeywordGroupSummary }) {
           </div>
         </div>
 
-        <Stat label="최근 낙찰가" value={formatKRW(summary.latestWinning)} />
+        <Stat label="최근 낙찰가 (VAT-)" value={formatKRW(summary.latestWinning)} />
         <Stat
           label="공실 구좌"
           value={summary.latestEmptySlots == null ? "-" : `${summary.latestEmptySlots}구좌`}

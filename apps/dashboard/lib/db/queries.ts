@@ -148,7 +148,7 @@ export async function getKeywordGroupSummary(args: {
     SELECT
       rkg.round_id,
       rb.slot_no,
-      b.display_name,
+      COALESCE(rb.display_name, b.display_name) AS display_name,
       b.business_name,
       rb.source,
       rb.confidence
@@ -238,7 +238,7 @@ export async function getBrandHeatmap(args: {
     )
     SELECT
       b.id AS brand_id,
-      b.display_name,
+      COALESCE(rb.display_name, b.display_name) AS display_name,
       r.round_no,
       kg.name AS keyword_group_name,
       rb.slot_no

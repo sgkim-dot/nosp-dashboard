@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash \"C:/Users/MADUP/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/brainstorming/scripts/start-server.sh\" --project-dir \"C:/Users/MADUP/Documents/SearchingviewNewProduct\")",
+      "Bash(pnpm --version)",
+      "Bash(uv --version)",
+      "Bash(git --version)",
+      "Bash(py --version)",
+      "Bash(where.exe python.exe)",
+      "Bash(npm i *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(awk '{print $NF}')",
+      "Bash(uv run --with 'psycopg[binary]' python -c ' *)",
+      "Bash(dir \"C:/Users/MADUP/Documents/SearchingviewNewProduct/apps/dashboard/\")",
+      "Bash(pnpm create *)",
+      "Bash(npx create-next-app@latest apps/dashboard --typescript --eslint --app --tailwind --no-src-dir --import-alias \"@/*\" --turbopack --use-pnpm --yes)",
+      "Bash(cp .env.example /tmp/dashboard-env.example)",
+      "Bash(cp .env.local /tmp/dashboard-env.local)",
+      "Read(//tmp/**)",
+      "Bash(cp /tmp/dashboard-env.example \"C:/Users/MADUP/Documents/SearchingviewNewProduct/apps/dashboard/.env.example\")",
+      "Bash(cp /tmp/dashboard-env.local \"C:/Users/MADUP/Documents/SearchingviewNewProduct/apps/dashboard/.env.local\")",
+      "Bash(pnpm --filter dashboard add drizzle-orm @neondatabase/serverless)",
+      "Bash(pnpm --filter dashboard add -D drizzle-kit @types/node tsx dotenv)",
+      "Bash(pnpm exec tsx -e ' *)",
+      "Bash(pnpm exec *)",
+      "Bash(node --input-type=module --experimental-vm-modules)",
+      "Bash(Get-ChildItem -Path \"C:/Users/MADUP/Documents/SearchingviewNewProduct\" -Recurse -Depth 2)",
+      "Bash(Select-Object FullName)",
+      "Bash(pnpm --filter dashboard db:seed)",
+      "Bash(uv run *)",
+      "Bash(pnpm drizzle:migrate)",
+      "Bash(cd \"C:/Users/MADUP/Documents/SearchingviewNewProduct\" && ls \"/c/Users/MADUP/Downloads/\" | grep -iE \"\\(서칭뷰|신제품\\).*\\\\.csv\" | head -10)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command \"uv run python -m worker.jobs.csv_ingest --file '../inbox/서칭뷰_회차별입찰정보 \\(11\\).csv' 2>&1\")",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command ' *)",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File \"C:/Users/MADUP/Documents/SearchingviewNewProduct/do_ingest.ps1\")",
+      "Bash(echo \"powershell exit: $?\")",
+      "Bash([ -s \"$OUT\" ])"
+    ]
+  }
+}
