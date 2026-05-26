@@ -238,6 +238,21 @@ def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int)
                 rkg_params,
             )
 
+    # Normalize stale "입찰중지" on past rounds — NOSP sometimes leaves it that
+    # way after the period ends. From the dashboard's perspective those rounds
+    # are simply over.
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE round_keyword_groups rkg
+            SET bid_status = '입찰기간종료', updated_at = now()
+            FROM rounds r
+            WHERE rkg.round_id = r.id
+              AND r.period_end < CURRENT_DATE
+              AND rkg.bid_status = '입찰중지'
+            """
+        )
+
     log.info("bid_info ingested", total=total, inserted=inserted, updated=updated)
     return IngestResult(total, inserted, updated, run_id)
 

@@ -27,15 +27,31 @@ _DELAY_SECONDS = 3.0
 
 
 def fetch_business_name(url: str) -> str | None:
-    """Stage 2: GET the landing URL (following redirects), extract 사업자등록상호."""
+    """Stage 2: follow ader.naver.com redirect → return final landing hostname.
+
+    Modern advertiser landing pages are SPAs, so 사업자등록상호 text isn't in the
+    raw HTML. Instead we use the final URL's hostname (after redirects) as a
+    canonical advertiser identifier (e.g. "direct.samsungfire.com",
+    "jacomo.co.kr"). Same advertiser → same hostname → unique brand.
+
+    The 사업자등록상호 regex fallback is still attempted in case the page does
+    have a server-rendered footer.
+    """
     try:
         with httpx.Client(
-            headers={"User-Agent": _USER_AGENT}, timeout=20.0, follow_redirects=True
+            headers={"User-Agent": _USER_AGENT}, timeout=15.0, follow_redirects=True
         ) as client:
             resp = client.get(url)
-            if resp.status_code != 200:
-                return None
-            return extract_business_name(resp.text)
+            host = resp.url.host or None
+            if host:
+                # Try regex fallback first (more informative if it works)
+                if resp.status_code == 200:
+                    biz = extract_business_name(resp.text)
+                    if biz:
+                        return biz
+                # Otherwise use the hostname as the canonical identifier
+                return host
+            return None
     except Exception:
         log.exception("landing fetch failed", url=url)
         return None
@@ -166,7 +182,7 @@ def scrape_brands_for_active_rounds(
         for rkg_id, kw, product_code, max_brands in rows:
             kgs_scraped += 1
             try:
-                slots = scrape_brands_for_keyword(kw)
+                slots = scrape_brands_for_keyword(kw, product_code)
             except Exception:
                 log.exception("scrape failed", keyword=kw)
                 continue
