@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import random
 import sys
 import time
 from datetime import date
@@ -12,8 +13,8 @@ from psycopg import Connection
 
 from worker.db import connect
 from worker.lib.brand_match import upsert_brand
-from worker.lib.landing import extract_business_name
-from worker.lib.naver_search import scrape_brands_for_keyword
+from worker.lib.canonical_brand import normalize_host, platform_business_name
+from worker.lib.naver_search import close_pool, scrape_brands_for_keyword
 from worker.logging import configure_logging, get_logger
 from worker.upsert import complete_ingest_run, fail_ingest_run, start_ingest_run
 
@@ -23,19 +24,25 @@ _USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 )
-_DELAY_SECONDS = 3.0
+# Base inter-keyword pause. Actual sleep is `_DELAY_SECONDS + uniform(0, _DELAY_JITTER)`
+# so the request cadence isn't perfectly periodic (anti-bot signal).
+_DELAY_SECONDS = 2.0
+_DELAY_JITTER = 2.0
 
 
 def fetch_business_name(url: str) -> str | None:
-    """Stage 2: follow ader.naver.com redirect → return final landing hostname.
+    """Stage 2: follow ader.naver.com redirect → return advertiser identifier.
 
-    Modern advertiser landing pages are SPAs, so 사업자등록상호 text isn't in the
-    raw HTML. Instead we use the final URL's hostname (after redirects) as a
-    canonical advertiser identifier (e.g. "direct.samsungfire.com",
-    "jacomo.co.kr"). Same advertiser → same hostname → unique brand.
+    Returns ONE of:
+      - normalized URL host (`direct.samsungfire.com`)
+      - platform path identifier (`brand.naver.com/lactiv`)
+      - None (couldn't resolve — upsert_brand falls back to __unverified__::)
 
-    The 사업자등록상호 regex fallback is still attempted in case the page does
-    have a server-rendered footer.
+    We INTENTIONALLY never extract Korean company names from HTML footers
+    (e.g. `회사명: 주식회사 ABC`). Storing those in business_name confuses
+    the brand-cleanup detector and creates duplicate rows for the same
+    advertiser. Korean canonical names belong in `HOST_TO_BRAND`, keyed off
+    the URL host returned here.
     """
     try:
         with httpx.Client(
@@ -43,15 +50,23 @@ def fetch_business_name(url: str) -> str | None:
         ) as client:
             resp = client.get(url)
             host = resp.url.host or None
-            if host:
-                # Try regex fallback first (more informative if it works)
-                if resp.status_code == 200:
-                    biz = extract_business_name(resp.text)
-                    if biz:
-                        return biz
-                # Otherwise use the hostname as the canonical identifier
-                return host
-            return None
+            path = resp.url.path or ""
+            # httpx returns query as bytes — decode for parse_qs compatibility
+            raw_q = resp.url.query
+            if isinstance(raw_q, bytes):
+                query = raw_q.decode("utf-8", errors="replace")
+            else:
+                query = raw_q or ""
+            if not host:
+                return None
+            # Priority 1: platform path-based identifier (brand.naver.com/X,
+            # smartstore.naver.com/X, blog.naver.com/{blogId}).
+            plat = platform_business_name(host, path, query)
+            if plat:
+                return plat
+            # Priority 2: normalized URL host. See module docstring above —
+            # never extract Korean company names from response HTML.
+            return normalize_host(host)
     except Exception:
         log.exception("landing fetch failed", url=url)
         return None
@@ -76,11 +91,12 @@ def _fetch_work_list(
         """
         params: tuple = (today, today)
         if skip_already_scraped:
+            # Skip KGs scraped in the last 24h regardless of whether any ad
+            # was found (brands_scraped_at is set even on 0-slot scrapes).
             sql += """
-                AND NOT EXISTS (
-                    SELECT 1 FROM round_brands rb
-                    WHERE rb.round_keyword_group_id = rkg.id
-                      AND rb.captured_at >= now() - interval '24 hours'
+                AND (
+                    rkg.brands_scraped_at IS NULL
+                    OR rkg.brands_scraped_at < now() - interval '24 hours'
                 )
             """
         if rkg_ids is not None:
@@ -104,6 +120,13 @@ def _persist_kg_brands_impl(
             "DELETE FROM round_brands WHERE round_keyword_group_id = %s",
             (rkg_id,),
         )
+        # Always stamp brands_scraped_at — distinguishes "no advertiser running
+        # at scrape time" (column set, 0 brand rows) from "not yet scraped"
+        # (column NULL).
+        cur.execute(
+            "UPDATE round_keyword_groups SET brands_scraped_at = now() WHERE id = %s",
+            (rkg_id,),
+        )
     for slot in slots:
         business_name = business_names.get(slot.destination_url)
         confidence = 0.95 if business_name else 0.75
@@ -117,18 +140,24 @@ def _persist_kg_brands_impl(
             cur.execute(
                 """
                 INSERT INTO round_brands (
-                    round_keyword_group_id, brand_id, slot_no, display_name, source, confidence
+                    round_keyword_group_id, brand_id, slot_no, display_name,
+                    sub_title, description, source, confidence
                 )
-                VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 ON CONFLICT (round_keyword_group_id, slot_no)
                 DO UPDATE SET
                     brand_id = EXCLUDED.brand_id,
                     display_name = EXCLUDED.display_name,
+                    sub_title = EXCLUDED.sub_title,
+                    description = EXCLUDED.description,
                     source = EXCLUDED.source,
                     confidence = EXCLUDED.confidence,
                     captured_at = now()
                 """,
-                (rkg_id, brand_id, slot.slot_no, slot.display_name, source, confidence),
+                (
+                    rkg_id, brand_id, slot.slot_no, slot.display_name,
+                    slot.sub_title, slot.description, source, confidence,
+                ),
             )
 
 
@@ -187,7 +216,30 @@ def scrape_brands_for_active_rounds(
             except Exception:
                 log.exception("scrape failed", keyword=kw)
                 continue
-            slots = [s for s in slots if s.product == product_code][:max_brands]
+            slots = [s for s in slots if s.product == product_code]
+
+            # Resolve hosts first
+            business_names: dict[str | None, str | None] = {}
+            for s in slots:
+                if s.destination_url and s.destination_url not in business_names:
+                    business_names[s.destination_url] = fetch_business_name(s.destination_url)
+
+            # Dedupe by host: Naver assigns different ad_ids to the same
+            # advertiser across fetches (rotation), so a single 1-slot brand
+            # can appear with N different ad_ids. Treat one host = one slot.
+            seen_hosts: set[str] = set()
+            unique_slots = []
+            for s in slots:
+                host = business_names.get(s.destination_url)
+                key = host or f"_url::{s.destination_url}"
+                if key in seen_hosts:
+                    continue
+                seen_hosts.add(key)
+                unique_slots.append(s)
+            slots = unique_slots[:max_brands]
+
+            # Reassign slot_no to 1-based sequential after dedup
+            slots = [s.model_copy(update={"slot_no": i + 1}) for i, s in enumerate(slots)]
 
             if not slots:
                 log.info("no slots", keyword=kw, product=product_code)
@@ -195,13 +247,8 @@ def scrape_brands_for_active_rounds(
                     _persist_kg_brands(rkg_id, [], {}, conn=persist_conn)
                 except Exception:
                     log.exception("persist failed (no slots)", rkg_id=rkg_id)
-                time.sleep(delay_seconds)
+                time.sleep(delay_seconds + random.uniform(0, _DELAY_JITTER))
                 continue
-
-            business_names: dict[str | None, str | None] = {}
-            for s in slots:
-                if s.destination_url and s.destination_url not in business_names:
-                    business_names[s.destination_url] = fetch_business_name(s.destination_url)
 
             try:
                 _persist_kg_brands(rkg_id, slots, business_names, conn=persist_conn)
@@ -209,7 +256,7 @@ def scrape_brands_for_active_rounds(
             except Exception:
                 log.exception("persist failed", rkg_id=rkg_id, keyword=kw)
 
-            time.sleep(delay_seconds)
+            time.sleep(delay_seconds + random.uniform(0, _DELAY_JITTER))
 
         # In production, reopen for the final ingest_runs update so the
         # original `conn` may have been killed by the pooler by now.
@@ -233,8 +280,10 @@ def scrape_brands_for_active_rounds(
                 rows_inserted=slots_inserted,
             )
 
+        close_pool()
         return {"slots_inserted": slots_inserted, "keyword_groups_scraped": kgs_scraped}
     except Exception as exc:
+        close_pool()
         if persist_conn is None:
             try:
                 with connect() as fresh:
@@ -247,6 +296,71 @@ def scrape_brands_for_active_rounds(
         raise
 
 
+def _cleanup_stale_runs(conn: Connection) -> None:
+    """Mark any 'running' ingest_runs older than 1 hour as interrupted.
+
+    These leftover rows come from previous runs that were force-killed (closing
+    cmd window, machine sleep, etc.). Cleaning them keeps the ingest_runs table
+    tidy and makes the dashboard's 'last run' indicator accurate.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE ingest_runs
+            SET status = 'interrupted',
+                error_message = COALESCE(error_message, 'process terminated; auto-cleanup on next start')
+            WHERE run_type = 'brand_scrape'
+              AND status = 'running'
+              AND run_at < NOW() - INTERVAL '1 hour'
+            """
+        )
+        if cur.rowcount > 0:
+            log.info("cleaned up stale runs", count=cur.rowcount)
+        conn.commit()
+
+
+def _print_resume_status(conn: Connection) -> None:
+    """Show how many active-round KGs are already done vs pending."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT p.code,
+              COUNT(*) FILTER (WHERE rkg.brands_scraped_at IS NOT NULL
+                               AND rkg.brands_scraped_at > NOW() - INTERVAL '24 hours') AS done,
+              COUNT(*) AS total
+            FROM round_keyword_groups rkg
+            JOIN rounds r ON r.id = rkg.round_id
+            JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
+            JOIN products p ON p.id = kg.product_id
+            WHERE r.period_start <= CURRENT_DATE AND r.period_end >= CURRENT_DATE
+            GROUP BY p.code
+            ORDER BY p.code
+            """
+        )
+        rows = cur.fetchall()
+    if not rows:
+        return
+    print("=" * 60)
+    print("  resume status (active rounds, last 24h)")
+    print("=" * 60)
+    grand_done = grand_total = 0
+    for code, done, total in rows:
+        pct = (100 * done // total) if total else 0
+        print(f"  {code:<14}  {done:>5} / {total:<5} done  ({pct}%)")
+        grand_done += done
+        grand_total += total
+    if grand_total:
+        pct = 100 * grand_done // grand_total
+        print(f"  {'TOTAL':<14}  {grand_done:>5} / {grand_total:<5} done  ({pct}%)")
+    pending = grand_total - grand_done
+    if pending:
+        # ~20s per KG (mix of NP/SV) — rough back-of-envelope
+        est_min = pending * 20 // 60
+        print(f"  pending: {pending} KGs (~{est_min} min, give or take)")
+    print("=" * 60)
+    print()
+
+
 def main(argv: list[str] | None = None) -> int:
     configure_logging()
     parser = argparse.ArgumentParser()
@@ -254,11 +368,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--resume",
         action="store_true",
-        help="skip keyword groups scraped in the last 24 hours",
+        help="skip keyword groups scraped in the last 24 hours (safe to use every "
+             "time — lets you stop+resume across machines/days)",
     )
     args = parser.parse_args(argv)
 
     with connect() as conn:
+        _cleanup_stale_runs(conn)
+        if args.resume:
+            _print_resume_status(conn)
         result = scrape_brands_for_active_rounds(
             conn, limit=args.limit, skip_already_scraped=args.resume
         )
