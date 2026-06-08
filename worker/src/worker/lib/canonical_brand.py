@@ -259,6 +259,11 @@ HOST_TO_BRAND: dict[str, str] = {
     "direct.lina.co.kr": "라이나생명",
     "www.lina.co.kr": "라이나생명",
     "lina.co.kr": "라이나생명",
+    # ─── 학습 / 교육 ──────────────────────────
+    "milkt.co.kr": "밀크T",
+    "www.milkt.co.kr": "밀크T",
+    "grade-laboratory.com": "착한학점연구소",
+    "www.grade-laboratory.com": "착한학점연구소",
     "sales.hr.aia.co.kr": "AIA생명",
     "www.aia.co.kr": "AIA생명",
     "www.hwgi.kr": "한화생명",
@@ -519,6 +524,8 @@ _NON_BRAND_FIRST_WORDS = {
     "사회복지사", "사회복지사2급", "디자인", "주식회사", "휴대폰",
     "포장이사", "건강하게", "이가격에", "3일", "손목통증", "여에스더글루타치온",
     "보험", "보장", "건강보험",
+    # Postpositional phrases / generic nouns that ad copy commonly leads with
+    "웹에서", "학점은행제", "학점은행", "사이버대학교", "사이버대학",
 }
 
 
