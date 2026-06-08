@@ -27,18 +27,24 @@ canonical_brand.canonical_brand_name(host, display)
     │  ② Naver 플랫폼 path 슬러그                       (brand.naver.com/X → X)
     │  ③ DISPLAY_CANONICAL[display first word]         (잘못된 휴리스틱 교정)
     │  ④ guess_from_display (첫 단어 휴리스틱)
+    │
+    ▼  [L1.5 가드] canonical 잡혔는데 host 없으면
+    ▼  HOST_TO_BRAND reverse → 대표 정규 호스트로 강제 점프
+    ▼  (광고 카피 변형으로 __unverified__:: 행이 늘어나는 것 방지)
     ▼
 brands 테이블에 INSERT/UPDATE
 ```
 
-## 5중 방어 (재발 방지 체계)
+## 6중 방어 (재발 방지 체계)
 
 | 계층 | 위치 | 방어 내용 |
 |------|------|-----------|
 | **L1** | `lib/brand_match.py::_is_junk_host` | 한글/괄호/주식회사 등이 들어간 `business_name`을 None으로 강제 → `__unverified__::` 센티넬로 fallback |
+| **L1.5** | `lib/brand_match.py::_representative_host` | canonical은 알아냈는데 host가 None인 경우, HOST_TO_BRAND를 리버스 룩업해서 대표 정규 호스트로 자동 점프. 광고 카피 변형(예: "뻬를리 워치", "뻬를리 펜던트")이 각자 `__unverified__::` 행을 만드는 것을 방지 |
 | **L2** | `jobs/brand_scrape.py::fetch_business_name` | `extract_business_name(resp.text)` 호출 제거. 페이지 footer의 한글 사명을 절대 host 컬럼에 저장하지 않음 |
 | **L3** | `lib/canonical_brand.py::DISPLAY_CANONICAL` | 알려진 잘못된 첫 단어(Pro+, Qrevo, 뻬를리, 강력한, 에스클래스, …)는 정규명으로 강제 매핑 |
 | **L4** | `scripts/reconcile_brands.py` | 매핑 추가 후 1커맨드로 (Step 0 junk bn 이전, Step 1 display backfill, Step 2 중복 행 병합, Step 3 JSON dump) 일괄 정리 |
+| **L4.5** | `브랜드크롤링.bat` | 크롤링 끝나면 reconcile을 자동 호출. 사용자가 잊어도 안전 |
 | **L5** | 이 문서 | 운영 워크플로 명문화 |
 
 ## 새 브랜드를 추가할 때 — 운영 워크플로

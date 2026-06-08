@@ -11,13 +11,40 @@ import json
 
 from psycopg import Connection
 
-from worker.lib.canonical_brand import canonical_brand_name
+from worker.lib.canonical_brand import HOST_TO_BRAND, canonical_brand_name
 
 
 # Sentinels that are ALLOWED in business_name even though they aren't URL hosts.
 # Anything else with junk characters gets coerced to None (becomes
 # __unverified__::<display> via the fallback path below).
 _BUSINESS_NAME_SENTINEL_PREFIXES = ("__unverified__::", "__manual__::")
+
+
+# Cached reverse map: canonical brand name → representative clean host.
+_REPRESENTATIVE_HOST: dict[str, str | None] | None = None
+
+
+def _representative_host(canonical: str) -> str | None:
+    """Return the preferred clean host that maps to `canonical`, or None.
+
+    Built lazily by reversing HOST_TO_BRAND. When multiple hosts map to
+    the same canonical, prefer non-www → non-m. → no-path → shortest.
+    """
+    global _REPRESENTATIVE_HOST
+    if _REPRESENTATIVE_HOST is None:
+        rev: dict[str, list[str]] = {}
+        for h, c in HOST_TO_BRAND.items():
+            rev.setdefault(c, []).append(h)
+        for c, hosts in rev.items():
+            hosts.sort(key=lambda h: (
+                h.startswith("www."),
+                h.startswith("m."),
+                "/" in h,
+                len(h),
+                h,
+            ))
+        _REPRESENTATIVE_HOST = {c: hs[0] for c, hs in rev.items()}
+    return _REPRESENTATIVE_HOST.get(canonical)
 
 
 def _is_junk_host(s: str) -> bool:
@@ -73,6 +100,19 @@ def upsert_brand(
         business_name = None
 
     canonical = canonical_brand_name(business_name, display_name) or "(미확인 브랜드)"
+
+    # L1.5 defense: if Stage 2 failed to resolve a host (business_name is
+    # None) BUT we determined the canonical brand via DISPLAY_CANONICAL or
+    # any other path, jump straight to the representative clean host for
+    # that canonical. Without this, every new ad creative (e.g. "뻬를리 워치",
+    # "뻬를리 펜던트") spawns its own __unverified__:: row that the
+    # cleanup dashboard flags as "호스트 깨짐", even though the brand was
+    # correctly identified. With this gate, repeat ad copy variants of the
+    # SAME advertiser collapse into the single canonical brand row.
+    if not business_name and canonical != "(미확인 브랜드)":
+        host = _representative_host(canonical)
+        if host:
+            business_name = host
 
     with conn.cursor() as cur:
         if business_name:
