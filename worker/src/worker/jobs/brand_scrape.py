@@ -81,8 +81,14 @@ def _fetch_work_list(
 ) -> list[tuple[int, str, str, int]]:
     today = date.today().isoformat()
     with conn.cursor() as cur:
+        # COALESCE(search_keyword, name) — per-kg override for the Naver query
+        # string. Display stays as `name`; only the scrape uses the override.
+        # Example: SV 다이렉트인보험 searches Naver for "다이렉트보험".
         sql = """
-            SELECT DISTINCT rkg.id, kg.name, p.code, p.max_brands_per_group
+            SELECT DISTINCT rkg.id,
+                            COALESCE(kg.search_keyword, kg.name) AS scrape_keyword,
+                            p.code,
+                            p.max_brands_per_group
             FROM round_keyword_groups rkg
             JOIN rounds r ON r.id = rkg.round_id
             JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
