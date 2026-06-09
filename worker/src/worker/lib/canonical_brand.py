@@ -98,6 +98,7 @@ HOST_TO_BRAND: dict[str, str] = {
     "direct.hi.co.kr": "현대해상",
     "mdirect.hi.co.kr": "현대해상",
     "www.hi.co.kr": "현대해상",
+    "hi.co.kr": "현대해상",
     "direct.kbinsure.co.kr": "KB손해보험",
     "mdirect.kbinsure.co.kr": "KB손해보험",
     "www.kbinsure.co.kr": "KB손해보험",
@@ -217,6 +218,9 @@ HOST_TO_BRAND: dict[str, str] = {
     "apply.iscu.ac.kr": "서울사이버대학교",
     "iscu.ac.kr": "서울사이버대학교",
     "www.iscu.ac.kr": "서울사이버대학교",
+    "go.kycu.ac.kr": "건양사이버대학교",
+    "kycu.ac.kr": "건양사이버대학교",
+    "www.kycu.ac.kr": "건양사이버대학교",
     "beolmoon.com": "벌문",
     "www.beolmoon.com": "벌문",
     # 올리브영 단축 URL (oy.run) — 모든 oliveyoung 변형은 올리브영으로 통일
@@ -493,6 +497,8 @@ DISPLAY_CANONICAL: dict[str, str] = {
     "Pro+": "헤이홈",              # → www.hej.life
     "강력한": "발렌",              # → bodranmall.com
     "에스클래스": "위바이옴",       # → webiommall.co.kr
+    "굿앤굿": "현대해상",          # 굿앤굿 어린이종합보험Q (현대해상 상품) → hi.co.kr 변형
+    "굿앳굿": "현대해상",          # '굿앤굿' 발음 오타 변형 안전망
 }
 
 
