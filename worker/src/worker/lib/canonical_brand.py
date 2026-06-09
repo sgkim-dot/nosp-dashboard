@@ -276,6 +276,7 @@ HOST_TO_BRAND: dict[str, str] = {
     "www.miraeassetlife.com": "미래에셋생명",
     # ─── 의약/건강 ────────────────────────────
     "www.rogaine.co.kr": "로게인",
+    "rogaine.co.kr": "로게인",
     # ─── 가전 ────────────────────────────────
     "www.coway.com": "코웨이",
     "www.cuckoo.co.kr": "쿠쿠",
@@ -495,6 +496,18 @@ DISPLAY_CANONICAL: dict[str, str] = {
 }
 
 
+# Full ad-copy → canonical brand. Checked BEFORE DISPLAY_CANONICAL and
+# guess_from_display. Use this when the first word would over-match
+# unrelated ads (e.g. "현장의" appears in many ad copies but the exact
+# phrase "현장의 신뢰를 기록하다!" only ever belongs to 포팩트).
+#
+# Add an entry whenever the brand-cleanup dashboard surfaces a wrong
+# brand whose first word is too generic to safely add to DISPLAY_CANONICAL.
+DISPLAY_FULL_CANONICAL: dict[str, str] = {
+    "현장의 신뢰를 기록하다!": "포팩트",   # → www.4fact.co.kr
+}
+
+
 # Tokens that aren't real brand words (prefixes, qualifiers) we trim.
 _NOISE_PREFIXES = ("(무)", "(유)", "(주)", "[", "<")
 _NOISE_REGEX = re.compile(r"^[\s\W]+")
@@ -526,6 +539,10 @@ _NON_BRAND_FIRST_WORDS = {
     "보험", "보장", "건강보험",
     # Postpositional phrases / generic nouns that ad copy commonly leads with
     "웹에서", "학점은행제", "학점은행", "사이버대학교", "사이버대학",
+    # The placeholder "(미확인 브랜드)" sentinel must never round-trip back
+    # into a real brand identity. Block both the prefix-stripped first word
+    # and any other obvious variants.
+    "미확인", "현장의", "FORWEB",
 }
 
 
@@ -582,8 +599,13 @@ def canonical_brand_name(host: str | None, display_name: str | None) -> str | No
         h_base, _, seg = host.partition("/")
         if h_base in PLATFORM_HOSTS and seg:
             return seg
-    # Display-name override BEFORE heuristic — catches known-wrong first
-    # words like "뻬를리", "Qrevo", "Pro+", "강력한", "에스클래스".
+    # Full ad-copy match (strongest display-side signal — exact-phrase only).
+    if display_name:
+        stripped = display_name.strip()
+        if stripped in DISPLAY_FULL_CANONICAL:
+            return DISPLAY_FULL_CANONICAL[stripped]
+    # First-word override — catches known-wrong heuristic guesses like
+    # "뻬를리", "Qrevo", "Pro+", "강력한", "에스클래스".
     if display_name:
         first = display_name.strip().split()[0] if display_name.strip().split() else ""
         if first in DISPLAY_CANONICAL:

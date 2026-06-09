@@ -30,7 +30,11 @@ from collections import defaultdict
 from pathlib import Path
 
 from worker.db import connect
-from worker.lib.canonical_brand import HOST_TO_BRAND, canonical_brand_name
+from worker.lib.canonical_brand import (
+    DISPLAY_FULL_CANONICAL,
+    HOST_TO_BRAND,
+    canonical_brand_name,
+)
 
 JSON_OUT = (
     Path(__file__).resolve().parent.parent.parent
@@ -116,10 +120,24 @@ def main(apply: bool) -> None:
             existing_bns.discard(bn)
 
         # ── Step 1: figure out new canonical display per row ───────────
+        # We consult aliases — they store the ORIGINAL full ad copy
+        # (e.g. "현장의 신뢰를 기록하다!") which can match DISPLAY_FULL_CANONICAL
+        # even when the stored display_name has already been trimmed to the
+        # heuristic first word (e.g. "현장의"). RESTRICTED to exact-phrase
+        # matches in DISPLAY_FULL_CANONICAL — aliases are noisy (mix of past
+        # mis-identifications) so we do NOT run them through first-word
+        # heuristics, which would propagate noise into stable rows.
         backfill_updates: list[tuple[int, str, str]] = []  # (id, old, new)
         new_display_by_id: dict[int, str] = {}
-        for bid, bn, dn, _aliases, _uses in rows:
-            canon = canonical_brand_name(bn, dn) or "(미확인 브랜드)"
+        for bid, bn, dn, aliases, _uses in rows:
+            canon = canonical_brand_name(bn, dn)
+            if not canon or canon == "(미확인 브랜드)" or canon == dn:
+                for alias in aliases or []:
+                    stripped = (alias or "").strip()
+                    if stripped and stripped in DISPLAY_FULL_CANONICAL:
+                        canon = DISPLAY_FULL_CANONICAL[stripped]
+                        break
+            canon = canon or "(미확인 브랜드)"
             if canon != dn:
                 backfill_updates.append((bid, dn, canon))
             new_display_by_id[bid] = canon
