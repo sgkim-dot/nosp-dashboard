@@ -286,8 +286,12 @@ HOST_TO_BRAND: dict[str, str] = {
     "www.cuckoo.co.kr": "쿠쿠",
     "www.skmagic.com": "SK매직",
     "www.dyson.co.kr": "다이슨",
+    "dyson.co.kr": "다이슨",
+    "www.ppz.kr": "퍼피즈",
+    "ppz.kr": "퍼피즈",
     # ─── 통신/방송 ────────────────────────────
     "www.skylife.co.kr": "스카이라이프",
+    "skylife.co.kr": "스카이라이프",
     # ─── 기타 ────────────────────────────────
     "www.bullsonemall.com": "불스원",
     "1588-1191.com": "119퀵화물",
