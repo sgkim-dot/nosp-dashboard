@@ -485,6 +485,24 @@ HOST_TO_BRAND: dict[str, str] = {
     "smartstore.naver.com/sonangumusee": "소낭구뮤제",
     "smartstore.naver.com/sound_bone": "사운드본",
     "smartstore.naver.com/vivisshop": "모즈스웨덴",
+    # ─── 4th batch (Naver platform — 사용자 명시 2026-06-09) ─────
+    "brand.naver.com/lgcaremall": "LG생활건강",
+    "brand.naver.com/haroutine": "하루틴",
+    "brand.naver.com/cargillpetfood": "카길펫푸드",
+    "smartstore.naver.com/houssen": "휴렉",
+    "brand.naver.com/dapharmpersonalcare": "동아제약",
+    "brand.naver.com/centrum": "센트룸",
+    "smartstore.naver.com/hyoja09mall": "효자",
+    "brand.naver.com/finevu": "파인뷰",
+    "smartstore.naver.com/havacam": "해바캄",
+    "smartstore.naver.com/mediaid_kr": "메디에이드",
+    "brand.naver.com/orte": "오르테",
+    "brand.naver.com/mommydaddy": "마미앤대디",
+    "brand.naver.com/selex": "셀렉스",
+    "brand.naver.com/namyang": "남양유업",
+    "brand.naver.com/mamypokostore": "마미포코",
+    "brand.naver.com/belkinstore": "벨킨",
+    "brand.naver.com/c2mnew": "씨투엠뉴",
 }
 
 
