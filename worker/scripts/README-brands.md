@@ -49,14 +49,32 @@ brands 테이블에 INSERT/UPDATE
 
 ## 새 브랜드를 추가할 때 — 운영 워크플로
 
-### 1단계. HOST_TO_BRAND 또는 DISPLAY_CANONICAL 수정
+### 1단계. HOST_TO_BRAND / DISPLAY_CANONICAL / DISPLAY_FULL_CANONICAL 수정
 
 `worker/src/worker/lib/canonical_brand.py`를 직접 편집.
 
 | 케이스 | 어디에 추가 |
 |--------|-------------|
-| URL 호스트로 브랜드 식별 가능 | `HOST_TO_BRAND` 에 `"hostname": "정규명"` 추가. www/m 변형도 함께 |
-| 호스트 해석은 안 되는데 광고카피 첫 단어가 잘못 나오는 경우 | `DISPLAY_CANONICAL` 에 `"잘못된단어": "정규명"` 추가 |
+| URL 호스트로 브랜드 식별 가능 | `HOST_TO_BRAND`에 추가. **반드시 `X`, `www.X`, `m.X` 세 변형을 함께 등록** |
+| 호스트 해석 실패하고 광고카피 첫 단어가 일관되게 잘못 나오는 경우 | `DISPLAY_CANONICAL[잘못된 첫 단어] = 정규명` (예: `Pro+` → `헤이홈`) |
+| 첫 단어가 너무 일반적이라 over-match 위험 | `DISPLAY_FULL_CANONICAL[전체 광고 카피] = 정규명` (예: `현장의 신뢰를 기록하다!` → `포팩트`) |
+
+#### 🔑 핵심 컨벤션 — host 변형 누락 금지
+
+지금까지 재발의 가장 큰 원인은 **`www.X`만 등록하고 bare `X`를 빠뜨리는 것**입니다.
+대표 사례: `direct.lina.co.kr`, `rogaine.co.kr`, `hi.co.kr`, `dyson.co.kr`,
+`skylife.co.kr`, `ktmmobile.com` — 모두 `www.X`만 있어서 bare 호스트가 광고에 등장했을 때
+guess_from_display로 fallback → 잘못된 display 생성.
+
+**필수**: 새 호스트 매핑 추가 시 아래 형태로:
+
+```python
+"X.co.kr": "브랜드명",        # bare
+"www.X.co.kr": "브랜드명",    # www variant
+"m.X.co.kr": "브랜드명",      # mobile variant (실제로 m. URL이 광고에 자주 나오는 경우)
+```
+
+`brand.naver.com/slug` / `smartstore.naver.com/slug` 같은 플랫폼 path는 그 한 줄로 충분.
 
 ### 2단계. reconcile 실행 (필수)
 

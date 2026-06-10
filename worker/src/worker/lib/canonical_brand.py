@@ -292,6 +292,9 @@ HOST_TO_BRAND: dict[str, str] = {
     # ─── 통신/방송 ────────────────────────────
     "www.skylife.co.kr": "스카이라이프",
     "skylife.co.kr": "스카이라이프",
+    "www.ktmmobile.com": "KT M모바일",
+    "ktmmobile.com": "KT M모바일",
+    "m.ktmmobile.com": "KT M모바일",
     # ─── 기타 ────────────────────────────────
     "www.bullsonemall.com": "불스원",
     "1588-1191.com": "119퀵화물",
