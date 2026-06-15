@@ -506,6 +506,9 @@ HOST_TO_BRAND: dict[str, str] = {
     "bbongbra.co.kr": "뽕브라몰",
     "www.bbongbra.co.kr": "뽕브라몰",
     "m.bbongbra.co.kr": "뽕브라몰",
+    "epsonlounge.co.kr": "엡손",
+    "www.epsonlounge.co.kr": "엡손",
+    "m.epsonlounge.co.kr": "엡손",
 }
 
 
