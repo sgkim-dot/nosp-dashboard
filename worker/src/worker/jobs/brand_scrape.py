@@ -13,7 +13,11 @@ from psycopg import Connection
 
 from worker.db import connect
 from worker.lib.brand_match import upsert_brand
-from worker.lib.canonical_brand import normalize_host, platform_business_name
+from worker.lib.canonical_brand import (
+    GENERIC_REDIRECT_HOSTS,
+    normalize_host,
+    platform_business_name,
+)
 from worker.lib.naver_search import close_pool, scrape_brands_for_keyword
 from worker.logging import configure_logging, get_logger
 from worker.upsert import complete_ingest_run, fail_ingest_run, start_ingest_run
@@ -66,7 +70,13 @@ def fetch_business_name(url: str) -> str | None:
                 return plat
             # Priority 2: normalized URL host. See module docstring above —
             # never extract Korean company names from response HTML.
-            return normalize_host(host)
+            norm = normalize_host(host)
+            # Priority 3: generic redirect hosts (youtube.com, facebook.com,
+            # tiktok.com, …) are never an advertiser identity. Return None
+            # so upsert_brand falls back to display-side matching.
+            if norm and norm in GENERIC_REDIRECT_HOSTS:
+                return None
+            return norm
     except Exception:
         log.exception("landing fetch failed", url=url)
         return None

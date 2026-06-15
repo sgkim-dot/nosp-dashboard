@@ -26,6 +26,33 @@ PLATFORM_HOSTS = {
 }
 
 
+# Generic redirect targets that are NEVER an advertiser identity. When an
+# ad's landing URL ends up at one of these hosts (e.g. the advertiser
+# linked a YouTube product video instead of their own site), the host is
+# meaningless for brand attribution. Treat as "unresolved" so the brand
+# falls back to display-side matching (DISPLAY_CANONICAL / DISPLAY_FULL_
+# CANONICAL / guess_from_display).
+GENERIC_REDIRECT_HOSTS: set[str] = {
+    "youtube.com",
+    "www.youtube.com",
+    "m.youtube.com",
+    "youtu.be",
+    "facebook.com",
+    "www.facebook.com",
+    "m.facebook.com",
+    "fb.me",
+    "instagram.com",
+    "www.instagram.com",
+    "tiktok.com",
+    "www.tiktok.com",
+    "x.com",
+    "twitter.com",
+    "www.twitter.com",
+    # blog.naver.com is handled separately by platform_business_name()
+    # — do NOT include it here, that would break legit blog-based mappings
+}
+
+
 def normalize_host(host: str | None) -> str | None:
     """Canonicalize host so equivalent advertiser URLs share one identifier.
 
@@ -568,6 +595,7 @@ HOST_TO_BRAND: dict[str, str] = {
     "cruntin.com": "크런틴",
     "www.cruntin.com": "크런틴",
     "m.cruntin.com": "크런틴",
+    "brand.naver.com/dentistekorea": "덴티스테",
 }
 
 
@@ -601,6 +629,7 @@ DISPLAY_CANONICAL: dict[str, str] = {
 # brand whose first word is too generic to safely add to DISPLAY_CANONICAL.
 DISPLAY_FULL_CANONICAL: dict[str, str] = {
     "현장의 신뢰를 기록하다!": "포팩트",   # → www.4fact.co.kr
+    "입냄새 바로 셧다운!": "덴티스테",     # → brand.naver.com/dentistekorea
 }
 
 
