@@ -503,6 +503,9 @@ HOST_TO_BRAND: dict[str, str] = {
     "brand.naver.com/mamypokostore": "마미포코",
     "brand.naver.com/belkinstore": "벨킨",
     "brand.naver.com/c2mnew": "씨투엠뉴",
+    "bbongbra.co.kr": "뽕브라몰",
+    "www.bbongbra.co.kr": "뽕브라몰",
+    "m.bbongbra.co.kr": "뽕브라몰",
 }
 
 
