@@ -322,6 +322,7 @@ HOST_TO_BRAND: dict[str, str] = {
     "taxtok.kr": "세무톡",
     "blog.naver.com": "삼성자산운용",
     "www.eveonline.com": "이브온라인",
+    "eveonline.com": "이브온라인",
     "brstudy.net": "바른스터디",
     "www.1666-1646.com": "착한이사",
     "1666-1646.com": "착한이사",
@@ -512,6 +513,15 @@ HOST_TO_BRAND: dict[str, str] = {
     "thebenefood.co.kr": "더베네푸드",
     "www.thebenefood.co.kr": "더베네푸드",
     "m.thebenefood.co.kr": "더베네푸드",
+    "yuhanclorox.com": "유한클로락스",
+    "www.yuhanclorox.com": "유한클로락스",
+    "m.yuhanclorox.com": "유한클로락스",
+    "sirbot.kr": "써봇",
+    "www.sirbot.kr": "써봇",
+    "m.sirbot.kr": "써봇",
+    "fastfive.co.kr": "패스트파이브",
+    "www.fastfive.co.kr": "패스트파이브",
+    "m.fastfive.co.kr": "패스트파이브",
 }
 
 
