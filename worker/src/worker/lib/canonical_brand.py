@@ -26,6 +26,22 @@ PLATFORM_HOSTS = {
 }
 
 
+# Naver 쇼핑라이브 hosts. Unlike PLATFORM_HOSTS (where the FIRST path segment
+# is the advertiser slug, e.g. /lactiv), 쇼핑라이브 routes look like
+# /lives/{liveId} or /livebridge/{liveId} — the literal first segment
+# ("lives", "livebridge") is just the route name, and the *second* segment
+# (the live ID) is what identifies the advertiser's stream. We therefore
+# keep BOTH segments as the identifier:
+#     view.shoppinglive.naver.com/lives/1920628
+# Without this, every shopping-live ad would collapse to the same host
+# "view.shoppinglive.naver.com" with no distinguishing info.
+SHOPPING_LIVE_HOSTS = {
+    "shoppinglive.naver.com",
+    "view.shoppinglive.naver.com",
+    "m.shoppinglive.naver.com",
+}
+
+
 # Generic redirect targets that are NEVER an advertiser identity. When an
 # ad's landing URL ends up at one of these hosts (e.g. the advertiser
 # linked a YouTube product video instead of their own site), the host is
@@ -86,6 +102,16 @@ def platform_business_name(
       identity. We must read `blogId` from the query string instead.
     """
     h = normalize_host(host)
+
+    # 쇼핑라이브: keep `{route}/{liveId}` as the identifier (route is "lives"
+    # or "livebridge" — both treated as part of the slug since the liveId
+    # alone is what matters but we preserve the route prefix for clarity).
+    if h in SHOPPING_LIVE_HOSTS:
+        segs = [s for s in (path or "").strip("/").split("/") if s]
+        if len(segs) >= 2:
+            return f"{h}/{segs[0]}/{segs[1]}"
+        return h
+
     if h not in PLATFORM_HOSTS:
         return None
     seg = (path or "").strip("/").split("/")[0] if (path or "").strip("/") else ""
