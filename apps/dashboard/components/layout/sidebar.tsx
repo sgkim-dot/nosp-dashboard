@@ -1,18 +1,23 @@
 import Link from "next/link";
-import { Gauge, Building2, Tag, Activity, AlertTriangle, AlertOctagon, BarChart3 } from "lucide-react";
+import { Gauge, Building2, Tag } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
+import { MaintenanceMenu } from "./maintenance-menu";
+
+// Maintenance tools are admin-only. Add admin emails here when ops scope grows.
+const ADMIN_EMAILS = new Set(["sgkim@madup.com"]);
 
 const NAV = [
   { href: "/", label: "입낙찰 히스토리", icon: Gauge },
   { href: "/brand", label: "브랜드 점유", icon: Building2 },
   { href: "/brand-tracker", label: "브랜드 추적", icon: Tag },
-  { href: "/backtest", label: "추천가 검증", icon: BarChart3 },
-  { href: "/crawl", label: "크롤링 진행률", icon: Activity },
-  { href: "/brand-cleanup", label: "브랜드 정리 필요", icon: AlertTriangle },
-  { href: "/scrape-misses", label: "광고 누락 의심", icon: AlertOctagon },
 ];
 
-export function Sidebar() {
+export async function Sidebar() {
+  const user = await currentUser();
+  const email = user?.emailAddresses?.[0]?.emailAddress ?? null;
+  const isAdmin = email !== null && ADMIN_EMAILS.has(email);
+
   return (
     <aside className="w-72 shrink-0 bg-sidebar text-sidebar-foreground flex flex-col">
       <div className="px-6 pt-7 pb-10">
@@ -40,6 +45,14 @@ export function Sidebar() {
             {label}
           </Link>
         ))}
+        {isAdmin && (
+          <>
+            <div className="mt-6 px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/40">
+              관리자
+            </div>
+            <MaintenanceMenu />
+          </>
+        )}
       </nav>
       <div className="border-t border-sidebar-border px-6 py-5 flex items-center justify-between">
         <UserButton
