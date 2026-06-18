@@ -1261,7 +1261,12 @@ export async function getScrapeMisses(): Promise<ScrapeMiss[]> {
            CASE
              WHEN brands_scraped_at IS NULL AND regular_winning_bid > 0
                THEN 'never_scraped'
-             WHEN detected_slot_count IS NOT NULL AND detected_slot_count > caught_count
+             -- real_miss requires detected to be plausible (≤ NOSP capacity).
+             -- Above that it's almost certainly ad_id-counting noise from a
+             -- page with multiple NP widgets, not a true missed advertiser.
+             WHEN detected_slot_count IS NOT NULL
+                  AND detected_slot_count > caught_count
+                  AND detected_slot_count <= total_slots
                THEN 'real_miss'
              WHEN detected_slot_count IS NOT NULL
                   AND detected_slot_count = caught_count
@@ -1272,7 +1277,9 @@ export async function getScrapeMisses(): Promise<ScrapeMiss[]> {
     FROM active
     WHERE (
       (brands_scraped_at IS NULL AND regular_winning_bid > 0)
-      OR (detected_slot_count IS NOT NULL AND detected_slot_count > caught_count)
+      OR (detected_slot_count IS NOT NULL
+          AND detected_slot_count > caught_count
+          AND detected_slot_count <= total_slots)
       OR (detected_slot_count IS NOT NULL
           AND detected_slot_count = caught_count
           AND total_slots > detected_slot_count)

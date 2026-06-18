@@ -210,6 +210,119 @@ def _persist_kg_brands(
         fresh.commit()
 
 
+def _process_one_kg(
+    rkg_id: int,
+    kw: str,
+    product_code: str,
+    max_brands: int,
+    *,
+    persist_conn: Connection | None,
+    delay_seconds: float,
+) -> int:
+    """Scrape + persist one keyword group. Returns slots_inserted for this kg.
+
+    Returns 0 on scrape exception, 0 on no-slots, or len(slots) on success.
+    Sleeps `delay_seconds + jitter` at the end either way.
+    """
+    try:
+        slots, detected_slot_count = scrape_brands_with_detected_count(
+            kw, product_code
+        )
+    except Exception:
+        log.exception("scrape failed", keyword=kw)
+        return 0
+    slots = [s for s in slots if s.product == product_code]
+
+    # Resolve hosts first
+    business_names: dict[str | None, str | None] = {}
+    for s in slots:
+        if s.destination_url and s.destination_url not in business_names:
+            business_names[s.destination_url] = fetch_business_name(s.destination_url)
+
+    # Dedupe by host: Naver assigns different ad_ids to the same advertiser
+    # across fetches (rotation), so a single 1-slot brand can appear with N
+    # different ad_ids. Treat one host = one slot.
+    seen_hosts: set[str] = set()
+    unique_slots = []
+    for s in slots:
+        host = business_names.get(s.destination_url)
+        key = host or f"_url::{s.destination_url}"
+        if key in seen_hosts:
+            continue
+        seen_hosts.add(key)
+        unique_slots.append(s)
+    slots = unique_slots[:max_brands]
+
+    # Reassign slot_no to 1-based sequential after dedup
+    slots = [s.model_copy(update={"slot_no": i + 1}) for i, s in enumerate(slots)]
+
+    inserted = 0
+    if not slots:
+        log.info("no slots", keyword=kw, product=product_code)
+        try:
+            _persist_kg_brands(
+                rkg_id, [], {}, conn=persist_conn,
+                detected_slot_count=detected_slot_count,
+            )
+        except Exception:
+            log.exception("persist failed (no slots)", rkg_id=rkg_id)
+    else:
+        try:
+            _persist_kg_brands(
+                rkg_id, slots, business_names, conn=persist_conn,
+                detected_slot_count=detected_slot_count,
+            )
+            inserted = len(slots)
+        except Exception:
+            log.exception("persist failed", rkg_id=rkg_id, keyword=kw)
+
+    time.sleep(delay_seconds + random.uniform(0, _DELAY_JITTER))
+    return inserted
+
+
+def _find_real_miss_rkg_ids(conn: Connection) -> list[tuple[int, str, str, int]]:
+    """Active KGs where the last scrape *saw* more slots than we *kept*.
+
+    detected_slot_count > round_brands count → the page rendered more ad
+    placements than ended up in our DB. The cheap fix: scrape them once more.
+    Most of the time the second scrape captures the missing rotation.
+
+    Caveat: detected_slot_count is ad_id-unique within a single fetch and
+    can occasionally overshoot the NOSP slot capacity (e.g. multiple NP
+    widgets on the same page, or an advertiser holding multiple SC ids).
+    We cap the sweep to KGs whose detected count is plausible — within
+    `total_slots` (which is the bid capacity NOSP reports). KGs with
+    detected > total_slots are noise and skipped, otherwise the sweep
+    keeps re-scraping the same impossible-to-match cases forever.
+
+    Returns (rkg_id, keyword, product_code, max_brands) so callers can feed
+    rows straight into `_process_one_kg`.
+    """
+    today = date.today().isoformat()
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT rkg.id,
+                   COALESCE(kg.search_keyword, kg.name) AS scrape_keyword,
+                   p.code,
+                   p.max_brands_per_group
+            FROM round_keyword_groups rkg
+            JOIN rounds r ON r.id = rkg.round_id
+            JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
+            JOIN products p ON p.id = r.product_id
+            WHERE r.period_start <= %s AND r.period_end >= %s
+              AND rkg.detected_slot_count IS NOT NULL
+              AND rkg.detected_slot_count > (
+                  SELECT COUNT(*)::int FROM round_brands rb
+                  WHERE rb.round_keyword_group_id = rkg.id
+              )
+              AND rkg.detected_slot_count <= COALESCE(rkg.total_slots, 2)
+            """,
+            (today, today),
+        )
+        return cur.fetchall()
+
+
 def scrape_brands_for_active_rounds(
     conn: Connection,
     *,
@@ -236,64 +349,31 @@ def scrape_brands_for_active_rounds(
     run_id = start_ingest_run(conn, run_type="brand_scrape")
     slots_inserted = 0
     kgs_scraped = 0
+    sweep_kgs = 0
 
     try:
         for rkg_id, kw, product_code, max_brands in rows:
             kgs_scraped += 1
-            try:
-                slots, detected_slot_count = scrape_brands_with_detected_count(
-                    kw, product_code
-                )
-            except Exception:
-                log.exception("scrape failed", keyword=kw)
-                continue
-            slots = [s for s in slots if s.product == product_code]
+            slots_inserted += _process_one_kg(
+                rkg_id, kw, product_code, max_brands,
+                persist_conn=persist_conn, delay_seconds=delay_seconds,
+            )
 
-            # Resolve hosts first
-            business_names: dict[str | None, str | None] = {}
-            for s in slots:
-                if s.destination_url and s.destination_url not in business_names:
-                    business_names[s.destination_url] = fetch_business_name(s.destination_url)
-
-            # Dedupe by host: Naver assigns different ad_ids to the same
-            # advertiser across fetches (rotation), so a single 1-slot brand
-            # can appear with N different ad_ids. Treat one host = one slot.
-            seen_hosts: set[str] = set()
-            unique_slots = []
-            for s in slots:
-                host = business_names.get(s.destination_url)
-                key = host or f"_url::{s.destination_url}"
-                if key in seen_hosts:
-                    continue
-                seen_hosts.add(key)
-                unique_slots.append(s)
-            slots = unique_slots[:max_brands]
-
-            # Reassign slot_no to 1-based sequential after dedup
-            slots = [s.model_copy(update={"slot_no": i + 1}) for i, s in enumerate(slots)]
-
-            if not slots:
-                log.info("no slots", keyword=kw, product=product_code)
-                try:
-                    _persist_kg_brands(
-                        rkg_id, [], {}, conn=persist_conn,
-                        detected_slot_count=detected_slot_count,
+        # Post-scrape real-miss sweep: any KG where detected > caught after
+        # the main pass gets one more try. Catches NP rotation misses that
+        # the first 8 fetches happened to skip. Skipped on targeted runs
+        # (rkg_ids set) so a single-kg rescrape doesn't trigger a global sweep.
+        if rkg_ids is None:
+            sweep_rows = _find_real_miss_rkg_ids(conn)
+            if sweep_rows:
+                log.info("post-scrape real-miss sweep", count=len(sweep_rows))
+                for s_rkg_id, s_kw, s_product, s_max in sweep_rows:
+                    sweep_kgs += 1
+                    slots_inserted += _process_one_kg(
+                        s_rkg_id, s_kw, s_product, s_max,
+                        persist_conn=persist_conn, delay_seconds=delay_seconds,
                     )
-                except Exception:
-                    log.exception("persist failed (no slots)", rkg_id=rkg_id)
-                time.sleep(delay_seconds + random.uniform(0, _DELAY_JITTER))
-                continue
-
-            try:
-                _persist_kg_brands(
-                    rkg_id, slots, business_names, conn=persist_conn,
-                    detected_slot_count=detected_slot_count,
-                )
-                slots_inserted += len(slots)
-            except Exception:
-                log.exception("persist failed", rkg_id=rkg_id, keyword=kw)
-
-            time.sleep(delay_seconds + random.uniform(0, _DELAY_JITTER))
+                log.info("post-scrape sweep done", swept=sweep_kgs)
 
         # In production, reopen for the final ingest_runs update so the
         # original `conn` may have been killed by the pooler by now.
@@ -318,7 +398,11 @@ def scrape_brands_for_active_rounds(
             )
 
         close_pool()
-        return {"slots_inserted": slots_inserted, "keyword_groups_scraped": kgs_scraped}
+        return {
+            "slots_inserted": slots_inserted,
+            "keyword_groups_scraped": kgs_scraped,
+            "swept_real_misses": sweep_kgs,
+        }
     except Exception as exc:
         close_pool()
         if persist_conn is None:

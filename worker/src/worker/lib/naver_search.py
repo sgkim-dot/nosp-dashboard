@@ -313,6 +313,13 @@ def scrape_brands_with_detected_count(
                 ad_id = item.get("ad_id")
                 if not ad_id:
                     continue
+                # Mobile pages can contain BOTH a NP widget and a mobile-SV
+                # widget at the same time. Only count placements matching the
+                # product we're scraping — otherwise detected_slot_count gets
+                # inflated by the other product's ads and the post-scrape
+                # sweep mis-flags KGs as "real miss".
+                if item.get("product") != product_code:
+                    continue
                 this_fetch_ids.add(ad_id)
                 if ad_id not in m:
                     m[ad_id] = item
