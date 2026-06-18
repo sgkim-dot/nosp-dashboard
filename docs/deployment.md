@@ -128,6 +128,55 @@ Vercel의 `*.vercel.app` 글로벌 네임스페이스에서 `nosp-dashboard.verc
 
 **해결**: 항상 긴 canonical URL 사용: `nosp-dashboard-sgkim-dots-projects.vercel.app`. 짧은 alias는 신뢰 불가.
 
+### 8. Clerk dev instance — `auth.protect()` 가 404로 응답
+
+증상: 외부 사용자에게 URL 공유 → root(`/`) 접속 시 404. 응답 헤더:
+```
+X-Clerk-Auth-Reason: protect-rewrite, dev-browser-missing
+X-Matched-Path: /404
+```
+
+원인: Clerk **development instance**는 `__clerk_db_jwt` dev-browser 쿠키가 없는
+요청에 대해 `auth.protect()`가 sign-in 으로 redirect하지 않고 `/404`로 rewrite
+한다. 외부 사용자는 첫 방문이라 쿠키가 없으니 무조건 404.
+
+**해결**: 미들웨어를 `auth.protect()` 대신 수동 `redirectToSignIn()` 으로 교체.
+```ts
+export default clerkMiddleware(async (auth, request) => {
+  if (isPublicRoute(request)) return;
+  const { userId, redirectToSignIn } = await auth();
+  if (!userId) return redirectToSignIn();
+});
+```
+이렇게 하면 307 응답으로 `/sign-in`(public route, 200)으로 보내고, sign-in
+페이지에서 Clerk 클라이언트가 handshake로 dev-browser 쿠키를 설정한다.
+
+**근본 해결**: Production instance로 전환 (백로그). 그러면 dev cookie 자체가 불필요.
+
+### 9. Git Bash + MSYS 가 `vercel env add` 값을 변환
+
+증상: 등록한 환경변수 `NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in`이 실제로는
+`c:/Program Files/Git/sign-in` 으로 저장됨. 런타임에서 redirect Location이
+`c:/Program%20Files/Git/sign-in?redirect_url=...` 로 깨짐.
+
+원인: Git Bash(MSYS) 가 POSIX-스타일 인자(`/sign-in` 같은 leading slash)를
+자동으로 Windows 경로로 변환한다. `vercel env add ... --value /sign-in` 에서
+`--value` 다음 인자가 변환 대상이 된다.
+
+**해결**: 환경변수 등록 시 항상 `MSYS_NO_PATHCONV=1` prefix 사용:
+```bash
+MSYS_NO_PATHCONV=1 vercel env add NEXT_PUBLIC_CLERK_SIGN_IN_URL production \
+  --value /sign-in --no-sensitive --yes --force
+```
+
+deployment.md "환경변수 (Vercel Production)" 섹션의 일괄 등록 스크립트를
+사용할 때도 동일하게 `export MSYS_NO_PATHCONV=1` 을 앞에 둘 것.
+
+또는 PowerShell에서 등록하면 변환이 일어나지 않는다.
+
+검증: `curl -sI <url>` 로 응답 헤더의 `Location:` 값이 `/sign-in` 으로 시작하는지
+확인 (값이 `c:/Program%20Files/...` 면 변환이 일어난 것).
+
 ## 백로그 (미완료)
 
 | 작업 | 어떤 경우 필요 |
