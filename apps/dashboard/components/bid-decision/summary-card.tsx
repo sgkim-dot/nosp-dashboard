@@ -1,75 +1,50 @@
-import { Card, CardContent } from "@/components/ui/card";
 import type { KeywordGroupSummary } from "@/types/bid-decision";
 import { formatKRW } from "@/lib/format";
 
 export function SummaryCard({ summary }: { summary: KeywordGroupSummary }) {
   return (
-    <Card>
-      <CardContent className="flex flex-wrap items-center gap-6 p-4">
-        <div>
-          <div className="text-xs text-muted-foreground">키워드그룹</div>
-          <div className="text-lg font-semibold">
-            {summary.keywordGroupName}
-            <span className="ml-2 text-xs text-muted-foreground">
-              {summary.product === "SEARCHING_VIEW" ? "서칭뷰" : "신제품검색"}
-            </span>
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {summary.categoryLvl1} · {summary.categoryLvl2}
-          </div>
-        </div>
-
-        <Stat label="최근 낙찰가 (VAT-)" value={formatKRW(summary.latestWinning)} />
-        <Stat
-          label="공실 구좌"
-          value={summary.latestEmptySlots == null ? "-" : `${summary.latestEmptySlots}구좌`}
-          accent={(summary.latestEmptySlots ?? 0) > 0 ? "warn" : undefined}
-        />
-        <div>
-          <div className="text-xs text-muted-foreground">현재 집행 브랜드</div>
-          <div className="mt-1 flex flex-wrap items-center gap-1.5">
-            {summary.latestBrands.length === 0 ? (
-              <span className="text-sm text-muted-foreground">- (집행사 없음 또는 미수집)</span>
-            ) : (
-              summary.latestBrands.map((b) => (
-                <span
-                  key={b.slotNo}
-                  className="inline-flex items-center gap-1 rounded-md border bg-muted/40 px-2 py-0.5 text-sm font-medium"
-                  title={`${b.businessName} · ${b.source} · 신뢰도 ${
-                    b.confidence != null ? b.confidence.toFixed(2) : "-"
-                  }`}
-                >
-                  {b.displayName}
-                </span>
-              ))
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  accent,
-  muted,
-}: {
-  label: string;
-  value: string;
-  accent?: "warn";
-  muted?: boolean;
-}) {
-  return (
-    <div>
-      <div className="text-xs text-muted-foreground">{label}</div>
+    <div className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground shadow-sm">
+      {/* Decorative gradient blob */}
       <div
-        className={`text-lg font-semibold ${
-          accent === "warn" ? "text-amber-600" : muted ? "text-muted-foreground" : ""
-        }`}
-      >
-        {value}
+        aria-hidden
+        className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-accent/20 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute right-12 -bottom-12 h-48 w-48 rounded-full bg-accent/10 blur-2xl"
+      />
+      <div className="relative p-8 sm:p-10">
+        {/* Two columns sharing identical typography scale and line heights, so
+            both label rows and both value rows sit exactly on the same
+            baseline / mid-line. */}
+        <div className="flex flex-wrap items-stretch gap-x-16 gap-y-6">
+          {/* KG identity */}
+          <div className="flex flex-col">
+            <div className="flex h-10 items-center gap-3">
+              <span className="rounded-full bg-accent/20 px-5 py-1.5 text-xl font-semibold text-accent leading-none">
+                {summary.product === "SEARCHING_VIEW" ? "서칭뷰" : "신제품검색"}
+              </span>
+              <span className="text-xl font-medium text-primary-foreground/80">
+                {summary.categoryLvl1} · {summary.categoryLvl2}
+              </span>
+            </div>
+            <div className="mt-4 text-5xl font-bold tracking-tight leading-none">
+              {summary.keywordGroupName}
+            </div>
+          </div>
+
+          {/* 최근 낙찰가 */}
+          <div className="flex flex-col">
+            <div className="flex h-10 items-center">
+              <span className="text-xl font-medium text-primary-foreground/80">
+                최근 낙찰가 (VAT-)
+              </span>
+            </div>
+            <div className="mt-4 text-5xl font-bold tabular-nums leading-none">
+              {formatKRW(summary.latestWinning)}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

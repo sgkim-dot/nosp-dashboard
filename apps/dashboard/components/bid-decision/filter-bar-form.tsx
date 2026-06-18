@@ -42,7 +42,7 @@ export function FilterBarForm(props: Props) {
 
   return (
     <div
-      className={`flex flex-wrap items-end gap-2 border-b bg-background/95 px-6 py-3 text-sm ${pending ? "opacity-60" : ""}`}
+      className={`flex flex-wrap items-end gap-4 border-b bg-card px-8 py-5 ${pending ? "opacity-60" : ""}`}
     >
       <Field label="제품">
         <select
@@ -110,7 +110,7 @@ export function FilterBarForm(props: Props) {
       <Field label="키워드그룹">
         <select
           value={props.keywordGroupId?.toString() ?? ""}
-          className={`${selectCls} min-w-[14rem]`}
+          className={`${selectCls} min-w-[16rem]`}
           disabled={!props.categoryLvl1}
           onChange={(e) =>
             applyParams({
@@ -142,7 +142,7 @@ export function FilterBarForm(props: Props) {
       </Field>
 
       {pending && (
-        <span className="ml-auto text-xs text-muted-foreground">로딩 중…</span>
+        <span className="ml-auto text-sm text-muted-foreground">로딩 중…</span>
       )}
     </div>
   );
@@ -150,12 +150,12 @@ export function FilterBarForm(props: Props) {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="flex flex-col gap-1">
-      <span className="text-xs text-muted-foreground">{label}</span>
+    <label className="flex flex-col gap-2">
+      <span className="text-base font-semibold text-foreground">{label}</span>
       {children}
     </label>
   );
 }
 
 const selectCls =
-  "rounded-md border border-input bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring";
+  "rounded-lg border border-input bg-background px-3.5 py-2.5 text-base outline-none transition focus:ring-2 focus:ring-ring hover:border-ring/50 disabled:opacity-50 disabled:cursor-not-allowed";

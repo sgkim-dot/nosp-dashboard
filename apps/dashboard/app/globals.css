@@ -1,13 +1,20 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+/* Pretendard variable, dynamic-subset only loads Korean glyphs actually used
+   on the page → fastest first-paint. */
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+  --font-sans:
+    "Pretendard Variable", Pretendard, var(--font-geist-sans), -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -49,38 +56,41 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  /* Fintech-inspired palette: dark teal primary + emerald accent on a soft
+     gray surface, white cards with subtle borders. Mirrors references like
+     Sequence / Weavy. */
+  --background: oklch(0.975 0.003 180);          /* very light cool gray */
+  --foreground: oklch(0.18 0.02 180);             /* near-black w/ teal hint */
+  --card: oklch(1 0 0);                           /* pure white card */
+  --card-foreground: oklch(0.18 0.02 180);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.18 0.02 180);
+  --primary: oklch(0.36 0.06 185);                /* deep teal */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.01 180);
+  --secondary-foreground: oklch(0.25 0.04 185);
+  --muted: oklch(0.96 0.005 180);
+  --muted-foreground: oklch(0.5 0.02 200);
+  --accent: oklch(0.74 0.18 155);                 /* vibrant emerald */
+  --accent-foreground: oklch(0.18 0.02 180);
+  --destructive: oklch(0.62 0.22 22);
+  --border: oklch(0.92 0.01 200);
+  --input: oklch(0.92 0.01 200);
+  --ring: oklch(0.5 0.06 180);
+  --chart-1: oklch(0.36 0.06 185);                /* primary teal */
+  --chart-2: oklch(0.74 0.18 155);                /* emerald */
+  --chart-3: oklch(0.55 0.04 200);
+  --chart-4: oklch(0.65 0.14 50);
+  --chart-5: oklch(0.6 0.18 320);
+  --radius: 0.875rem;                             /* rounder, softer */
+  --sidebar: oklch(0.2 0.03 200);                 /* dark navy/teal */
+  --sidebar-foreground: oklch(0.96 0.005 180);
+  --sidebar-primary: oklch(0.74 0.18 155);        /* emerald active */
+  --sidebar-primary-foreground: oklch(0.18 0.02 180);
+  --sidebar-accent: oklch(0.27 0.03 200);
+  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-border: oklch(0.27 0.03 200);
+  --sidebar-ring: oklch(0.74 0.18 155);
 }
 
 .dark {

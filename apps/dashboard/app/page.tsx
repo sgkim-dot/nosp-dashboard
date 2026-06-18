@@ -1,6 +1,6 @@
 import { FilterBar } from "@/components/bid-decision/filter-bar";
 import { InsightsCard } from "@/components/bid-decision/insights-card";
-import { RoundTable } from "@/components/bid-decision/round-table";
+import { RoundsWithDetail } from "@/components/bid-decision/rounds-with-detail";
 import { SummaryCard } from "@/components/bid-decision/summary-card";
 import { TrendChart } from "@/components/bid-decision/trend-chart";
 import { computeInsights, getKeywordGroupSummary } from "@/lib/db/queries";
@@ -40,9 +40,9 @@ export default async function HomePage({
 
   return (
     <div>
-      <header className="border-b px-6 py-3">
-        <h1 className="text-lg font-semibold">입찰 의사결정</h1>
-        <p className="text-xs text-muted-foreground">
+      <header className="border-b bg-card px-8 py-6">
+        <h1 className="text-3xl font-bold tracking-tight">입낙찰 히스토리</h1>
+        <p className="mt-1 text-base text-muted-foreground">
           키워드그룹별 회차 추이로 다음 입찰가를 결정합니다.
         </p>
       </header>
@@ -63,9 +63,24 @@ export default async function HomePage({
         ) : (
           <>
             <SummaryCard summary={summary} />
-            <TrendChart rounds={summary.rounds} />
-            <InsightsCard insights={computeInsights(summary)} />
-            <RoundTable rounds={summary.rounds} />
+            <div className="grid gap-4 xl:grid-cols-[max-content_minmax(0,1fr)]">
+              <div className="space-y-4 min-w-0">
+                <InsightsCard insights={computeInsights(summary)} />
+                <RoundsWithDetail
+                  rounds={summary.rounds}
+                  defaultSelectedId={(() => {
+                    const today = new Date().toISOString().slice(0, 10);
+                    const active = summary.rounds.find(
+                      (r) => r.periodStart <= today && today <= r.periodEnd,
+                    );
+                    return (active ?? summary.rounds[summary.rounds.length - 1])?.roundId ?? null;
+                  })()}
+                />
+              </div>
+              <div className="xl:sticky xl:top-4 xl:self-start min-w-0">
+                <TrendChart rounds={summary.rounds} />
+              </div>
+            </div>
           </>
         )}
       </div>

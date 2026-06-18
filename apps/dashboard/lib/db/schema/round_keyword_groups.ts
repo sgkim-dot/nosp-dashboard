@@ -21,6 +21,7 @@ export const roundKeywordGroups = pgTable(
     minBidPrice: bigint("min_bid_price", { mode: "number" }),
     bidStatus: varchar("bid_status", { length: 32 }),
     emptySlots: smallint("empty_slots"),
+    totalSlots: smallint("total_slots"),
     keywordCount: smallint("keyword_count"),
     regularWinningBid: bigint("regular_winning_bid", { mode: "number" }),
     capturedAt: timestamp("captured_at", { withTimezone: true }),
