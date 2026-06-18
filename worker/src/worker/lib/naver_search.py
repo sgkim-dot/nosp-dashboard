@@ -77,11 +77,51 @@ _EXTRACT_JS = r"""
     if (!displayName) continue;
     if (displayName.length > 100) displayName = displayName.slice(0, 100);
 
+    // For NP ads: extract sub-title (above main title) and description
+    // (below main title). The OUTER .new_product_wrap contains MULTIPLE ad
+    // cards (and sometimes duplicates from a carousel), so we must NOT
+    // query .sub_tit / .desc against the wrap — that mixes data across ads.
+    //
+    // Instead, walk UP from the ad link until we find the smallest ancestor
+    // that contains exactly ONE .sub_tit element. That ancestor is the
+    // per-ad card. Then read .sub_tit and .desc relative to that card only.
+    let subTitle = null;
+    let description = null;
+    if (product === 'NEW_PRODUCT') {
+      let card = a;
+      for (let i = 0; i < 12 && card; i++) {
+        const sCount = card.querySelectorAll('.sub_tit').length;
+        if (sCount === 1) break;  // perfect: exactly one sub_tit → this ad's card
+        if (sCount > 1) {
+          // We went one level too high — back down isn't possible, but at
+          // this point the previous (smaller) ancestor had 0 sub_tit (the
+          // card wasn't on this branch). Fall back to null rather than mix.
+          card = null;
+          break;
+        }
+        card = card.parentElement;
+      }
+      if (card) {
+        const subEl = card.querySelector('.sub_tit');
+        if (subEl) subTitle = (subEl.textContent || '').trim().slice(0, 200) || null;
+        const descEls = card.querySelectorAll('.desc');
+        if (descEls.length) {
+          description = Array.from(descEls)
+            .map(e => (e.textContent || '').trim())
+            .filter(s => s)
+            .join(' ')
+            .slice(0, 400) || null;
+        }
+      }
+    }
+
     if (!placements.has(adId)) {
       placements.set(adId, {
         product,
         ad_id: adId,
         display_name: displayName,
+        sub_title: subTitle,
+        description: description,
         destination_url: href,
       });
     }
@@ -91,37 +131,144 @@ _EXTRACT_JS = r"""
 """
 
 
+class BrowserPool:
+    """Lazy persistent Playwright + browser + contexts (one mobile, one PC).
+
+    The big saving vs. opening fresh per call: Playwright/Chromium startup is
+    ~3-4s, and per-call creates of context add ~0.5s each. Reusing them brings
+    per-keyword time down to ~1.5-2s.
+
+    Used as a context manager so callers can `with BrowserPool() as pool: …`
+    or rely on the module-level singleton (`_pool`).
+    """
+
+    def __init__(self):
+        self._pw = None
+        self._browser = None
+        self._mobile_ctx = None
+        self._pc_ctx = None
+
+    def __enter__(self):
+        from playwright.sync_api import sync_playwright
+
+        self._pw = sync_playwright().start()
+        # Use system Chrome (channel="chrome") instead of Playwright's bundled
+        # Chromium — Windows Defender on this machine intermittently blocks the
+        # bundled chrome-headless-shell.exe from launching even though the file
+        # is on disk.
+        self._browser = self._pw.chromium.launch(headless=True, channel="chrome")
+        return self
+
+    def __exit__(self, *exc):
+        self.close()
+
+    def close(self):
+        for c in (self._mobile_ctx, self._pc_ctx):
+            try:
+                if c:
+                    c.close()
+            except Exception:
+                pass
+        try:
+            if self._browser:
+                self._browser.close()
+        except Exception:
+            pass
+        try:
+            if self._pw:
+                self._pw.stop()
+        except Exception:
+            pass
+        self._pw = self._browser = self._mobile_ctx = self._pc_ctx = None
+
+    def get_context(self, mobile: bool):
+        if mobile:
+            if self._mobile_ctx is None:
+                self._mobile_ctx = self._browser.new_context(
+                    user_agent=_MOBILE_UA,
+                    locale="ko-KR",
+                    viewport={"width": 390, "height": 844},
+                    device_scale_factor=2,
+                    is_mobile=True,
+                    has_touch=True,
+                )
+            return self._mobile_ctx
+        if self._pc_ctx is None:
+            self._pc_ctx = self._browser.new_context(user_agent=_PC_UA, locale="ko-KR")
+        return self._pc_ctx
+
+
+_pool: BrowserPool | None = None
+
+
+def _get_pool() -> BrowserPool:
+    """Module-level singleton — auto-started on first use."""
+    global _pool
+    if _pool is None:
+        _pool = BrowserPool()
+        _pool.__enter__()
+    return _pool
+
+
+def close_pool() -> None:
+    """Tear down the singleton browser pool. Call at job exit."""
+    global _pool
+    if _pool is not None:
+        _pool.close()
+        _pool = None
+
+
 def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
     url = (
         f"https://m.search.naver.com/search.naver?query={keyword}"
         if mobile
         else f"https://search.naver.com/search.naver?query={keyword}"
     )
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        ctx_kwargs: dict = {
-            "user_agent": _MOBILE_UA if mobile else _PC_UA,
-            "locale": "ko-KR",
-        }
+    pool = _get_pool()
+    context = pool.get_context(mobile)
+    page = context.new_page()
+    try:
+        page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
+        # Brand widgets hydrate quickly on mobile; PC even faster.
+        page.wait_for_timeout(800)
+        # NP (신제품검색) ad widget is lazy-loaded — without a scroll trigger
+        # the .new_product_wrap stays empty and our extractor returns 0 slots
+        # even when an ad is live. Scroll a bit and give the widget time to
+        # hydrate, then evaluate.
         if mobile:
-            ctx_kwargs.update(
-                viewport={"width": 390, "height": 844},
-                device_scale_factor=2,
-                is_mobile=True,
-                has_touch=True,
-            )
-        context = browser.new_context(**ctx_kwargs)
-        page = context.new_page()
+            try:
+                page.evaluate("window.scrollTo(0, 400)")
+                page.wait_for_timeout(1200)
+            except Exception:
+                pass
+        raw = page.evaluate(_EXTRACT_JS)
+    finally:
         try:
-            page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
-            page.wait_for_timeout(1500)
-            page.evaluate("window.scrollBy(0, 600)")
-            page.wait_for_timeout(700)
-            raw = page.evaluate(_EXTRACT_JS)
-        finally:
-            context.close()
-            browser.close()
+            page.close()
+        except Exception:
+            pass
     return raw or []
+
+
+# Mobile NP ad slots rotate / sometimes fail to hydrate on a given fetch:
+# in tests a single keyword with one running advertiser showed the ad on
+# only 4 of 5 page loads. Multiple fetches catch all running brands and
+# verify "0 slots" really means no ad is running.
+#
+# 2026-06-18: bumped 5→8 after analysis showed NP recall sitting at
+# 16-18% for 4+ weeks against KGs with regular_winning_bid>0. The cheap
+# win is more fetches in the first round; expensive retries only fire
+# when the first round still came back empty.
+_NP_RETRIES = 8
+_SV_RETRIES = 1
+
+# When NP returns 0 results we retry the full fetch sequence after a long
+# pause to outlast IP-level throttling. 3 retries roughly tripled the
+# zero-recovery rate in spot tests; the cost only applies to genuinely
+# empty results (~80% of KGs) so the wall-clock impact is modest.
+_NP_ZERO_RETRY_COUNT = 3
+_NP_ZERO_RETRY_PAUSE_SECONDS = 30.0
+_NP_ZERO_RETRY_JITTER_SECONDS = 10.0
 
 
 def scrape_brands_for_keyword(
@@ -129,13 +276,60 @@ def scrape_brands_for_keyword(
 ) -> list[SlotExtract]:
     """Render the appropriate viewport for `product_code` and extract ads.
 
-    - SEARCHING_VIEW → PC search.naver.com
-    - NEW_PRODUCT / ANNIVERSARY → mobile m.search.naver.com
+    - SEARCHING_VIEW → PC search.naver.com (1 fetch — SV has no rotation)
+    - NEW_PRODUCT / ANNIVERSARY → mobile m.search.naver.com (5 fetches,
+      union by ad_id to handle ad rotation + occasional hydration misses)
 
-    Slot numbering is 1-based per product, in DOM order.
+    Slot numbering is 1-based per product, in first-appearance order across
+    the union of all fetches.
     """
     mobile = product_code != "SEARCHING_VIEW"
-    raw = _run(keyword, mobile=mobile, timeout_ms=timeout_ms)
+    n_fetches = _NP_RETRIES if mobile else _SV_RETRIES
+
+    # Aggregate placements across fetches, keyed by ad_id (deduplicates so each
+    # advertiser is counted once even if seen on multiple fetches).
+    import random
+    import time
+
+    def _do_fetches(num: int) -> dict[str, dict]:
+        m: dict[str, dict] = {}
+        for i in range(num):
+            raw = _run(keyword, mobile=mobile, timeout_ms=timeout_ms)
+            for item in raw:
+                ad_id = item.get("ad_id")
+                if not ad_id:
+                    continue
+                if ad_id not in m:
+                    m[ad_id] = item
+            # Inter-fetch jittered pause — disguise burst pattern.
+            if num > 1 and i < num - 1:
+                time.sleep(2.0 + random.uniform(0, 3.0))
+        return m
+
+    merged = _do_fetches(n_fetches)
+
+    # Reliability fix: if the first round found nothing AND we're on NP (where
+    # anti-bot or lazy-load misses are common), wait substantially longer and
+    # retry up to _NP_ZERO_RETRY_COUNT times. Long pauses outlast bursty IP
+    # throttling. The cost only applies to KGs whose first full sweep saw 0
+    # ads, so most KGs are unaffected.
+    if mobile and not merged:
+        for attempt in range(_NP_ZERO_RETRY_COUNT):
+            pause = _NP_ZERO_RETRY_PAUSE_SECONDS + random.uniform(
+                0, _NP_ZERO_RETRY_JITTER_SECONDS
+            )
+            log.info(
+                "np empty — retrying after long pause",
+                keyword=keyword,
+                attempt=attempt + 1,
+                pause_s=round(pause, 1),
+            )
+            time.sleep(pause)
+            merged = _do_fetches(n_fetches)
+            if merged:
+                break
+
+    raw = list(merged.values())
 
     slots: list[SlotExtract] = []
     counters: dict[str, int] = {}
@@ -149,6 +343,8 @@ def scrape_brands_for_keyword(
                 product=prod,
                 slot_no=counters[prod],
                 display_name=item["display_name"],
+                sub_title=item.get("sub_title"),
+                description=item.get("description"),
                 destination_url=item.get("destination_url"),
             )
         )

@@ -143,15 +143,22 @@ def update_winning_bid(
     round_keyword_group_id: int,
     winning_bid: int,
 ) -> None:
-    """Set regular_winning_bid + captured_at for a round_keyword_group."""
+    """Set regular_winning_bid + captured_at for a round_keyword_group.
+
+    Skips the update if the incoming `winning_bid` is below the existing
+    min_bid_price — that indicates the value came from a re-auction (재입찰)
+    rather than a regular-auction (정기입찰) winning bid, and per project
+    convention only regular-auction winnings are tracked.
+    """
     with conn.cursor() as cur:
         cur.execute(
             """
             UPDATE round_keyword_groups
             SET regular_winning_bid = %s, captured_at = now(), updated_at = now()
             WHERE id = %s
+              AND (min_bid_price IS NULL OR %s >= min_bid_price)
             """,
-            (winning_bid, round_keyword_group_id),
+            (winning_bid, round_keyword_group_id, winning_bid),
         )
 
 

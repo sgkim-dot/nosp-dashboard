@@ -209,6 +209,7 @@ def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int)
                 row.min_bid_price,
                 row.bid_status,
                 row.empty_slots,
+                row.empty_slots,  # initial total_slots (capacity); upsert uses GREATEST
             )
         )
         total += 1
@@ -225,31 +226,51 @@ def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int)
                 INSERT INTO round_keyword_groups (
                     round_id, keyword_group_id,
                     reference_query_volume, min_bid_price, bid_status, empty_slots,
-                    updated_at
+                    total_slots, updated_at
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, now())
+                VALUES (%s, %s, %s, %s, %s, %s, %s, now())
                 ON CONFLICT (round_id, keyword_group_id) DO UPDATE SET
                     reference_query_volume = EXCLUDED.reference_query_volume,
                     min_bid_price = EXCLUDED.min_bid_price,
                     bid_status = EXCLUDED.bid_status,
                     empty_slots = EXCLUDED.empty_slots,
+                    -- total_slots locks in MAX empty_slots ever seen: as the
+                    -- round progresses (정기입찰 → 재입찰 → 종료) empty_slots
+                    -- only shrinks, so GREATEST keeps the original capacity.
+                    total_slots = GREATEST(
+                        COALESCE(round_keyword_groups.total_slots, 0),
+                        COALESCE(EXCLUDED.total_slots, 0)
+                    ),
                     updated_at = now()
                 """,
                 rkg_params,
             )
 
-    # Normalize stale "입찰중지" on past rounds — NOSP sometimes leaves it that
-    # way after the period ends. From the dashboard's perspective those rounds
-    # are simply over.
+    # Normalize bid_status by today's date. Per docs/round-lifecycle.md:
+    #   today ∈ [regular_bid_start, regular_bid_end]  → '정기입찰'
+    #   today ∈ [rebid_start, rebid_end]              → '재입찰'
+    #   today >  COALESCE(rebid_announce, regular_announce) → '입찰기간종료'
+    # NOSP's snapshot value can be stale across weekly downloads, so we always
+    # overwrite it with the date-driven truth.
     with conn.cursor() as cur:
         cur.execute(
             """
             UPDATE round_keyword_groups rkg
-            SET bid_status = '입찰기간종료', updated_at = now()
+            SET bid_status = CASE
+                  WHEN r.regular_bid_start IS NOT NULL
+                    AND CURRENT_DATE BETWEEN r.regular_bid_start AND r.regular_bid_end
+                    THEN '정기입찰'
+                  WHEN r.rebid_start IS NOT NULL
+                    AND CURRENT_DATE BETWEEN r.rebid_start AND r.rebid_end
+                    THEN '재입찰'
+                  WHEN COALESCE(r.rebid_announce_date, r.regular_announce_date) IS NOT NULL
+                    AND COALESCE(r.rebid_announce_date, r.regular_announce_date) < CURRENT_DATE
+                    THEN '입찰기간종료'
+                  ELSE rkg.bid_status
+                END,
+                updated_at = now()
             FROM rounds r
             WHERE rkg.round_id = r.id
-              AND r.period_end < CURRENT_DATE
-              AND rkg.bid_status = '입찰중지'
             """
         )
 
@@ -258,33 +279,45 @@ def _ingest_bid_info(conn: Connection, path: Path, product_id: int, run_id: int)
 
 
 def _ingest_winning(conn: Connection, path: Path, product_id: int, run_id: int) -> IngestResult:
-    """Winning rows are routed by category, same as bid_info."""
+    """Winning rows are routed by category, same as bid_info.
+
+    For shared-announce-date rounds (e.g. holiday weeks where two rounds were
+    announced on the same day), `_latest_announced_rkg_ids` returns all
+    matching rkg ids and the winning bid is applied to every one.
+    """
     anniversary_product_id = _product_id(conn, "ANNIVERSARY")
     query_date = _read_query_date(path)
     total = updated = 0
     for w_row in parse_winning_bid_csv(path):
         pid = _resolve_product_id_for_row(product_id, anniversary_product_id, w_row.category_lvl1)
-        rkg_id = _latest_announced_rkg(conn, pid, w_row, query_date)
-        if rkg_id is None:
+        rkg_ids = _latest_announced_rkg_ids(conn, pid, w_row, query_date)
+        if not rkg_ids:
             log.warning(
                 "no round to attach winning bid",
                 product_id=pid,
                 keyword_group=w_row.keyword_group,
             )
             continue
-        update_winning_bid(
-            conn,
-            round_keyword_group_id=rkg_id,
-            winning_bid=w_row.recent_winning_bid,
-        )
+        for rkg_id in rkg_ids:
+            update_winning_bid(
+                conn,
+                round_keyword_group_id=rkg_id,
+                winning_bid=w_row.recent_winning_bid,
+            )
+            updated += 1
         total += 1
-        updated += 1
     return IngestResult(total, 0, updated, run_id)
 
 
-def _latest_announced_rkg(
+def _latest_announced_rkg_ids(
     conn: Connection, product_id: int, w_row: WinningBidRow, query_date: date
-) -> int | None:
+) -> list[int]:
+    """Return ALL rkg ids whose round has the MAX regular_announce_date <= query_date.
+
+    Normal case → 1 id. Shared-announce-date case (e.g. holidays where two
+    rounds share the same announce_date) → multiple ids so the same winning
+    bid is recorded for each.
+    """
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -298,11 +331,14 @@ def _latest_announced_rkg(
               AND kg.product_id = %s
               AND kg.name = %s
             WHERE r.regular_announce_date IS NOT NULL
-              AND r.regular_announce_date <= %s
-            ORDER BY r.regular_announce_date DESC
-            LIMIT 1
+              AND r.regular_announce_date = (
+                SELECT MAX(r2.regular_announce_date)
+                FROM rounds r2
+                WHERE r2.product_id = %s
+                  AND r2.regular_announce_date IS NOT NULL
+                  AND r2.regular_announce_date <= %s
+              )
             """,
-            (product_id, product_id, w_row.keyword_group, query_date),
+            (product_id, product_id, w_row.keyword_group, product_id, query_date),
         )
-        row = cur.fetchone()
-        return row[0] if row else None
+        return [r[0] for r in cur.fetchall()]

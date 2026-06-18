@@ -34,5 +34,7 @@ class SlotExtract(BaseModel):
 
     product: str  # "SEARCHING_VIEW" | "NEW_PRODUCT"
     slot_no: int
-    display_name: str
+    display_name: str       # main title (.tit)
+    sub_title: str | None = None    # NP only: small line above title (.sub_tit)
+    description: str | None = None  # NP only: lines below title (.desc, joined)
     destination_url: str | None
