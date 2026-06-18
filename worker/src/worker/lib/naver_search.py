@@ -271,17 +271,27 @@ _NP_ZERO_RETRY_PAUSE_SECONDS = 30.0
 _NP_ZERO_RETRY_JITTER_SECONDS = 10.0
 
 
-def scrape_brands_for_keyword(
+def scrape_brands_with_detected_count(
     keyword: str, product_code: str = "NEW_PRODUCT", *, timeout_ms: int = 20000
-) -> list[SlotExtract]:
-    """Render the appropriate viewport for `product_code` and extract ads.
+) -> tuple[list[SlotExtract], int]:
+    """Same as `scrape_brands_for_keyword` but also returns the largest single-
+    fetch unique-ad-id count observed during the scrape session.
 
-    - SEARCHING_VIEW → PC search.naver.com (1 fetch — SV has no rotation)
-    - NEW_PRODUCT / ANNIVERSARY → mobile m.search.naver.com (5 fetches,
-      union by ad_id to handle ad rotation + occasional hydration misses)
+    The returned `detected_slot_count` is the most reliable in-band signal for
+    "how many ad placements the page actually showed at peak hydration":
+      - 0  → no ad widget hydrated on any fetch (genuine no-ad OR fully missed)
+      - 1  → only one advertiser was running (carousel showed a single placement)
+      - 2+ → that many advertisers are in rotation on this KG
 
-    Slot numbering is 1-based per product, in first-appearance order across
-    the union of all fetches.
+    Compare against `len(slots)`:
+      - detected_slot_count == len(slots) → we captured everything visible
+      - detected_slot_count >  len(slots) → impossible by construction
+      - detected_slot_count <  any single fetch — also impossible (it's a max)
+
+    The cross-fetch union `len(slots)` can exceed any single fetch's count if
+    advertiser A appeared on fetch 1 and B on fetch 3 — that's the union
+    catching rotation. In that case detected_slot_count tracks the *peak*
+    single-fetch view, which is what the visible "dot indicator" reflects.
     """
     mobile = product_code != "SEARCHING_VIEW"
     n_fetches = _NP_RETRIES if mobile else _SV_RETRIES
@@ -291,16 +301,25 @@ def scrape_brands_for_keyword(
     import random
     import time
 
+    detected_slot_count = 0
+
     def _do_fetches(num: int) -> dict[str, dict]:
+        nonlocal detected_slot_count
         m: dict[str, dict] = {}
         for i in range(num):
             raw = _run(keyword, mobile=mobile, timeout_ms=timeout_ms)
+            this_fetch_ids: set[str] = set()
             for item in raw:
                 ad_id = item.get("ad_id")
                 if not ad_id:
                     continue
+                this_fetch_ids.add(ad_id)
                 if ad_id not in m:
                     m[ad_id] = item
+            # Track peak single-fetch slot count — the page's actual visible
+            # placement count at its best hydration during this session.
+            if len(this_fetch_ids) > detected_slot_count:
+                detected_slot_count = len(this_fetch_ids)
             # Inter-fetch jittered pause — disguise burst pattern.
             if num > 1 and i < num - 1:
                 time.sleep(2.0 + random.uniform(0, 3.0))
@@ -355,5 +374,21 @@ def scrape_brands_for_keyword(
         mobile=mobile,
         sv=counters.get("SEARCHING_VIEW", 0),
         np=counters.get("NEW_PRODUCT", 0),
+        detected=detected_slot_count,
+    )
+    return slots, detected_slot_count
+
+
+def scrape_brands_for_keyword(
+    keyword: str, product_code: str = "NEW_PRODUCT", *, timeout_ms: int = 20000
+) -> list[SlotExtract]:
+    """Backward-compatible wrapper around `scrape_brands_with_detected_count`.
+
+    Discards the detected-slot-count and returns only the unioned slots.
+    Used by older diagnostic scripts; production `brand_scrape` calls the
+    new function directly so it can persist the count.
+    """
+    slots, _ = scrape_brands_with_detected_count(
+        keyword, product_code, timeout_ms=timeout_ms
     )
     return slots

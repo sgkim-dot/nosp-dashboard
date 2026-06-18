@@ -18,7 +18,7 @@ from worker.lib.canonical_brand import (
     normalize_host,
     platform_business_name,
 )
-from worker.lib.naver_search import close_pool, scrape_brands_for_keyword
+from worker.lib.naver_search import close_pool, scrape_brands_with_detected_count
 from worker.logging import configure_logging, get_logger
 from worker.upsert import complete_ingest_run, fail_ingest_run, start_ingest_run
 
@@ -130,6 +130,7 @@ def _persist_kg_brands_impl(
     rkg_id: int,
     slots: list,
     business_names: dict[str | None, str | None],
+    detected_slot_count: int | None = None,
 ) -> None:
     with conn.cursor() as cur:
         cur.execute(
@@ -138,10 +139,17 @@ def _persist_kg_brands_impl(
         )
         # Always stamp brands_scraped_at — distinguishes "no advertiser running
         # at scrape time" (column set, 0 brand rows) from "not yet scraped"
-        # (column NULL).
+        # (column NULL). detected_slot_count is also always written (may be 0)
+        # so the dashboard can distinguish "page never rendered" (NULL) from
+        # "page rendered, no ad" (0).
         cur.execute(
-            "UPDATE round_keyword_groups SET brands_scraped_at = now() WHERE id = %s",
-            (rkg_id,),
+            """
+            UPDATE round_keyword_groups
+            SET brands_scraped_at = now(),
+                detected_slot_count = %s
+            WHERE id = %s
+            """,
+            (detected_slot_count, rkg_id),
         )
     for slot in slots:
         business_name = business_names.get(slot.destination_url)
@@ -182,6 +190,7 @@ def _persist_kg_brands(
     slots: list,
     business_names: dict[str | None, str | None],
     conn: Connection | None = None,
+    detected_slot_count: int | None = None,
 ) -> None:
     """Persist brands for one keyword group.
 
@@ -190,10 +199,14 @@ def _persist_kg_brands(
     pooler doesn't drop a long-lived connection during multi-hour scrapes.
     """
     if conn is not None:
-        _persist_kg_brands_impl(conn, rkg_id, slots, business_names)
+        _persist_kg_brands_impl(
+            conn, rkg_id, slots, business_names, detected_slot_count
+        )
         return
     with connect() as fresh:
-        _persist_kg_brands_impl(fresh, rkg_id, slots, business_names)
+        _persist_kg_brands_impl(
+            fresh, rkg_id, slots, business_names, detected_slot_count
+        )
         fresh.commit()
 
 
@@ -228,7 +241,9 @@ def scrape_brands_for_active_rounds(
         for rkg_id, kw, product_code, max_brands in rows:
             kgs_scraped += 1
             try:
-                slots = scrape_brands_for_keyword(kw, product_code)
+                slots, detected_slot_count = scrape_brands_with_detected_count(
+                    kw, product_code
+                )
             except Exception:
                 log.exception("scrape failed", keyword=kw)
                 continue
@@ -260,14 +275,20 @@ def scrape_brands_for_active_rounds(
             if not slots:
                 log.info("no slots", keyword=kw, product=product_code)
                 try:
-                    _persist_kg_brands(rkg_id, [], {}, conn=persist_conn)
+                    _persist_kg_brands(
+                        rkg_id, [], {}, conn=persist_conn,
+                        detected_slot_count=detected_slot_count,
+                    )
                 except Exception:
                     log.exception("persist failed (no slots)", rkg_id=rkg_id)
                 time.sleep(delay_seconds + random.uniform(0, _DELAY_JITTER))
                 continue
 
             try:
-                _persist_kg_brands(rkg_id, slots, business_names, conn=persist_conn)
+                _persist_kg_brands(
+                    rkg_id, slots, business_names, conn=persist_conn,
+                    detected_slot_count=detected_slot_count,
+                )
                 slots_inserted += len(slots)
             except Exception:
                 log.exception("persist failed", rkg_id=rkg_id, keyword=kw)

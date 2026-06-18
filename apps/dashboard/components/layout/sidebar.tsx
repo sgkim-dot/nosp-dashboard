@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Gauge, Building2, Tag, Activity, AlertTriangle, BarChart3 } from "lucide-react";
+import { Gauge, Building2, Tag, Activity, AlertTriangle, AlertOctagon, BarChart3 } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 const NAV = [
@@ -9,6 +9,7 @@ const NAV = [
   { href: "/backtest", label: "추천가 검증", icon: BarChart3 },
   { href: "/crawl", label: "크롤링 진행률", icon: Activity },
   { href: "/brand-cleanup", label: "브랜드 정리 필요", icon: AlertTriangle },
+  { href: "/scrape-misses", label: "광고 누락 의심", icon: AlertOctagon },
 ];
 
 export function Sidebar() {

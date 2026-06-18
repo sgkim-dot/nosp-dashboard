@@ -27,6 +27,8 @@ export const roundKeywordGroups = pgTable(
     capturedAt: timestamp("captured_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    brandsScrapedAt: timestamp("brands_scraped_at", { withTimezone: true }),
+    detectedSlotCount: smallint("detected_slot_count"),
   },
   (t) => ({
     roundKgUq: uniqueIndex("round_keyword_groups_round_kg_uq").on(t.roundId, t.keywordGroupId),

@@ -1193,3 +1193,111 @@ export async function tuneStrategy(opts?: {
 
   return results;
 }
+
+// ---------------------------------------------------------------------------
+// 광고 누락 의심 KG (scrape miss alerts)
+//
+// 운영상 발견: NP recall은 4주 연속 16~18%. 이 중 일부는 진짜 누락이고
+// 일부는 NOSP total_slots가 운영 광고주 수보다 큰 메타데이터 오류다.
+// 두 케이스를 구분하려면 우리 스크랩이 실제로 본 슬롯 수가 필요한데,
+// `detected_slot_count`가 그 신호다 (peak single-fetch unique ad_ids).
+// ---------------------------------------------------------------------------
+
+export type ScrapeMiss = {
+  rkgId: number;
+  keywordGroup: string;
+  product: ProductCode;
+  roundNo: number;
+  periodStart: string;
+  periodEnd: string;
+  totalSlots: number;
+  detectedSlotCount: number; // peak single-fetch slot count we observed
+  caughtCount: number;       // round_brands rows we persisted
+  regularWinningBid: number | null;
+  brandsScrapedAt: string | null;
+  severity: "real_miss" | "nosp_mismatch" | "never_scraped";
+};
+
+export async function getScrapeMisses(): Promise<ScrapeMiss[]> {
+  // Three buckets:
+  //  - real_miss      : detected_slot_count > caught_count   (we saw it, didn't capture)
+  //  - nosp_mismatch  : detected = caught, but NOSP total_slots > detected
+  //                     (we captured everything visible, but NOSP says there
+  //                      should be more — usually 1-slot KGs flagged as 2)
+  //  - never_scraped  : brands_scraped_at IS NULL AND regular_winning_bid > 0
+  //                     (KG with a winning bid that never made it through the
+  //                      crawler — usually because the BAT didn't reach it)
+  const result = await db.execute<{
+    rkg_id: number;
+    keyword_group: string;
+    product: ProductCode;
+    round_no: number;
+    period_start: string;
+    period_end: string;
+    total_slots: number;
+    detected_slot_count: number | null;
+    caught_count: number;
+    regular_winning_bid: number | null;
+    brands_scraped_at: string | null;
+    severity: ScrapeMiss["severity"];
+  }>(sql`
+    WITH active AS (
+      SELECT rkg.id, kg.name AS keyword_group, p.code AS product,
+             r.round_no, r.period_start, r.period_end,
+             rkg.total_slots, rkg.detected_slot_count,
+             rkg.regular_winning_bid, rkg.brands_scraped_at,
+             (SELECT COUNT(*)::int FROM round_brands rb
+              WHERE rb.round_keyword_group_id = rkg.id) AS caught_count
+      FROM round_keyword_groups rkg
+      JOIN rounds r ON r.id = rkg.round_id
+      JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
+      JOIN products p ON p.id = kg.product_id
+      WHERE r.period_start <= CURRENT_DATE AND r.period_end >= CURRENT_DATE
+    )
+    SELECT id AS rkg_id, keyword_group, product, round_no,
+           period_start::text, period_end::text, total_slots,
+           detected_slot_count, caught_count,
+           regular_winning_bid, brands_scraped_at::text,
+           CASE
+             WHEN brands_scraped_at IS NULL AND regular_winning_bid > 0
+               THEN 'never_scraped'
+             WHEN detected_slot_count IS NOT NULL AND detected_slot_count > caught_count
+               THEN 'real_miss'
+             WHEN detected_slot_count IS NOT NULL
+                  AND detected_slot_count = caught_count
+                  AND total_slots > detected_slot_count
+               THEN 'nosp_mismatch'
+             ELSE NULL
+           END AS severity
+    FROM active
+    WHERE (
+      (brands_scraped_at IS NULL AND regular_winning_bid > 0)
+      OR (detected_slot_count IS NOT NULL AND detected_slot_count > caught_count)
+      OR (detected_slot_count IS NOT NULL
+          AND detected_slot_count = caught_count
+          AND total_slots > detected_slot_count)
+    )
+    ORDER BY
+      CASE
+        WHEN brands_scraped_at IS NULL THEN 0
+        WHEN detected_slot_count > caught_count THEN 1
+        ELSE 2
+      END,
+      regular_winning_bid DESC NULLS LAST
+  `);
+
+  return result.rows.map((r) => ({
+    rkgId: r.rkg_id,
+    keywordGroup: r.keyword_group,
+    product: r.product,
+    roundNo: r.round_no,
+    periodStart: r.period_start,
+    periodEnd: r.period_end,
+    totalSlots: r.total_slots,
+    detectedSlotCount: r.detected_slot_count ?? 0,
+    caughtCount: r.caught_count,
+    regularWinningBid: r.regular_winning_bid,
+    brandsScrapedAt: r.brands_scraped_at,
+    severity: r.severity,
+  }));
+}
