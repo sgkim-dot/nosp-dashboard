@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd apps/dashboard && npm install --no-audit --legacy-peer-deps --ignore-scripts && npm run build",
+  "outputDirectory": "apps/dashboard/.next",
+  "installCommand": "echo skip-root-install"
+}
