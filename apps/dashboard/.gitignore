@@ -18,6 +18,9 @@
 /.next-*/
 /out/
 
+# pm2 logs/state
+/.pm2/
+
 # production
 /build
 

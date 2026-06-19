@@ -46,17 +46,54 @@ pnpm dev
 # → http://localhost:3000
 ```
 
-### 다른 포트로 띄우기 (3000은 다른 프로젝트가 쓰고 있을 때)
+### 다른 포트로 띄우기 (3000은 다른 프로젝트가 쓰고 있을 때) — **PM2 권장**
+
+터미널을 닫거나 다른 작업을 해도 살아있어야 하면 PM2 로 데몬화한다.
+일반 `pnpm dev:3100`은 터미널 종료/세션 끊김에 같이 죽는다.
+
+#### 최초 1회 셋업
+```bash
+npm install -g pm2
+cd apps/dashboard
+pm2 start ecosystem.config.cjs
+pm2 save     # 현재 프로세스 목록 dump.pm2 에 저장
+```
+
+#### 일상 사용
+```bash
+pm2 list                       # 상태 확인 (online/stopped, 재시작 횟수)
+pm2 logs dashboard-3100        # 실시간 로그
+pm2 restart dashboard-3100     # 코드 큰 변경 후 강제 재시작
+pm2 stop dashboard-3100        # 일시 중단
+pm2 delete dashboard-3100      # 완전히 내림
+```
+
+설정 파일: [apps/dashboard/ecosystem.config.cjs](../apps/dashboard/ecosystem.config.cjs)
+- 포트 3100, `NEXT_DIST_DIR=.next-3100`
+- `autorestart: true` — 어떤 이유로든 죽으면 자동 부활
+- `max_memory_restart: 2G` — 메모리 누수 방어
+- 로그: `apps/dashboard/.pm2/out.log`, `.pm2/err.log`
+
+#### PC 재부팅 후 자동 부팅 (선택)
+PM2는 Windows 자동 시작이 기본 제공 안 됨. 필요하면:
+```powershell
+npm install -g pm2-windows-startup
+pm2-startup install
+pm2 save
+```
+또는 매번 부팅 후 수동으로 `pm2 resurrect` 실행.
+
+#### 그냥 한 번만 띄우려면 (PM2 없이)
 ```bash
 cd apps/dashboard
 pnpm dev:3100
-# → http://localhost:3100  (distDir=.next-3100, 다른 dev 서버와 .next/dev 충돌 없음)
+# → http://localhost:3100  (distDir=.next-3100)
 ```
+이 방식은 터미널을 닫으면 같이 죽으니, 죽지 않아야 하면 위 PM2 방식을 쓸 것.
 
-두 인스턴스를 **동시에** 띄울 일이 있으면 (다른 프로젝트 + dashboard, 또는
-dashboard 2개) 반드시 `dev:3100` 처럼 distDir이 분리된 스크립트를 써야
-`.next/dev/` 동시 쓰기 충돌이 안 난다. Next.js 16부터 `next dev`는
-`.next/dev/` 에 출력하는데, 같은 폴더에서 두 인스턴스가 돌면 한쪽이 죽음.
+**왜 distDir 분리하나**: Next.js 16부터 `next dev`는 `.next/dev/` 에 출력한다.
+같은 폴더에서 두 dev 인스턴스를 띄우면 양쪽이 같은 디렉토리에 동시에 쓰면서
+한쪽이 죽는다. `dev:3100` 과 ecosystem 둘 다 `.next-3100/` 으로 분리해서 안전.
 
 ### 브랜드 매핑 추가 후 정리
 ```bash
