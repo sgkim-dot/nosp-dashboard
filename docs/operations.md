@@ -46,6 +46,18 @@ pnpm dev
 # → http://localhost:3000
 ```
 
+### 다른 포트로 띄우기 (3000은 다른 프로젝트가 쓰고 있을 때)
+```bash
+cd apps/dashboard
+pnpm dev:3100
+# → http://localhost:3100  (distDir=.next-3100, 다른 dev 서버와 .next/dev 충돌 없음)
+```
+
+두 인스턴스를 **동시에** 띄울 일이 있으면 (다른 프로젝트 + dashboard, 또는
+dashboard 2개) 반드시 `dev:3100` 처럼 distDir이 분리된 스크립트를 써야
+`.next/dev/` 동시 쓰기 충돌이 안 난다. Next.js 16부터 `next dev`는
+`.next/dev/` 에 출력하는데, 같은 폴더에서 두 인스턴스가 돌면 한쪽이 죽음.
+
 ### 브랜드 매핑 추가 후 정리
 ```bash
 cd worker
