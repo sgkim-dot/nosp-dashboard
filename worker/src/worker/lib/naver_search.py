@@ -219,35 +219,65 @@ def close_pool() -> None:
 
 
 def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
+    """Fetch + extract once. Auto-recovers from Playwright driver death by
+    resetting the BrowserPool and retrying once.
+
+    Playwright's bundled Chromium driver process can die mid-run (memory
+    pressure on Windows, Defender interference, an idle socket close). When
+    it does, every subsequent `context.new_page()` raises
+    "Connection closed while reading from the driver" until the pool is
+    rebuilt. We catch that and any other Playwright-level failure here once,
+    tear down, and retry. If the second attempt also fails the exception
+    propagates to the caller (which will skip the KG and continue).
+    """
     url = (
         f"https://m.search.naver.com/search.naver?query={keyword}"
         if mobile
         else f"https://search.naver.com/search.naver?query={keyword}"
     )
-    pool = _get_pool()
-    context = pool.get_context(mobile)
-    page = context.new_page()
-    try:
-        page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
-        # Brand widgets hydrate quickly on mobile; PC even faster.
-        page.wait_for_timeout(800)
-        # NP (신제품검색) ad widget is lazy-loaded — without a scroll trigger
-        # the .new_product_wrap stays empty and our extractor returns 0 slots
-        # even when an ad is live. Scroll a bit and give the widget time to
-        # hydrate, then evaluate.
-        if mobile:
-            try:
-                page.evaluate("window.scrollTo(0, 400)")
-                page.wait_for_timeout(1200)
-            except Exception:
-                pass
-        raw = page.evaluate(_EXTRACT_JS)
-    finally:
+    last_err: Exception | None = None
+    for attempt in (1, 2):
         try:
-            page.close()
-        except Exception:
-            pass
-    return raw or []
+            pool = _get_pool()
+            context = pool.get_context(mobile)
+            page = context.new_page()
+            try:
+                page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
+                # Brand widgets hydrate quickly on mobile; PC even faster.
+                page.wait_for_timeout(800)
+                # NP (신제품검색) ad widget is lazy-loaded — without a scroll
+                # trigger the .new_product_wrap stays empty and our extractor
+                # returns 0 slots even when an ad is live. Scroll a bit and
+                # give the widget time to hydrate, then evaluate.
+                if mobile:
+                    try:
+                        page.evaluate("window.scrollTo(0, 400)")
+                        page.wait_for_timeout(1200)
+                    except Exception:
+                        pass
+                raw = page.evaluate(_EXTRACT_JS)
+            finally:
+                try:
+                    page.close()
+                except Exception:
+                    pass
+            return raw or []
+        except Exception as e:  # noqa: BLE001 — Playwright wraps many types
+            last_err = e
+            if attempt == 1:
+                log.warning(
+                    "playwright fetch failed — resetting pool and retrying once",
+                    keyword=keyword,
+                    error=str(e)[:200],
+                )
+                try:
+                    close_pool()
+                except Exception:
+                    log.exception("close_pool during _run recovery raised")
+                continue
+            # Second attempt also failed — let the caller skip the KG.
+            log.exception("playwright fetch failed after pool reset", keyword=keyword)
+            raise last_err
 
 
 # Mobile NP ad slots rotate / sometimes fail to hydrate on a given fetch:
