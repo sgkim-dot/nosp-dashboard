@@ -230,6 +230,15 @@ def _process_one_kg(
         )
     except Exception:
         log.exception("scrape failed", keyword=kw)
+        # Playwright's Chromium driver can die mid-run (memory pressure,
+        # Windows Defender, idle socket close). The BrowserPool is a single
+        # shared instance, so a dead driver would cascade — every subsequent
+        # KG would re-use the broken context and fail the same way. Tear it
+        # down so the next call to _get_pool() spawns a fresh Chromium.
+        try:
+            close_pool()
+        except Exception:
+            log.exception("close_pool after scrape failure raised")
         return 0
     slots = [s for s in slots if s.product == product_code]
 
