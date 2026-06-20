@@ -292,13 +292,15 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
 _NP_RETRIES = 8
 _SV_RETRIES = 1
 
-# When NP returns 0 results we retry the full fetch sequence after a long
-# pause to outlast IP-level throttling. 3 retries roughly tripled the
-# zero-recovery rate in spot tests; the cost only applies to genuinely
-# empty results (~80% of KGs) so the wall-clock impact is modest.
-_NP_ZERO_RETRY_COUNT = 3
-_NP_ZERO_RETRY_PAUSE_SECONDS = 30.0
-_NP_ZERO_RETRY_JITTER_SECONDS = 10.0
+# When NP returns 0 results we retry the full fetch sequence once after a
+# short pause. Earlier this was 3 retries × 30s pause but ~80% of KGs are
+# genuinely 0-ad, which made the BAT take ~6 days. detected_slot_count +
+# the post-scrape sweep + nightly reset already handle the misses that a
+# single retry doesn't catch, so one quick retry is enough to disambiguate
+# "genuinely empty" from "first fetch unlucky".
+_NP_ZERO_RETRY_COUNT = 1
+_NP_ZERO_RETRY_PAUSE_SECONDS = 10.0
+_NP_ZERO_RETRY_JITTER_SECONDS = 4.0
 
 
 def scrape_brands_with_detected_count(
