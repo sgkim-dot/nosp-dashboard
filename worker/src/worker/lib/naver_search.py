@@ -280,18 +280,17 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
             raise last_err
 
 
-# 2026-06-21: tightened from 8 to 5. The week's data is meaningful only
-# until the new round drops on Monday, so the BAT must finish in <12h.
-# Misses get caught by dot indicator (detected_slot_count) + post-scrape
-# sweep + nightly reset, so cutting fetch count is the cheapest gain.
-_NP_RETRIES = 5
+# 2026-06-21: further trimmed to 3 for the NULL-only sprint before the new
+# weekly round drops Monday. Misses get caught by detected_slot_count +
+# post-scrape sweep + next-cycle dawn reset.
+_NP_RETRIES = 3
 _SV_RETRIES = 1
 
 # 0건 retry: keep one quick retry to distinguish "first fetch unlucky"
 # from "genuinely empty". Shorter pause to keep the wall-clock low.
 _NP_ZERO_RETRY_COUNT = 1
-_NP_ZERO_RETRY_PAUSE_SECONDS = 5.0
-_NP_ZERO_RETRY_JITTER_SECONDS = 2.0
+_NP_ZERO_RETRY_PAUSE_SECONDS = 3.0
+_NP_ZERO_RETRY_JITTER_SECONDS = 1.0
 
 
 def scrape_brands_with_detected_count(
@@ -351,10 +350,9 @@ def scrape_brands_with_detected_count(
             if len(this_fetch_ids) > detected_slot_count:
                 detected_slot_count = len(this_fetch_ids)
             # Inter-fetch jittered pause — disguise burst pattern.
-            # 2026-06-21: tightened (was 2.0 + 0~3.0) for the BAT-in-12h
-            # deadline. Bot-detection risk slightly higher but still random.
+            # 2026-06-21 (sprint): 0.5 + 0~0.5s for the NULL-only run.
             if num > 1 and i < num - 1:
-                time.sleep(1.0 + random.uniform(0, 1.0))
+                time.sleep(0.5 + random.uniform(0, 0.5))
         return m
 
     merged = _do_fetches(n_fetches)

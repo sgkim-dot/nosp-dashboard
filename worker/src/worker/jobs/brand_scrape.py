@@ -30,10 +30,9 @@ _USER_AGENT = (
 )
 # Base inter-keyword pause. Actual sleep is `_DELAY_SECONDS + uniform(0, _DELAY_JITTER)`
 # so the request cadence isn't perfectly periodic (anti-bot signal).
-# 2026-06-21: tightened from 2.0+0~2.0 (avg 3.0s) to 1.0+0~1.0 (avg 1.5s)
-# for the 12h-deadline run. Still randomized so cadence isn't periodic.
-_DELAY_SECONDS = 1.0
-_DELAY_JITTER = 1.0
+# 2026-06-21 (NULL-only sprint): cut to 0.5 + 0~0.5 (avg 0.75s).
+_DELAY_SECONDS = 0.5
+_DELAY_JITTER = 0.5
 
 
 def fetch_business_name(url: str) -> str | None:
@@ -90,6 +89,7 @@ def _fetch_work_list(
     limit: int | None,
     rkg_ids: list[int] | None,
     skip_already_scraped: bool,
+    null_only: bool = False,
 ) -> list[tuple[int, str, str, int]]:
     today = date.today().isoformat()
     with conn.cursor() as cur:
@@ -108,7 +108,12 @@ def _fetch_work_list(
             WHERE r.period_start <= %s AND r.period_end >= %s
         """
         params: tuple = (today, today)
-        if skip_already_scraped:
+        if null_only:
+            # Only KGs that have never been scraped this round. Used in a
+            # deadline sprint where the previous BAT already touched 24h-old
+            # KGs and only the NULL set is critical.
+            sql += " AND rkg.brands_scraped_at IS NULL"
+        elif skip_already_scraped:
             # Skip KGs scraped in the last 24h regardless of whether any ad
             # was found (brands_scraped_at is set even on 0-slot scrapes).
             sql += """
@@ -341,6 +346,7 @@ def scrape_brands_for_active_rounds(
     delay_seconds: float = _DELAY_SECONDS,
     rkg_ids: list[int] | None = None,
     skip_already_scraped: bool = False,
+    null_only: bool = False,
     persist_conn: Connection | None = None,
 ) -> dict[str, int]:
     """Scrape brands for currently-active rounds.
@@ -353,7 +359,8 @@ def scrape_brands_for_active_rounds(
     test's rolled-back transaction.
     """
     rows = _fetch_work_list(
-        conn, limit=limit, rkg_ids=rkg_ids, skip_already_scraped=skip_already_scraped
+        conn, limit=limit, rkg_ids=rkg_ids,
+        skip_already_scraped=skip_already_scraped, null_only=null_only,
     )
     log.info("active keyword groups", count=len(rows))
 
@@ -503,6 +510,13 @@ def main(argv: list[str] | None = None) -> int:
         help="skip keyword groups scraped in the last 24 hours (safe to use every "
              "time — lets you stop+resume across machines/days)",
     )
+    parser.add_argument(
+        "--null-only",
+        action="store_true",
+        dest="null_only",
+        help="only process KGs with brands_scraped_at IS NULL — used for "
+             "deadline sprints where the rest of the round is already covered.",
+    )
     args = parser.parse_args(argv)
 
     with connect() as conn:
@@ -510,7 +524,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.resume:
             _print_resume_status(conn)
         result = scrape_brands_for_active_rounds(
-            conn, limit=args.limit, skip_already_scraped=args.resume
+            conn, limit=args.limit,
+            skip_already_scraped=args.resume, null_only=args.null_only,
         )
         log.info("brand scrape done", **result)
     return 0
