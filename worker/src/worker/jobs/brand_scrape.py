@@ -30,8 +30,10 @@ _USER_AGENT = (
 )
 # Base inter-keyword pause. Actual sleep is `_DELAY_SECONDS + uniform(0, _DELAY_JITTER)`
 # so the request cadence isn't perfectly periodic (anti-bot signal).
-_DELAY_SECONDS = 2.0
-_DELAY_JITTER = 2.0
+# 2026-06-21: tightened from 2.0+0~2.0 (avg 3.0s) to 1.0+0~1.0 (avg 1.5s)
+# for the 12h-deadline run. Still randomized so cadence isn't periodic.
+_DELAY_SECONDS = 1.0
+_DELAY_JITTER = 1.0
 
 
 def fetch_business_name(url: str) -> str | None:

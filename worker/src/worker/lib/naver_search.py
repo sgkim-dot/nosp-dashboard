@@ -280,27 +280,18 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
             raise last_err
 
 
-# Mobile NP ad slots rotate / sometimes fail to hydrate on a given fetch:
-# in tests a single keyword with one running advertiser showed the ad on
-# only 4 of 5 page loads. Multiple fetches catch all running brands and
-# verify "0 slots" really means no ad is running.
-#
-# 2026-06-18: bumped 5→8 after analysis showed NP recall sitting at
-# 16-18% for 4+ weeks against KGs with regular_winning_bid>0. The cheap
-# win is more fetches in the first round; expensive retries only fire
-# when the first round still came back empty.
-_NP_RETRIES = 8
+# 2026-06-21: tightened from 8 to 5. The week's data is meaningful only
+# until the new round drops on Monday, so the BAT must finish in <12h.
+# Misses get caught by dot indicator (detected_slot_count) + post-scrape
+# sweep + nightly reset, so cutting fetch count is the cheapest gain.
+_NP_RETRIES = 5
 _SV_RETRIES = 1
 
-# When NP returns 0 results we retry the full fetch sequence once after a
-# short pause. Earlier this was 3 retries × 30s pause but ~80% of KGs are
-# genuinely 0-ad, which made the BAT take ~6 days. detected_slot_count +
-# the post-scrape sweep + nightly reset already handle the misses that a
-# single retry doesn't catch, so one quick retry is enough to disambiguate
-# "genuinely empty" from "first fetch unlucky".
+# 0건 retry: keep one quick retry to distinguish "first fetch unlucky"
+# from "genuinely empty". Shorter pause to keep the wall-clock low.
 _NP_ZERO_RETRY_COUNT = 1
-_NP_ZERO_RETRY_PAUSE_SECONDS = 10.0
-_NP_ZERO_RETRY_JITTER_SECONDS = 4.0
+_NP_ZERO_RETRY_PAUSE_SECONDS = 5.0
+_NP_ZERO_RETRY_JITTER_SECONDS = 2.0
 
 
 def scrape_brands_with_detected_count(
@@ -360,8 +351,10 @@ def scrape_brands_with_detected_count(
             if len(this_fetch_ids) > detected_slot_count:
                 detected_slot_count = len(this_fetch_ids)
             # Inter-fetch jittered pause — disguise burst pattern.
+            # 2026-06-21: tightened (was 2.0 + 0~3.0) for the BAT-in-12h
+            # deadline. Bot-detection risk slightly higher but still random.
             if num > 1 and i < num - 1:
-                time.sleep(2.0 + random.uniform(0, 3.0))
+                time.sleep(1.0 + random.uniform(0, 1.0))
         return m
 
     merged = _do_fetches(n_fetches)
