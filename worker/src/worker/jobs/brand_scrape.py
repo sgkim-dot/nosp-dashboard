@@ -30,9 +30,8 @@ _USER_AGENT = (
 )
 # Base inter-keyword pause. Actual sleep is `_DELAY_SECONDS + uniform(0, _DELAY_JITTER)`
 # so the request cadence isn't perfectly periodic (anti-bot signal).
-# 2026-06-21 (NULL-only sprint): cut to 0.5 + 0~0.5 (avg 0.75s).
-_DELAY_SECONDS = 0.5
-_DELAY_JITTER = 0.5
+_DELAY_SECONDS = 1.5
+_DELAY_JITTER = 1.0
 
 
 def fetch_business_name(url: str) -> str | None:
@@ -435,6 +434,41 @@ def scrape_brands_for_active_rounds(
         raise
 
 
+def _reset_dawn_zero_scrapes(conn: Connection) -> int:
+    """NULL brands_scraped_at for active-NP KGs scraped in the dawn window
+    (KST 03-09 = UTC 18-23) that came back 0-caught.
+
+    Recall in that band is ~0% — almost certainly bot throttling. Re-queuing
+    them at run start lets the new BAT pick them up at a fresh time-of-day.
+    Run idempotently at the start of every brand_scrape: if no rows match
+    it is a no-op.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE round_keyword_groups SET brands_scraped_at = NULL
+            WHERE id IN (
+                SELECT rkg.id
+                FROM round_keyword_groups rkg
+                JOIN rounds r ON r.id = rkg.round_id
+                JOIN products p ON p.id = r.product_id
+                WHERE p.code = 'NEW_PRODUCT'
+                  AND r.period_start <= CURRENT_DATE AND r.period_end >= CURRENT_DATE
+                  AND rkg.brands_scraped_at IS NOT NULL
+                  AND EXTRACT(HOUR FROM rkg.brands_scraped_at AT TIME ZONE 'UTC') BETWEEN 18 AND 23
+                  AND NOT EXISTS (
+                      SELECT 1 FROM round_brands rb WHERE rb.round_keyword_group_id = rkg.id
+                  )
+            )
+            """
+        )
+        reset_count = cur.rowcount
+        conn.commit()
+        if reset_count > 0:
+            log.info("dawn-window 0-caught reset", count=reset_count)
+        return reset_count
+
+
 def _cleanup_stale_runs(conn: Connection) -> None:
     """Mark any 'running' ingest_runs older than 1 hour as interrupted.
 
@@ -458,15 +492,24 @@ def _cleanup_stale_runs(conn: Connection) -> None:
         conn.commit()
 
 
-def _print_resume_status(conn: Connection) -> None:
-    """Show how many active-round KGs are already done vs pending."""
+def _print_progress_summary(
+    conn: Connection, *, resume: bool, null_only: bool
+) -> None:
+    """Active-round KG distribution + recent throughput + ETA.
+
+    Always printed at the start of every brand_scrape run so the operator
+    can eyeball whether the BAT is starting from a sane state and how long
+    it will take. Uses observed throughput from the last hour if available;
+    otherwise falls back to a conservative 60s/KG.
+    """
     with conn.cursor() as cur:
         cur.execute(
             """
             SELECT p.code,
-              COUNT(*) FILTER (WHERE rkg.brands_scraped_at IS NOT NULL
-                               AND rkg.brands_scraped_at > NOW() - INTERVAL '24 hours') AS done,
-              COUNT(*) AS total
+              COUNT(*) AS total,
+              COUNT(*) FILTER (WHERE rkg.brands_scraped_at IS NULL) AS null_cnt,
+              COUNT(*) FILTER (WHERE rkg.brands_scraped_at > NOW() - INTERVAL '24 hours') AS done_24h,
+              COUNT(*) FILTER (WHERE rkg.brands_scraped_at IS NOT NULL) AS ever
             FROM round_keyword_groups rkg
             JOIN rounds r ON r.id = rkg.round_id
             JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
@@ -477,26 +520,54 @@ def _print_resume_status(conn: Connection) -> None:
             """
         )
         rows = cur.fetchall()
+        cur.execute(
+            "SELECT COUNT(*) FROM round_keyword_groups "
+            "WHERE brands_scraped_at > NOW() - INTERVAL '60 minutes'"
+        )
+        last60_count = cur.fetchone()[0] or 0
     if not rows:
+        print("(no active rounds — was the weekly NOSP update ingested?)")
         return
-    print("=" * 60)
-    print("  resume status (active rounds, last 24h)")
-    print("=" * 60)
-    grand_done = grand_total = 0
-    for code, done, total in rows:
-        pct = (100 * done // total) if total else 0
-        print(f"  {code:<14}  {done:>5} / {total:<5} done  ({pct}%)")
-        grand_done += done
-        grand_total += total
-    if grand_total:
-        pct = 100 * grand_done // grand_total
-        print(f"  {'TOTAL':<14}  {grand_done:>5} / {grand_total:<5} done  ({pct}%)")
-    pending = grand_total - grand_done
-    if pending:
-        # ~20s per KG (mix of NP/SV) — rough back-of-envelope
-        est_min = pending * 20 // 60
-        print(f"  pending: {pending} KGs (~{est_min} min, give or take)")
-    print("=" * 60)
+
+    mode = (
+        "NULL-only" if null_only
+        else "resume (24h skip)" if resume
+        else "full (re-scrape all active)"
+    )
+
+    print("=" * 64)
+    print(f"  brand_scrape start — mode: {mode}")
+    print("=" * 64)
+
+    pending_total = 0
+    for code, total, null_cnt, done_24h, ever in rows:
+        if null_only:
+            pending = null_cnt
+        elif resume:
+            pending = total - done_24h
+        else:
+            pending = total
+        pending_total += pending
+        ever_pct = (100 * ever // total) if total else 0
+        d24_pct = (100 * done_24h // total) if total else 0
+        print(
+            f"  {code:<14}  total={total:<5} ever={ever:>4} ({ever_pct}%)  "
+            f"24h={done_24h:>4} ({d24_pct}%)  NULL={null_cnt:<4}  →  pending={pending}"
+        )
+
+    # ETA from observed throughput, fallback to 60s.
+    if last60_count >= 10:
+        sec_per_kg = 3600 / last60_count
+        src = f"last-1h pace = {sec_per_kg:.0f}s/KG"
+    else:
+        sec_per_kg = 60.0
+        src = f"fallback (last-1h={last60_count} insufficient) — 60s/KG"
+
+    eta_hr = (pending_total * sec_per_kg) / 3600
+    print()
+    print(f"  pending: {pending_total} KGs  |  {src}")
+    print(f"  ETA: ~{eta_hr:.1f} hours")
+    print("=" * 64)
     print()
 
 
@@ -521,8 +592,8 @@ def main(argv: list[str] | None = None) -> int:
 
     with connect() as conn:
         _cleanup_stale_runs(conn)
-        if args.resume:
-            _print_resume_status(conn)
+        _reset_dawn_zero_scrapes(conn)
+        _print_progress_summary(conn, resume=args.resume, null_only=args.null_only)
         result = scrape_brands_for_active_rounds(
             conn, limit=args.limit,
             skip_already_scraped=args.resume, null_only=args.null_only,

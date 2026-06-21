@@ -116,6 +116,48 @@ uv run python scripts/rescrape_silbi.py  # 또는 비슷한 형태로 작성
 
 자세한 누락 진단: [docs/naver-ad-dot-indicator.md](naver-ad-dot-indicator.md)
 
+## 4-1. 광고 누락 탐지 시스템 (2026-06)
+
+### 핵심 신호: `detected_slot_count`
+- 스크랩이 한 fetch 안에서 NP wrap(`.new_product_wrap`)에 본 광고 placement(`ad_id`) 개수의 **최대값**
+- 회차 동안 페이지가 실제로 노출한 슬롯 수를 가장 잘 반영
+- `round_keyword_groups.detected_slot_count` 컬럼
+
+### NOSP `total_slots` ≠ 운영 광고주 수
+- 4주 연속 NP recall 16-18% 관찰 후 확인된 사실
+- NOSP의 `total_slots`는 **입찰 슬롯 정원**(보통 2). 실제 운영 광고주는 80%+ KG가 0~1명만
+- 대시보드 `/scrape-misses`의 "NOSP 메타 불일치" 카테고리가 정확히 이 정상 케이스를 표시
+
+### 누락 케이스 3분류 (대시보드 `/scrape-misses`)
+| 카테고리 | 조건 | 액션 |
+|---|---|---|
+| 🚨 진짜 누락 | `detected > caught` (≤ total_slots) | BAT sweep이 자동 재시도. 남으면 수동 강제 재스크랩 |
+| ⏳ 스크랩 누락 | `brands_scraped_at IS NULL` + `winning_bid > 0` | BAT 재실행하면 자동 처리 |
+| ℹ️ NOSP 메타 불일치 | `detected = caught < total_slots` | 정상 — 액션 불필요 |
+
+### BAT 자체에 빌트인 보호 장치
+1. **시작 시 dawn-reset** — KST 03~09에 스크랩됐던 0건 KG는 자동으로 `brands_scraped_at = NULL` → 재처리 대상. (그 시간대 recall이 ~0% — 봇 throttling 추정)
+2. **0건 retry** — NP에서 첫 fetch 0건이면 8초 후 한 번 더 시도 (회전 미스 vs 정말 0건 구분)
+3. **driver crash 자가복구** — Playwright Chromium 죽으면 `_run` 내부에서 pool reset 후 1회 재시도
+4. **post-scrape sweep** — main loop 끝에 `detected > caught` KG를 한 번 더 fetch (단 `detected <= total_slots` 노이즈 가드 적용)
+
+### 튜닝 파라미터 (`worker/src/worker/lib/naver_search.py`)
+| 변수 | 값 | 의미 |
+|---|---|---|
+| `_NP_RETRIES` | 5 | 한 KG당 첫 fetch sequence 횟수 (회전 광고 잡기) |
+| `_NP_ZERO_RETRY_COUNT` | 1 | 0건 시 추가 시도 횟수 |
+| `_NP_ZERO_RETRY_PAUSE_SECONDS` | 8 | retry 전 대기 (IP throttling 회복) |
+| `_DELAY_SECONDS` / `_DELAY_JITTER` | 1.5 / 1.0 | KG 간 pause |
+
+값을 더 공격적으로 줄이면 봇 차단 위험 ↑, 회전 광고 누락 ↑. 안전값임.
+
+### sprint 모드 (`--null-only`)
+NULL KG만 처리하는 sprint 모드. 데드라인 직전 NULL을 우선 비우고 싶을 때만 사용:
+```bash
+uv run python -m worker.jobs.brand_scrape --null-only
+```
+주의: 이건 임시 모드이고 기본 운영 BAT는 `--resume` 사용.
+
 ## 5. 대시보드 운영 URL
 
 | URL 종류 | 주소 |
@@ -139,7 +181,7 @@ uv run python scripts/rescrape_silbi.py  # 또는 비슷한 형태로 작성
 | 작업 | 빈도 | 누가 / 어떻게 |
 |------|------|---------------|
 | 입찰가/낙찰가 데이터 갱신 | 주 1회 | 사용자가 NOSP_주간업데이트.bat 더블클릭 |
-| 광고 집행사 데이터 갱신 | 자유 | 사용자가 브랜드크롤링.bat 더블클릭 (10시간 정도 소요) |
+| 광고 집행사 데이터 갱신 | 주 1회 | 사용자가 브랜드크롤링.bat 더블클릭 (~15~20시간) |
 | 새 브랜드 매핑 추가 | 발견 시 | 사용자가 URL+브랜드명 알려줌 → Claude가 HOST_TO_BRAND 편집 + reconcile + push |
 | 잘못된 브랜드 정정 | 발견 시 | 같은 방식 |
 | 광고 누락 (NOSP는 있다는데 우리는 0건) | 가끔 | 강제 재스크랩 요청 |

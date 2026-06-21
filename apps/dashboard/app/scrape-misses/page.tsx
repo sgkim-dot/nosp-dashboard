@@ -14,19 +14,19 @@ const SEVERITY_META: Record<ScrapeMiss["severity"], { label: string; tone: strin
     label: "진짜 누락",
     tone: "bg-red-50 text-red-700",
     ring: "ring-red-200",
-    desc: "스크랩이 광고를 봤지만 추출에 실패. 재시도 필요.",
+    desc: "스크랩이 광고를 봤지만 추출에 실패. BAT 끝의 sweep이 자동 재시도. 그래도 남으면 강제 재스크랩.",
   },
   never_scraped: {
     label: "스크랩 누락",
     tone: "bg-orange-50 text-orange-700",
     ring: "ring-orange-200",
-    desc: "이번 회차에 한 번도 스크랩 안 됨. BAT 재실행 필요.",
+    desc: "이번 회차에 한 번도 스크랩 안 됨. BAT 재실행하면 자동 처리.",
   },
   nosp_mismatch: {
-    label: "NOSP 메타 불일치",
+    label: "NOSP 메타 불일치 (정상)",
     tone: "bg-amber-50 text-amber-700",
     ring: "ring-amber-200",
-    desc: "우리 스크랩은 광고 다 잡음. NOSP의 슬롯 정원이 실제 운영 광고주 수보다 큼 (정상).",
+    desc: "NOSP는 입찰 슬롯 정원을 2로 보고하지만 실제로는 1명만 운영하는 케이스. 우리 스크랩은 정확. 액션 불필요.",
   },
 };
 
@@ -50,6 +50,7 @@ export default async function ScrapeMissesPage() {
     never_scraped: misses.filter((m) => m.severity === "never_scraped"),
     nosp_mismatch: misses.filter((m) => m.severity === "nosp_mismatch"),
   };
+  const actionable = byType.real_miss.length + byType.never_scraped.length;
 
   return (
     <div>
@@ -59,47 +60,57 @@ export default async function ScrapeMissesPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">광고 누락 의심</h1>
             <p className="mt-1 text-base text-muted-foreground">
-              이번 회차 active KG 중 우리 스크랩과 실제 광고 노출이 어긋난 케이스입니다.
-              <code className="ml-1.5 rounded bg-muted px-1 py-0.5 font-mono text-xs">detected_slot_count</code>
-              는 스크랩이 페이지에서 실제로 본 광고 슬롯 수입니다 (최대 8회 fetch 중 피크).
+              이번 회차 active KG 중 스크랩 결과가 의심스러운 케이스. 진짜 액션이
+              필요한 건 상단 두 카테고리만이고, &ldquo;NOSP 메타 불일치&rdquo;는 정상 패턴입니다.
             </p>
           </div>
         </div>
       </header>
 
       <div className="space-y-6 px-8 py-6">
+        {/* 액션 필요 강조 배너 */}
+        {actionable === 0 ? (
+          <div className="rounded-xl border border-emerald-300 bg-emerald-50/60 p-5">
+            <div className="text-lg font-semibold text-emerald-800">
+              ✓ 액션 필요 케이스 없음
+            </div>
+            <div className="mt-1 text-sm text-emerald-700/80">
+              진짜 누락 0건, 스크랩 누락 0건. NOSP 메타 불일치는 정상 상태입니다.
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-red-200 bg-red-50/60 p-5">
+            <div className="text-lg font-semibold text-red-800">
+              액션 필요: {actionable}건
+            </div>
+            <div className="mt-1 text-sm text-red-700/80">
+              진짜 누락 {byType.real_miss.length}건, 스크랩 누락 {byType.never_scraped.length}건. 아래 두 섹션 처리 권장.
+            </div>
+          </div>
+        )}
+
         <div className="grid gap-4 sm:grid-cols-3">
           <SummaryCard
             label="진짜 누락"
             count={byType.real_miss.length}
             tone="critical"
-            hint="detected > caught"
+            hint="detected > caught — 재시도"
           />
           <SummaryCard
             label="스크랩 누락"
             count={byType.never_scraped.length}
             tone="warning"
-            hint="이번 회차 미실행"
+            hint="이번 회차 미실행 — BAT 재실행"
           />
           <SummaryCard
             label="NOSP 메타 불일치"
             count={byType.nosp_mismatch.length}
             tone="neutral"
-            hint="우리 스크랩은 정확"
+            hint="정상 — 액션 불필요"
           />
         </div>
 
-        {misses.length === 0 && (
-          <div className="rounded-xl border border-dashed bg-emerald-50/40 p-8 text-center">
-            <div className="text-lg font-semibold text-emerald-700">
-              ✓ 의심 케이스 없음
-            </div>
-            <div className="mt-1 text-sm text-emerald-600/70">
-              이번 회차 active KG 모두 정상 스크랩 또는 NOSP 메타와 일치합니다.
-            </div>
-          </div>
-        )}
-
+        {/* 액션 필요 섹션 — default 펼침 */}
         {byType.real_miss.length > 0 && (
           <Section
             title={`🚨 진짜 누락 (${byType.real_miss.length}개)`}
@@ -116,23 +127,30 @@ export default async function ScrapeMissesPage() {
             items={byType.never_scraped}
           />
         )}
+
+        {/* NOSP 메타 불일치 — default 접힘 */}
         {byType.nosp_mismatch.length > 0 && (
-          <Section
-            title={`ℹ NOSP 메타 불일치 (${byType.nosp_mismatch.length}개)`}
-            tone="text-amber-700"
-            note={SEVERITY_META.nosp_mismatch.desc}
-            items={byType.nosp_mismatch}
-          />
+          <details className="rounded-xl border bg-card">
+            <summary className="cursor-pointer select-none px-5 py-4 text-base font-semibold text-amber-700">
+              ℹ NOSP 메타 불일치 ({byType.nosp_mismatch.length}개) — 정상 케이스, 클릭하면 펼침
+            </summary>
+            <div className="border-t px-5 py-4">
+              <p className="mb-3 text-sm text-muted-foreground">
+                {SEVERITY_META.nosp_mismatch.desc}
+              </p>
+              <div className="space-y-2">
+                {byType.nosp_mismatch.map((m) => (
+                  <MissRow key={m.rkgId} m={m} />
+                ))}
+              </div>
+            </div>
+          </details>
         )}
 
         <div className="rounded-xl border bg-muted/30 p-4 text-sm text-muted-foreground">
-          💡 <strong>진짜 누락</strong>은 강제 재스크랩으로 해결.{" "}
-          <code className="rounded bg-background px-1.5 py-0.5 font-mono text-xs">
-            scripts/rescrape_overseas_travel.py
-          </code>{" "}
-          패턴으로 rkg_id만 바꿔서 실행하면 됩니다.{" "}
-          <strong>NOSP 메타 불일치</strong>는 NOSP가 슬롯 정원을 2로 잡았지만 실제 광고주는 1명만 운영중인 케이스로,
-          단기여행자보험처럼 여러 회차 연속 1/2 패턴이 나오면 정상입니다.
+          💡 BAT 끝에 자동 sweep이 <strong>진짜 누락</strong>을 한 번 더 재시도합니다. sweep에서도
+          남으면 <code className="rounded bg-background px-1.5 py-0.5 font-mono text-xs">rescrape_overseas_travel.py</code> 패턴으로
+          rkg_id 바꿔 강제 실행. <strong>스크랩 누락</strong>은 다음 BAT 실행 시 자동 처리됩니다.
         </div>
       </div>
     </div>

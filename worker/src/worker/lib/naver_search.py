@@ -53,6 +53,14 @@ _EXTRACT_JS = r"""
       continue;  // content widget, unrelated ad
     }
 
+    // NP labeled links must live inside .new_product_wrap. Mobile search
+    // results occasionally render an NP-style ad outside the wrap (related
+    // brand widgets reuse the same c-param), which would otherwise inflate
+    // detected_slot_count and trigger noise sweep alerts.
+    if (product === 'NEW_PRODUCT' && !a.closest('.new_product_wrap')) {
+      continue;
+    }
+
     // Ad placement id from onclick handler ("i=SC1234567")
     const onclick = a.getAttribute('onclick') || '';
     const im = onclick.match(/i=(SC\d+)/);
@@ -280,17 +288,20 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
             raise last_err
 
 
-# 2026-06-21: further trimmed to 3 for the NULL-only sprint before the new
-# weekly round drops Monday. Misses get caught by detected_slot_count +
-# post-scrape sweep + next-cycle dawn reset.
-_NP_RETRIES = 3
+# Settled at 5 after a season of tuning:
+#   8 was too slow (~6 days BAT), 3 was sprint-only (bot-block risk).
+#   5 catches rotation in 90%+ of running-ad KGs while keeping the BAT
+#   under ~15 hours on this hardware. Misses fall back to the post-scrape
+#   sweep and the next-cycle dawn reset.
+_NP_RETRIES = 5
 _SV_RETRIES = 1
 
-# 0건 retry: keep one quick retry to distinguish "first fetch unlucky"
-# from "genuinely empty". Shorter pause to keep the wall-clock low.
+# 0건 retry: one quick retry distinguishes "first fetch unlucky" from
+# "genuinely empty". 8s pause is enough for IP throttling to release
+# without bloating run time (only fires on the ~80% 0-ad KGs).
 _NP_ZERO_RETRY_COUNT = 1
-_NP_ZERO_RETRY_PAUSE_SECONDS = 3.0
-_NP_ZERO_RETRY_JITTER_SECONDS = 1.0
+_NP_ZERO_RETRY_PAUSE_SECONDS = 8.0
+_NP_ZERO_RETRY_JITTER_SECONDS = 3.0
 
 
 def scrape_brands_with_detected_count(
@@ -350,9 +361,8 @@ def scrape_brands_with_detected_count(
             if len(this_fetch_ids) > detected_slot_count:
                 detected_slot_count = len(this_fetch_ids)
             # Inter-fetch jittered pause — disguise burst pattern.
-            # 2026-06-21 (sprint): 0.5 + 0~0.5s for the NULL-only run.
             if num > 1 and i < num - 1:
-                time.sleep(0.5 + random.uniform(0, 0.5))
+                time.sleep(1.5 + random.uniform(0, 1.0))
         return m
 
     merged = _do_fetches(n_fetches)

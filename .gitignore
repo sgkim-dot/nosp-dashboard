@@ -32,3 +32,6 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Worker — one-off diagnostic scripts (archived for reference, not for commit)
+worker/scripts/_archive/
