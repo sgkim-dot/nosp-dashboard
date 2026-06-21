@@ -606,7 +606,7 @@ export async function getCrawlProgress(): Promise<CrawlProgress> {
     JOIN rounds r ON r.id = rkg.round_id
     JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
     JOIN products p ON p.id = kg.product_id
-    WHERE r.period_start <= CURRENT_DATE AND r.period_end >= CURRENT_DATE
+    WHERE r.period_start <= (NOW() AT TIME ZONE 'Asia/Seoul')::date AND r.period_end >= (NOW() AT TIME ZONE 'Asia/Seoul')::date
     GROUP BY p.code
     ORDER BY p.code
   `);
@@ -1252,7 +1252,7 @@ export async function getScrapeMisses(): Promise<ScrapeMiss[]> {
       JOIN rounds r ON r.id = rkg.round_id
       JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
       JOIN products p ON p.id = kg.product_id
-      WHERE r.period_start <= CURRENT_DATE AND r.period_end >= CURRENT_DATE
+      WHERE r.period_start <= (NOW() AT TIME ZONE 'Asia/Seoul')::date AND r.period_end >= (NOW() AT TIME ZONE 'Asia/Seoul')::date
     )
     SELECT id AS rkg_id, keyword_group, product, round_no,
            period_start::text, period_end::text, total_slots,

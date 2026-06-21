@@ -90,11 +90,10 @@ def _fetch_work_list(
     skip_already_scraped: bool,
     null_only: bool = False,
 ) -> list[tuple[int, str, str, int]]:
-    today = date.today().isoformat()
+    # Round period_start / period_end are KST business days. Neon runs in UTC,
+    # so `CURRENT_DATE` lags KST by up to 9 hours and the new Monday round
+    # would not register as active until 09:00 KST. Cast NOW() to Asia/Seoul.
     with conn.cursor() as cur:
-        # COALESCE(search_keyword, name) — per-kg override for the Naver query
-        # string. Display stays as `name`; only the scrape uses the override.
-        # Example: SV 다이렉트인보험 searches Naver for "다이렉트보험".
         sql = """
             SELECT DISTINCT rkg.id,
                             COALESCE(kg.search_keyword, kg.name) AS scrape_keyword,
@@ -104,9 +103,10 @@ def _fetch_work_list(
             JOIN rounds r ON r.id = rkg.round_id
             JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
             JOIN products p ON p.id = r.product_id
-            WHERE r.period_start <= %s AND r.period_end >= %s
+            WHERE r.period_start <= (NOW() AT TIME ZONE 'Asia/Seoul')::date
+              AND r.period_end   >= (NOW() AT TIME ZONE 'Asia/Seoul')::date
         """
-        params: tuple = (today, today)
+        params: tuple = ()
         if null_only:
             # Only KGs that have never been scraped this round. Used in a
             # deadline sprint where the previous BAT already touched 24h-old
@@ -313,7 +313,6 @@ def _find_real_miss_rkg_ids(conn: Connection) -> list[tuple[int, str, str, int]]
     Returns (rkg_id, keyword, product_code, max_brands) so callers can feed
     rows straight into `_process_one_kg`.
     """
-    today = date.today().isoformat()
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -325,15 +324,15 @@ def _find_real_miss_rkg_ids(conn: Connection) -> list[tuple[int, str, str, int]]
             JOIN rounds r ON r.id = rkg.round_id
             JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
             JOIN products p ON p.id = r.product_id
-            WHERE r.period_start <= %s AND r.period_end >= %s
+            WHERE r.period_start <= (NOW() AT TIME ZONE 'Asia/Seoul')::date
+              AND r.period_end   >= (NOW() AT TIME ZONE 'Asia/Seoul')::date
               AND rkg.detected_slot_count IS NOT NULL
               AND rkg.detected_slot_count > (
                   SELECT COUNT(*)::int FROM round_brands rb
                   WHERE rb.round_keyword_group_id = rkg.id
               )
               AND rkg.detected_slot_count <= COALESCE(rkg.total_slots, 2)
-            """,
-            (today, today),
+            """
         )
         return cur.fetchall()
 
@@ -453,7 +452,7 @@ def _reset_dawn_zero_scrapes(conn: Connection) -> int:
                 JOIN rounds r ON r.id = rkg.round_id
                 JOIN products p ON p.id = r.product_id
                 WHERE p.code = 'NEW_PRODUCT'
-                  AND r.period_start <= CURRENT_DATE AND r.period_end >= CURRENT_DATE
+                  AND r.period_start <= (NOW() AT TIME ZONE 'Asia/Seoul')::date AND r.period_end >= (NOW() AT TIME ZONE 'Asia/Seoul')::date
                   AND rkg.brands_scraped_at IS NOT NULL
                   AND EXTRACT(HOUR FROM rkg.brands_scraped_at AT TIME ZONE 'UTC') BETWEEN 18 AND 23
                   AND NOT EXISTS (
@@ -514,7 +513,8 @@ def _print_progress_summary(
             JOIN rounds r ON r.id = rkg.round_id
             JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
             JOIN products p ON p.id = kg.product_id
-            WHERE r.period_start <= CURRENT_DATE AND r.period_end >= CURRENT_DATE
+            WHERE r.period_start <= (NOW() AT TIME ZONE 'Asia/Seoul')::date
+              AND r.period_end   >= (NOW() AT TIME ZONE 'Asia/Seoul')::date
             GROUP BY p.code
             ORDER BY p.code
             """
