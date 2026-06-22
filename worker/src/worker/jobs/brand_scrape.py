@@ -89,7 +89,7 @@ def _fetch_work_list(
     rkg_ids: list[int] | None,
     skip_already_scraped: bool,
     null_only: bool = False,
-) -> list[tuple[int, str, str, int]]:
+) -> list[tuple[int, str, str, int, int]]:
     # Round period_start / period_end are KST business days. Neon runs in UTC,
     # so `CURRENT_DATE` lags KST by up to 9 hours and the new Monday round
     # would not register as active until 09:00 KST. Cast NOW() to Asia/Seoul.
@@ -98,7 +98,8 @@ def _fetch_work_list(
             SELECT DISTINCT rkg.id,
                             COALESCE(kg.search_keyword, kg.name) AS scrape_keyword,
                             p.code,
-                            p.max_brands_per_group
+                            p.max_brands_per_group,
+                            COALESCE(rkg.regular_winning_bid, 0) AS winning_bid
             FROM round_keyword_groups rkg
             JOIN rounds r ON r.id = rkg.round_id
             JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
@@ -124,6 +125,11 @@ def _fetch_work_list(
         if rkg_ids is not None:
             sql += " AND rkg.id = ANY(%s)"
             params = (*params, rkg_ids)
+        # Process high-bid KGs first — they're the ones that matter most to
+        # the operator. Wins two ways: (a) a half-finished BAT still has
+        # captured the valuable KGs, (b) a force-rescrape spot-check is
+        # less likely to come back saying "BAT hasn't reached it yet".
+        sql += " ORDER BY winning_bid DESC, rkg.id"
         if limit:
             sql += " LIMIT %s"
             params = (*params, limit)
@@ -224,29 +230,60 @@ def _process_one_kg(
     *,
     persist_conn: Connection | None,
     delay_seconds: float,
+    winning_bid: int = 0,
 ) -> int:
     """Scrape + persist one keyword group. Returns slots_inserted for this kg.
 
     Returns 0 on scrape exception, 0 on no-slots, or len(slots) on success.
     Sleeps `delay_seconds + jitter` at the end either way.
+
+    `winning_bid` is the NOSP-reported regular_winning_bid for this KG. If
+    it's >0 and the first scrape returns 0 slots, we treat the empty result
+    as suspicious (an advertiser won the bid but the page rendered no ad
+    placement) and re-scrape up to 2 more times with a pool reset + longer
+    pause between. Most genuine 0-ad KGs have winning_bid=0, so the cost
+    is bounded to the small subset that matters.
     """
-    try:
-        slots, detected_slot_count = scrape_brands_with_detected_count(
-            kw, product_code
-        )
-    except Exception:
-        log.exception("scrape failed", keyword=kw)
-        # Playwright's Chromium driver can die mid-run (memory pressure,
-        # Windows Defender, idle socket close). The BrowserPool is a single
-        # shared instance, so a dead driver would cascade — every subsequent
-        # KG would re-use the broken context and fail the same way. Tear it
-        # down so the next call to _get_pool() spawns a fresh Chromium.
+
+    def _scrape_once() -> tuple[list, int]:
         try:
-            close_pool()
+            return scrape_brands_with_detected_count(kw, product_code)
         except Exception:
-            log.exception("close_pool after scrape failure raised")
-        return 0
-    slots = [s for s in slots if s.product == product_code]
+            log.exception("scrape failed", keyword=kw)
+            # Playwright's Chromium driver can die mid-run (memory pressure,
+            # Windows Defender, idle socket close). Tear down so the next
+            # call to _get_pool() spawns a fresh Chromium.
+            try:
+                close_pool()
+            except Exception:
+                log.exception("close_pool after scrape failure raised")
+            return [], 0
+
+    slots, detected_slot_count = _scrape_once()
+    np_slots = [s for s in slots if s.product == product_code]
+
+    # Bid-aware retry: NOSP says an advertiser won the bid but we got 0
+    # placements. Probably a hydration miss or a single rotation we caught
+    # at the wrong moment. Try again up to 2 times with a pool reset.
+    if not np_slots and winning_bid and winning_bid > 0:
+        for attempt in range(2):
+            log.info(
+                "bid>0 but 0 caught — extra retry",
+                keyword=kw, bid=winning_bid, attempt=attempt + 1,
+            )
+            try:
+                close_pool()
+            except Exception:
+                pass
+            time.sleep(8.0 + random.uniform(0, 4.0))
+            slots, det_retry = _scrape_once()
+            np_slots = [s for s in slots if s.product == product_code]
+            if det_retry > detected_slot_count:
+                detected_slot_count = det_retry
+            if np_slots:
+                break
+
+    slots = np_slots
 
     # Resolve hosts first
     business_names: dict[str | None, str | None] = {}
@@ -295,7 +332,7 @@ def _process_one_kg(
     return inserted
 
 
-def _find_real_miss_rkg_ids(conn: Connection) -> list[tuple[int, str, str, int]]:
+def _find_real_miss_rkg_ids(conn: Connection) -> list[tuple[int, str, str, int, int]]:
     """Active KGs where the last scrape *saw* more slots than we *kept*.
 
     detected_slot_count > round_brands count → the page rendered more ad
@@ -319,7 +356,8 @@ def _find_real_miss_rkg_ids(conn: Connection) -> list[tuple[int, str, str, int]]
             SELECT rkg.id,
                    COALESCE(kg.search_keyword, kg.name) AS scrape_keyword,
                    p.code,
-                   p.max_brands_per_group
+                   p.max_brands_per_group,
+                   COALESCE(rkg.regular_winning_bid, 0) AS winning_bid
             FROM round_keyword_groups rkg
             JOIN rounds r ON r.id = rkg.round_id
             JOIN keyword_groups kg ON kg.id = rkg.keyword_group_id
@@ -332,6 +370,7 @@ def _find_real_miss_rkg_ids(conn: Connection) -> list[tuple[int, str, str, int]]
                   WHERE rb.round_keyword_group_id = rkg.id
               )
               AND rkg.detected_slot_count <= COALESCE(rkg.total_slots, 2)
+            ORDER BY winning_bid DESC, rkg.id
             """
         )
         return cur.fetchall()
@@ -368,11 +407,12 @@ def scrape_brands_for_active_rounds(
     sweep_kgs = 0
 
     try:
-        for rkg_id, kw, product_code, max_brands in rows:
+        for rkg_id, kw, product_code, max_brands, winning_bid in rows:
             kgs_scraped += 1
             slots_inserted += _process_one_kg(
                 rkg_id, kw, product_code, max_brands,
                 persist_conn=persist_conn, delay_seconds=delay_seconds,
+                winning_bid=winning_bid,
             )
 
         # Post-scrape real-miss sweep: any KG where detected > caught after
@@ -383,11 +423,12 @@ def scrape_brands_for_active_rounds(
             sweep_rows = _find_real_miss_rkg_ids(conn)
             if sweep_rows:
                 log.info("post-scrape real-miss sweep", count=len(sweep_rows))
-                for s_rkg_id, s_kw, s_product, s_max in sweep_rows:
+                for s_rkg_id, s_kw, s_product, s_max, s_bid in sweep_rows:
                     sweep_kgs += 1
                     slots_inserted += _process_one_kg(
                         s_rkg_id, s_kw, s_product, s_max,
                         persist_conn=persist_conn, delay_seconds=delay_seconds,
+                        winning_bid=s_bid,
                     )
                 log.info("post-scrape sweep done", swept=sweep_kgs)
 
