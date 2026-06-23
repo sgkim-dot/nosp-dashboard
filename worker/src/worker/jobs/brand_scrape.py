@@ -30,8 +30,8 @@ _USER_AGENT = (
 )
 # Base inter-keyword pause. Actual sleep is `_DELAY_SECONDS + uniform(0, _DELAY_JITTER)`
 # so the request cadence isn't perfectly periodic (anti-bot signal).
-_DELAY_SECONDS = 1.5
-_DELAY_JITTER = 1.0
+_DELAY_SECONDS = 0.8
+_DELAY_JITTER = 0.7
 
 
 def fetch_business_name(url: str) -> str | None:
@@ -629,15 +629,25 @@ def main(argv: list[str] | None = None) -> int:
         help="only process KGs with brands_scraped_at IS NULL — used for "
              "deadline sprints where the rest of the round is already covered.",
     )
+    parser.add_argument(
+        "--full",
+        action="store_true",
+        help="ignore the 24h skip and re-scrape every active KG. Used in the "
+             "2nd/3rd cycle of the multi-pass BAT to converge missed advertisers.",
+    )
     args = parser.parse_args(argv)
+
+    # --full overrides --resume (and --null-only) — re-scrape every active KG.
+    use_resume = args.resume and not args.full
+    use_null_only = args.null_only and not args.full
 
     with connect() as conn:
         _cleanup_stale_runs(conn)
         _reset_dawn_zero_scrapes(conn)
-        _print_progress_summary(conn, resume=args.resume, null_only=args.null_only)
+        _print_progress_summary(conn, resume=use_resume, null_only=use_null_only)
         result = scrape_brands_for_active_rounds(
             conn, limit=args.limit,
-            skip_already_scraped=args.resume, null_only=args.null_only,
+            skip_already_scraped=use_resume, null_only=use_null_only,
         )
         log.info("brand scrape done", **result)
     return 0

@@ -288,20 +288,24 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
             raise last_err
 
 
-# Settled at 5 after a season of tuning:
-#   8 was too slow (~6 days BAT), 3 was sprint-only (bot-block risk).
-#   5 catches rotation in 90%+ of running-ad KGs while keeping the BAT
-#   under ~15 hours on this hardware. Misses fall back to the post-scrape
-#   sweep and the next-cycle dawn reset.
-_NP_RETRIES = 5
+# Multi-cycle strategy: a single BAT does 4 fetches (good enough for rotation
+# in ~90% of running-ad KGs) and skips the unconditional 0-empty retry
+# entirely. The 4% of misses that escape are caught by:
+#   1) bid-aware retry inside _process_one_kg (winning_bid > 0 + 0 caught)
+#   2) post-scrape sweep (detected > caught)
+#   3) next cycle (the BAT runs 3 cycles back-to-back — see 브랜드크롤링.bat)
+#   4) dawn reset (KST 03-09 0-caught → NULL on next start)
+# This gets one cycle under ~14h, so three cycles in ~42h (same wall-clock
+# as the old single 4-5 day cycle) deliver higher net recall + fresher data.
+_NP_RETRIES = 4
 _SV_RETRIES = 1
 
-# 0건 retry: one quick retry distinguishes "first fetch unlucky" from
-# "genuinely empty". 8s pause is enough for IP throttling to release
-# without bloating run time (only fires on the ~80% 0-ad KGs).
-_NP_ZERO_RETRY_COUNT = 1
-_NP_ZERO_RETRY_PAUSE_SECONDS = 8.0
-_NP_ZERO_RETRY_JITTER_SECONDS = 3.0
+# Unconditional 0-empty retry removed: it cost ~30s per KG on the 80% of
+# KGs that legitimately have no running ad. Hydration misses on bid=0 KGs
+# are rare enough to let the next cycle pick them up.
+_NP_ZERO_RETRY_COUNT = 0
+_NP_ZERO_RETRY_PAUSE_SECONDS = 0.0
+_NP_ZERO_RETRY_JITTER_SECONDS = 0.0
 
 
 def scrape_brands_with_detected_count(
@@ -362,7 +366,7 @@ def scrape_brands_with_detected_count(
                 detected_slot_count = len(this_fetch_ids)
             # Inter-fetch jittered pause — disguise burst pattern.
             if num > 1 and i < num - 1:
-                time.sleep(1.5 + random.uniform(0, 1.0))
+                time.sleep(0.8 + random.uniform(0, 0.7))
         return m
 
     merged = _do_fetches(n_fetches)
