@@ -647,6 +647,7 @@ HOST_TO_BRAND: dict[str, str] = {
     "m.cruntin.com": "크런틴",
     "brand.naver.com/dentistekorea": "덴티스테",
     # ─── 6th batch (사용자 확인 매핑 2026-06-22) ────
+    "brand.naver.com/dasoda": "다소다",
     "bullsonemall.com": "불스원",
     "www.bullsonemall.com": "불스원",
     "m.bullsonemall.com": "불스원",
