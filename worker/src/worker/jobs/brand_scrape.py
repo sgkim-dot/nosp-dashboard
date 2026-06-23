@@ -237,53 +237,27 @@ def _process_one_kg(
     Returns 0 on scrape exception, 0 on no-slots, or len(slots) on success.
     Sleeps `delay_seconds + jitter` at the end either way.
 
-    `winning_bid` is the NOSP-reported regular_winning_bid for this KG. If
-    it's >0 and the first scrape returns 0 slots, we treat the empty result
-    as suspicious (an advertiser won the bid but the page rendered no ad
-    placement) and re-scrape up to 2 more times with a pool reset + longer
-    pause between. Most genuine 0-ad KGs have winning_bid=0, so the cost
-    is bounded to the small subset that matters.
+    `winning_bid` is currently unused — bid-aware retry inside the main
+    loop was disabled in favor of the 3-cycle BAT strategy (cycle 2/3
+    re-scrape every active KG with --full, which is a cleaner way to
+    catch the same misses without bloating cycle 1 wall-clock).
     """
 
-    def _scrape_once() -> tuple[list, int]:
+    try:
+        slots, detected_slot_count = scrape_brands_with_detected_count(
+            kw, product_code
+        )
+    except Exception:
+        log.exception("scrape failed", keyword=kw)
+        # Playwright's Chromium driver can die mid-run (memory pressure,
+        # Windows Defender, idle socket close). Tear down so the next
+        # call to _get_pool() spawns a fresh Chromium.
         try:
-            return scrape_brands_with_detected_count(kw, product_code)
+            close_pool()
         except Exception:
-            log.exception("scrape failed", keyword=kw)
-            # Playwright's Chromium driver can die mid-run (memory pressure,
-            # Windows Defender, idle socket close). Tear down so the next
-            # call to _get_pool() spawns a fresh Chromium.
-            try:
-                close_pool()
-            except Exception:
-                log.exception("close_pool after scrape failure raised")
-            return [], 0
-
-    slots, detected_slot_count = _scrape_once()
-    np_slots = [s for s in slots if s.product == product_code]
-
-    # Bid-aware retry: NOSP says an advertiser won the bid but we got 0
-    # placements. Probably a hydration miss or a single rotation we caught
-    # at the wrong moment. Try again up to 2 times with a pool reset.
-    if not np_slots and winning_bid and winning_bid > 0:
-        for attempt in range(2):
-            log.info(
-                "bid>0 but 0 caught — extra retry",
-                keyword=kw, bid=winning_bid, attempt=attempt + 1,
-            )
-            try:
-                close_pool()
-            except Exception:
-                pass
-            time.sleep(8.0 + random.uniform(0, 4.0))
-            slots, det_retry = _scrape_once()
-            np_slots = [s for s in slots if s.product == product_code]
-            if det_retry > detected_slot_count:
-                detected_slot_count = det_retry
-            if np_slots:
-                break
-
-    slots = np_slots
+            log.exception("close_pool after scrape failure raised")
+        return 0
+    slots = [s for s in slots if s.product == product_code]
 
     # Resolve hosts first
     business_names: dict[str | None, str | None] = {}
