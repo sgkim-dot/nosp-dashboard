@@ -73,6 +73,13 @@ function statusBadge(status: string | null) {
   );
 }
 
+const MODE_LABEL: Record<string, string> = {
+  resume: "이어 진행 (24h skip)",
+  full: "전체 재스크랩",
+  "null-only": "NULL만 처리",
+  default: "기본",
+};
+
 export default async function CrawlPage() {
   const p = await getCrawlProgress();
   const overallPct =
@@ -80,6 +87,8 @@ export default async function CrawlPage() {
   const lastKgSec = secondsAgo(p.lastKgScrapedAt);
   // "actively running" heuristic: KG processed in last 5 min
   const isLive = lastKgSec != null && lastKgSec < 300;
+  // Current cycle = most recent ingest_run row
+  const currentCycle = p.cycles[p.cycles.length - 1] ?? null;
 
   return (
     <div>
@@ -96,14 +105,20 @@ export default async function CrawlPage() {
       </header>
 
       <div className="space-y-6 px-8 py-6">
-        {/* Hero progress bar */}
+        {/* Hero progress bar — scoped to the CURRENT cycle */}
         <div className="rounded-2xl border bg-card p-7 shadow-sm">
           <div className="flex items-center justify-between gap-6">
             <div>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-base font-medium text-muted-foreground">
-                  전체 진행률
+                  현재 사이클 진행률
                 </span>
+                {currentCycle && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                    {currentCycle.cycleNo}차 ·{" "}
+                    {MODE_LABEL[currentCycle.mode] ?? currentCycle.mode}
+                  </span>
+                )}
                 {statusBadge(isLive ? "running" : p.currentRunStatus)}
               </div>
               <div className="mt-2 text-5xl font-bold tabular-nums">
@@ -167,55 +182,38 @@ export default async function CrawlPage() {
           })}
         </div>
 
-        {/* Cycle breakdown (3-cycle BAT) */}
+        {/* Cycle breakdown — simple status row (이번 BAT 실행의 1/2/3차 사이클 상태) */}
         {p.cycles.length > 0 && (
-          <div className="rounded-2xl border bg-card p-6 shadow-sm">
-            <div className="mb-3 flex items-center gap-2">
-              <h2 className="text-lg font-semibold">사이클 진행</h2>
-              <span className="text-xs text-muted-foreground">
-                (브랜드크롤링.bat는 3사이클 자동 진행 — cycle 1 resume → cycle 2/3 full)
+          <div className="rounded-xl border bg-card px-5 py-4">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                사이클 진행
               </span>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {p.cycles.slice(-3).map((c) => {
-                const pct = c.total > 0 ? Math.min(100, Math.round((c.processed * 100) / c.total)) : 0;
-                const isLiveCycle = c.status === "started" && !c.completedAt;
-                const isLatestLive = isLiveCycle && c.runId === p.cycles[p.cycles.length - 1].runId;
-                const cycleEta = isLatestLive && p.rateLast15Min > 0
-                  ? ((c.total - c.processed) / (p.rateLast15Min * 4))
-                  : null;
+              {[1, 2, 3].map((no) => {
+                const c = p.cycles.find((x) => x.cycleNo === no);
+                const isCurrent = c?.runId === currentCycle?.runId;
+                const isLiveCycle = c?.status === "started" && !c?.completedAt && isCurrent;
+                let label = "대기";
+                let className = "bg-muted text-muted-foreground";
+                if (c) {
+                  if (isLiveCycle) {
+                    label = "진행 중";
+                    className = "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200";
+                  } else if (c.status === "completed") {
+                    label = "완료";
+                    className = "bg-blue-50 text-blue-700 ring-1 ring-blue-200";
+                  } else if (c.status === "failed" || c.status === "interrupted") {
+                    label = c.status === "failed" ? "실패" : "중단";
+                    className = "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
+                  }
+                }
                 return (
-                  <div key={c.runId} className="rounded-xl border bg-background p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="font-semibold">
-                        {c.cycleNo}차 사이클
-                        <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                          {c.mode}
-                        </span>
-                      </div>
-                      {statusBadge(isLiveCycle ? "running" : c.status)}
-                    </div>
-                    <div className="mt-3 text-2xl font-bold tabular-nums">{pct}%</div>
-                    <div className="text-xs text-muted-foreground tabular-nums">
-                      {c.processed.toLocaleString()} / {c.total.toLocaleString()} KG
-                    </div>
-                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={`h-full rounded-full transition-all ${isLiveCycle ? "bg-emerald-500" : c.status === "completed" ? "bg-blue-500" : "bg-muted-foreground/40"}`}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                    <div className="mt-2.5 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
-                      <span>시작: {fmtAgo(secondsAgo(c.startedAt))}</span>
-                      {isLatestLive ? (
-                        <span>잔여 ~ {fmtEta(cycleEta)}</span>
-                      ) : c.completedAt ? (
-                        <span>완료: {fmtAgo(secondsAgo(c.completedAt))}</span>
-                      ) : (
-                        <span>—</span>
-                      )}
-                    </div>
-                  </div>
+                  <span key={no} className="inline-flex items-center gap-1.5 text-sm">
+                    <span className="text-muted-foreground">{no}차</span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${className}`}>
+                      {label}
+                    </span>
+                  </span>
                 );
               })}
             </div>

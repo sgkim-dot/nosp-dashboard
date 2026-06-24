@@ -598,7 +598,11 @@ export type CrawlProgress = {
 };
 
 export async function getCrawlProgress(): Promise<CrawlProgress> {
-  // per-product progress for the currently active round
+  // Per-product progress is scoped to the CURRENT cycle: KGs scraped since
+  // the most recent ingest_runs row started count as "done". Earlier scrapes
+  // (from previous cycles or yesterday) are not counted — that view was
+  // misleading because by cycle 2 start everything is technically "done".
+  // Fallback: if there's no ingest_run, scope to last 24h.
   const perProductResult = await db.execute<{
     product_code: ProductCode;
     done: number;
@@ -606,10 +610,22 @@ export async function getCrawlProgress(): Promise<CrawlProgress> {
     total: number;
     with_brand: number;
   }>(sql`
+    WITH cycle_start AS (
+      SELECT COALESCE(
+        (SELECT run_at FROM ingest_runs
+         WHERE run_type LIKE 'brand_scrape%' ORDER BY id DESC LIMIT 1),
+        NOW() - INTERVAL '24 hours'
+      ) AS started_at
+    )
     SELECT
       p.code AS product_code,
-      COUNT(*) FILTER (WHERE rkg.brands_scraped_at IS NOT NULL)::int AS done,
-      COUNT(*) FILTER (WHERE rkg.brands_scraped_at IS NULL)::int AS pending,
+      COUNT(*) FILTER (
+        WHERE rkg.brands_scraped_at >= (SELECT started_at FROM cycle_start)
+      )::int AS done,
+      COUNT(*) FILTER (
+        WHERE rkg.brands_scraped_at IS NULL
+           OR rkg.brands_scraped_at < (SELECT started_at FROM cycle_start)
+      )::int AS pending,
       COUNT(*)::int AS total,
       COUNT(*) FILTER (
         WHERE EXISTS (SELECT 1 FROM round_brands rb WHERE rb.round_keyword_group_id = rkg.id)
