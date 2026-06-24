@@ -345,7 +345,9 @@ HOST_TO_BRAND: dict[str, str] = {
     "www.grade-laboratory.com": "착한학점연구소",
     "sales.hr.aia.co.kr": "AIA생명",
     "www.aia.co.kr": "AIA생명",
-    "www.hwgi.kr": "한화생명",
+    "hwgi.kr": "한화손해보험",
+    "www.hwgi.kr": "한화손해보험",
+    "m.hwgi.kr": "한화손해보험",
     "www.hanwhalife.com": "한화생명",
     "www.kyobo.co.kr": "교보생명",
     "direct.kyobo.co.kr": "교보생명",
@@ -755,6 +757,7 @@ DISPLAY_FULL_CANONICAL: dict[str, str] = {
     "현장의 신뢰를 기록하다!": "포팩트",   # → www.4fact.co.kr
     "입냄새 바로 셧다운!": "덴티스테",     # → brand.naver.com/dentistekorea
     "AI이어폰SPE-G11": "사운드판다",       # → soundpanda.co.kr
+    "한화더경증간편건강보험Ⅱ": "한화손해보험",  # → hwgi.kr
 }
 
 
