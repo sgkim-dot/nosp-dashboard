@@ -442,18 +442,27 @@ def scrape_brands_for_active_rounds(
         # the main pass gets one more try. Catches NP rotation misses that
         # the first 8 fetches happened to skip. Skipped on targeted runs
         # (rkg_ids set) so a single-kg rescrape doesn't trigger a global sweep.
+        #
+        # Use a fresh connection — `conn` may have been dropped by the Neon
+        # pooler over the multi-hour main loop. Wrap in try/except so a
+        # sweep failure doesn't abort the whole cycle (worst case: no sweep
+        # this run, but cycle 1 completes and the BAT proceeds to cycle 2).
         if rkg_ids is None:
-            sweep_rows = _find_real_miss_rkg_ids(conn)
-            if sweep_rows:
-                log.info("post-scrape real-miss sweep", count=len(sweep_rows))
-                for s_rkg_id, s_kw, s_product, s_max, s_bid in sweep_rows:
-                    sweep_kgs += 1
-                    slots_inserted += _process_one_kg(
-                        s_rkg_id, s_kw, s_product, s_max,
-                        persist_conn=persist_conn, delay_seconds=delay_seconds,
-                        winning_bid=s_bid,
-                    )
-                log.info("post-scrape sweep done", swept=sweep_kgs)
+            try:
+                with connect() as sweep_conn:
+                    sweep_rows = _find_real_miss_rkg_ids(sweep_conn)
+                if sweep_rows:
+                    log.info("post-scrape real-miss sweep", count=len(sweep_rows))
+                    for s_rkg_id, s_kw, s_product, s_max, s_bid in sweep_rows:
+                        sweep_kgs += 1
+                        slots_inserted += _process_one_kg(
+                            s_rkg_id, s_kw, s_product, s_max,
+                            persist_conn=persist_conn, delay_seconds=delay_seconds,
+                            winning_bid=s_bid,
+                        )
+                    log.info("post-scrape sweep done", swept=sweep_kgs)
+            except Exception:
+                log.exception("post-scrape sweep failed — skipping for this run")
 
         # In production, reopen for the final ingest_runs update so the
         # original `conn` may have been killed by the pooler by now.
