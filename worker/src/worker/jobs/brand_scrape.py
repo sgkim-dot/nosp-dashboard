@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import os
 import random
 import sys
+import threading
 import time
 from datetime import date
 
@@ -32,6 +34,38 @@ _USER_AGENT = (
 # so the request cadence isn't perfectly periodic (anti-bot signal).
 _DELAY_SECONDS = 0.8
 _DELAY_JITTER = 0.7
+
+# Watchdog: if no KG completes for this long, the process is presumed hung
+# (Playwright deadlock, Chromium spawn freeze, etc.) and we force-exit so
+# the BAT wrapper's retry loop can spawn a fresh Python process.
+_WATCHDOG_SECONDS = 300  # 5 minutes
+_last_progress_ts = time.time()
+
+# Early-exit on consecutive scrape failures. Single failures are normal
+# (rotation miss, transient driver crash); 10 in a row means Playwright is
+# in a broken state and only a fresh process will recover.
+_consecutive_scrape_failures = 0
+_MAX_CONSECUTIVE_FAILURES = 10
+
+
+def _watchdog_thread() -> None:
+    """Background watchdog. Force-exits the process if no progress for
+    _WATCHDOG_SECONDS. os._exit bypasses Python locks so it works even
+    if the main thread is deadlocked inside Playwright."""
+    while True:
+        time.sleep(30)
+        elapsed = time.time() - _last_progress_ts
+        if elapsed > _WATCHDOG_SECONDS:
+            log.error(
+                "watchdog: no progress, force-exiting for BAT retry",
+                stuck_seconds=int(elapsed),
+            )
+            os._exit(2)
+
+
+def _bump_progress() -> None:
+    global _last_progress_ts
+    _last_progress_ts = time.time()
 
 
 def fetch_business_name(url: str) -> str | None:
@@ -243,12 +277,18 @@ def _process_one_kg(
     catch the same misses without bloating cycle 1 wall-clock).
     """
 
+    global _consecutive_scrape_failures
     try:
         slots, detected_slot_count = scrape_brands_with_detected_count(
             kw, product_code
         )
+        _consecutive_scrape_failures = 0
     except Exception:
-        log.exception("scrape failed", keyword=kw)
+        _consecutive_scrape_failures += 1
+        log.exception(
+            "scrape failed", keyword=kw,
+            consecutive=_consecutive_scrape_failures,
+        )
         # Playwright's Chromium driver can die mid-run (memory pressure,
         # Windows Defender, idle socket close). Tear down so the next
         # call to _get_pool() spawns a fresh Chromium.
@@ -256,6 +296,7 @@ def _process_one_kg(
             close_pool()
         except Exception:
             log.exception("close_pool after scrape failure raised")
+        _bump_progress()
         return 0
     slots = [s for s in slots if s.product == product_code]
 
@@ -303,6 +344,7 @@ def _process_one_kg(
             log.exception("persist failed", rkg_id=rkg_id, keyword=kw)
 
     time.sleep(delay_seconds + random.uniform(0, _DELAY_JITTER))
+    _bump_progress()
     return inserted
 
 
@@ -388,6 +430,13 @@ def scrape_brands_for_active_rounds(
                 persist_conn=persist_conn, delay_seconds=delay_seconds,
                 winning_bid=winning_bid,
             )
+            if _consecutive_scrape_failures >= _MAX_CONSECUTIVE_FAILURES:
+                log.error(
+                    "too many consecutive scrape failures — exiting "
+                    "for BAT retry",
+                    consecutive=_consecutive_scrape_failures,
+                )
+                sys.exit(3)
 
         # Post-scrape real-miss sweep: any KG where detected > caught after
         # the main pass gets one more try. Catches NP rotation misses that
@@ -614,6 +663,11 @@ def main(argv: list[str] | None = None) -> int:
     # --full overrides --resume (and --null-only) — re-scrape every active KG.
     use_resume = args.resume and not args.full
     use_null_only = args.null_only and not args.full
+
+    # Watchdog: detect Python deadlock (Playwright spawn freezes,
+    # connection-close hangs) and force-exit so the BAT can retry.
+    threading.Thread(target=_watchdog_thread, daemon=True).start()
+    _bump_progress()
 
     with connect() as conn:
         _cleanup_stale_runs(conn)
