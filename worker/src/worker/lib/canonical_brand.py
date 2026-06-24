@@ -655,8 +655,12 @@ HOST_TO_BRAND: dict[str, str] = {
     "brand.naver.com/yaksonmall": "하은누리",
     "brand.naver.com/agaand": "아가앤",
     "brand.naver.com/age20s": "에이지투웨니스",
-    "brand.naver.com/AI이어폰SPE-G11": "사운드판다",
     "brand.naver.com/ainhealthcare": "아인헬스케어",
+    # 사운드판다는 광고 카피 "AI이어폰SPE-G11"이 display로 잡힘 — host 매핑 +
+    # DISPLAY_FULL_CANONICAL 양쪽 모두 등록.
+    "soundpanda.co.kr": "사운드판다",
+    "www.soundpanda.co.kr": "사운드판다",
+    "m.soundpanda.co.kr": "사운드판다",
     "brand.naver.com/ascent": "에이센트",
     "brand.naver.com/asus": "ASUS",
     "brand.naver.com/ateen_seoul": "재피렉스",
@@ -675,7 +679,6 @@ HOST_TO_BRAND: dict[str, str] = {
     # smartstore.naver.com 변형 (사용자가 슬러그만 준 케이스 — 두 host 형식 모두 등록)
     "smartstore.naver.com/agaand": "아가앤",
     "smartstore.naver.com/age20s": "에이지투웨니스",
-    "smartstore.naver.com/AI이어폰SPE-G11": "사운드판다",
     "smartstore.naver.com/ainhealthcare": "아인헬스케어",
     "smartstore.naver.com/ascent": "에이센트",
     "smartstore.naver.com/asus": "ASUS",
@@ -751,6 +754,7 @@ DISPLAY_CANONICAL: dict[str, str] = {
 DISPLAY_FULL_CANONICAL: dict[str, str] = {
     "현장의 신뢰를 기록하다!": "포팩트",   # → www.4fact.co.kr
     "입냄새 바로 셧다운!": "덴티스테",     # → brand.naver.com/dentistekorea
+    "AI이어폰SPE-G11": "사운드판다",       # → soundpanda.co.kr
 }
 
 
