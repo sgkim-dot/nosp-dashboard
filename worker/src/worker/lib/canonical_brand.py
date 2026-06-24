@@ -650,6 +650,9 @@ HOST_TO_BRAND: dict[str, str] = {
     "brand.naver.com/dentistekorea": "덴티스테",
     # ─── 6th batch (사용자 확인 매핑 2026-06-22) ────
     "brand.naver.com/dasoda": "다소다",
+    "brand.naver.com/reencle": "린클",
+    "brand.naver.com/otokimall": "오뚜기",
+    "brand.naver.com/yaksonmall": "하은누리",
     "themedicube.co.kr": "메디큐브",
     "www.themedicube.co.kr": "메디큐브",
     "m.themedicube.co.kr": "메디큐브",
