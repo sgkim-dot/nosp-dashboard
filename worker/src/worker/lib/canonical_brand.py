@@ -391,7 +391,9 @@ HOST_TO_BRAND: dict[str, str] = {
     "__unverified__::현대해상 굿앤굿어린이종합보험Q": "현대해상",
     # ─── User-mapped 2026-05-27 batch ─────────────
     "smartstore.naver.com/aj1117": "패밀리컨셉",
+    "coldaewon.co.kr": "콜대원",
     "www.coldaewon.co.kr": "콜대원",
+    "m.coldaewon.co.kr": "콜대원",
     "smartstore.naver.com/_tinkerbell": "팅커벨",
     "smartstore.naver.com/foellie": "포엘리에",
     "smartstore.naver.com/into": "셀루미",
