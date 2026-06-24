@@ -48,6 +48,15 @@ _consecutive_scrape_failures = 0
 _MAX_CONSECUTIVE_FAILURES = 10
 
 
+# Process-wide cache for fetch_business_name. ader.naver.com redirect URLs
+# are unique per (KG × ad placement) but the resolved smartstore product
+# pages repeat across KGs. Caching avoids re-fetching the same URL — and
+# importantly, caching FAILURES avoids burning another 5s timeout on URLs
+# that just timed out moments ago.
+_CACHE_MISS = object()
+_BUSINESS_NAME_CACHE: dict[str, str | None] = {}
+
+
 def _watchdog_thread() -> None:
     """Background watchdog. Force-exits the process if no progress for
     _WATCHDOG_SECONDS. os._exit bypasses Python locks so it works even
@@ -82,9 +91,20 @@ def fetch_business_name(url: str) -> str | None:
     advertiser. Korean canonical names belong in `HOST_TO_BRAND`, keyed off
     the URL host returned here.
     """
+    # Process-wide cache: same ader.naver.com redirect URL often appears
+    # across multiple KGs in one BAT run (same ad seen in multiple keyword
+    # groups). One resolve per URL is enough.
+    cached = _BUSINESS_NAME_CACHE.get(url)
+    if cached is not _CACHE_MISS:
+        return cached
+
     try:
         with httpx.Client(
-            headers={"User-Agent": _USER_AGENT}, timeout=15.0, follow_redirects=True
+            # Naver smartstore aggressively rate-limits the bulk redirect
+            # follows; 15s timeout meant every failure cost 15s. 5s is enough
+            # to distinguish 'server reachable' from 'rate-limited' and keeps
+            # the BAT pace healthy even when a chunk of URLs are 429-blocked.
+            headers={"User-Agent": _USER_AGENT}, timeout=5.0, follow_redirects=True
         ) as client:
             resp = client.get(url)
             host = resp.url.host or None
@@ -96,11 +116,13 @@ def fetch_business_name(url: str) -> str | None:
             else:
                 query = raw_q or ""
             if not host:
+                _BUSINESS_NAME_CACHE[url] = None
                 return None
             # Priority 1: platform path-based identifier (brand.naver.com/X,
             # smartstore.naver.com/X, blog.naver.com/{blogId}).
             plat = platform_business_name(host, path, query)
             if plat:
+                _BUSINESS_NAME_CACHE[url] = plat
                 return plat
             # Priority 2: normalized URL host. See module docstring above —
             # never extract Korean company names from response HTML.
@@ -109,10 +131,17 @@ def fetch_business_name(url: str) -> str | None:
             # tiktok.com, …) are never an advertiser identity. Return None
             # so upsert_brand falls back to display-side matching.
             if norm and norm in GENERIC_REDIRECT_HOSTS:
+                _BUSINESS_NAME_CACHE[url] = None
                 return None
+            _BUSINESS_NAME_CACHE[url] = norm
             return norm
-    except Exception:
-        log.exception("landing fetch failed", url=url)
+    except Exception as e:
+        # Don't dump full traceback for routine timeouts/429 — those are
+        # expected when Naver rate-limits us. Log a short line instead.
+        log.warning("landing fetch failed", url=url[:120], err=type(e).__name__)
+        # Cache the failure too — same URL is unlikely to succeed within this
+        # BAT run, so don't waste another 5s timeout on it.
+        _BUSINESS_NAME_CACHE[url] = None
         return None
 
 
