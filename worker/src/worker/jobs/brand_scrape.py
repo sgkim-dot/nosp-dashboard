@@ -401,6 +401,7 @@ def scrape_brands_for_active_rounds(
     skip_already_scraped: bool = False,
     null_only: bool = False,
     persist_conn: Connection | None = None,
+    run_type: str = "brand_scrape",
 ) -> dict[str, int]:
     """Scrape brands for currently-active rounds.
 
@@ -417,7 +418,15 @@ def scrape_brands_for_active_rounds(
     )
     log.info("active keyword groups", count=len(rows))
 
-    run_id = start_ingest_run(conn, run_type="brand_scrape")
+    # Use a fresh connection for the ingest_run lifecycle so the INSERT
+    # actually commits (the long-lived `conn` runs without autocommit and
+    # we never commit it explicitly, so previously start rows were lost).
+    if persist_conn is None:
+        with connect() as ir_conn:
+            run_id = start_ingest_run(ir_conn, run_type=run_type)
+            ir_conn.commit()
+    else:
+        run_id = start_ingest_run(persist_conn, run_type=run_type)
     slots_inserted = 0
     kgs_scraped = 0
     sweep_kgs = 0
@@ -678,6 +687,17 @@ def main(argv: list[str] | None = None) -> int:
     threading.Thread(target=_watchdog_thread, daemon=True).start()
     _bump_progress()
 
+    # Tag ingest_runs with the cycle mode so the dashboard can render
+    # "cycle 1 (resume) / cycle 2 (full) / cycle 3 (full)" separately.
+    if args.full:
+        run_type = "brand_scrape:full"
+    elif use_null_only:
+        run_type = "brand_scrape:null-only"
+    elif use_resume:
+        run_type = "brand_scrape:resume"
+    else:
+        run_type = "brand_scrape"
+
     with connect() as conn:
         _cleanup_stale_runs(conn)
         _reset_dawn_zero_scrapes(conn)
@@ -685,8 +705,9 @@ def main(argv: list[str] | None = None) -> int:
         result = scrape_brands_for_active_rounds(
             conn, limit=args.limit,
             skip_already_scraped=use_resume, null_only=use_null_only,
+            run_type=run_type,
         )
-        log.info("brand scrape done", **result)
+        log.info("brand scrape done", run_type=run_type, **result)
     return 0
 
 

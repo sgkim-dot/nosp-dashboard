@@ -167,6 +167,61 @@ export default async function CrawlPage() {
           })}
         </div>
 
+        {/* Cycle breakdown (3-cycle BAT) */}
+        {p.cycles.length > 0 && (
+          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+            <div className="mb-3 flex items-center gap-2">
+              <h2 className="text-lg font-semibold">사이클 진행</h2>
+              <span className="text-xs text-muted-foreground">
+                (브랜드크롤링.bat는 3사이클 자동 진행 — cycle 1 resume → cycle 2/3 full)
+              </span>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {p.cycles.slice(-3).map((c) => {
+                const pct = c.total > 0 ? Math.min(100, Math.round((c.processed * 100) / c.total)) : 0;
+                const isLiveCycle = c.status === "started" && !c.completedAt;
+                const isLatestLive = isLiveCycle && c.runId === p.cycles[p.cycles.length - 1].runId;
+                const cycleEta = isLatestLive && p.rateLast15Min > 0
+                  ? ((c.total - c.processed) / (p.rateLast15Min * 4))
+                  : null;
+                return (
+                  <div key={c.runId} className="rounded-xl border bg-background p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="font-semibold">
+                        {c.cycleNo}차 사이클
+                        <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                          {c.mode}
+                        </span>
+                      </div>
+                      {statusBadge(isLiveCycle ? "running" : c.status)}
+                    </div>
+                    <div className="mt-3 text-2xl font-bold tabular-nums">{pct}%</div>
+                    <div className="text-xs text-muted-foreground tabular-nums">
+                      {c.processed.toLocaleString()} / {c.total.toLocaleString()} KG
+                    </div>
+                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={`h-full rounded-full transition-all ${isLiveCycle ? "bg-emerald-500" : c.status === "completed" ? "bg-blue-500" : "bg-muted-foreground/40"}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <div className="mt-2.5 grid grid-cols-2 gap-2 text-[11px] text-muted-foreground">
+                      <span>시작: {fmtAgo(secondsAgo(c.startedAt))}</span>
+                      {isLatestLive ? (
+                        <span>잔여 ~ {fmtEta(cycleEta)}</span>
+                      ) : c.completedAt ? (
+                        <span>완료: {fmtAgo(secondsAgo(c.completedAt))}</span>
+                      ) : (
+                        <span>—</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Live stats grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <LiveStat

@@ -572,6 +572,17 @@ export type CrawlProductProgress = {
   withBrand: number;
 };
 
+export type CycleProgress = {
+  cycleNo: number;
+  runId: number;
+  mode: string;              // "resume" | "full" | "null-only" | "default"
+  status: string;            // "started" | "completed" | "failed" | "interrupted"
+  startedAt: string;
+  completedAt: string | null;
+  processed: number;         // KGs processed during this cycle's run_at window
+  total: number;             // total active KGs (denominator for the bar)
+};
+
 export type CrawlProgress = {
   perProduct: CrawlProductProgress[];
   totals: { done: number; pending: number; total: number; withBrand: number };
@@ -583,6 +594,7 @@ export type CrawlProgress = {
   etaHours: number | null;    // null when no recent activity
   currentRunStatus: string | null;
   currentRunStartedAt: string | null;
+  cycles: CycleProgress[];
 };
 
 export async function getCrawlProgress(): Promise<CrawlProgress> {
@@ -662,11 +674,64 @@ export async function getCrawlProgress(): Promise<CrawlProgress> {
   }>(sql`
     SELECT status, run_at::text AS started_at
     FROM ingest_runs
-    WHERE run_type = 'brand_scrape'
+    WHERE run_type LIKE 'brand_scrape%'
     ORDER BY id DESC
     LIMIT 1
   `);
   const currentRun = runResult.rows[0] ?? { status: null, started_at: null };
+
+  // Recent BAT cycles — last 48h of brand_scrape:* ingest_runs.
+  // Each row maps to one cycle (resume = cycle 1, full = cycle 2/3).
+  const cyclesResult = await db.execute<{
+    run_id: number;
+    run_type: string;
+    status: string;
+    started_at: string;
+    completed_at: string | null;
+    rows_total: number | null;
+    rows_inserted: number | null;
+    processed: number;
+  }>(sql`
+    WITH recent AS (
+      SELECT id, run_type, status, run_at, completed_at,
+             rows_total, rows_inserted,
+             LEAD(run_at) OVER (ORDER BY id) AS next_run_at
+      FROM ingest_runs
+      WHERE run_type LIKE 'brand_scrape%'
+        AND run_at > NOW() - INTERVAL '48 hours'
+    )
+    SELECT
+      r.id AS run_id,
+      r.run_type,
+      r.status,
+      r.run_at::text AS started_at,
+      r.completed_at::text AS completed_at,
+      r.rows_total,
+      r.rows_inserted,
+      (
+        SELECT COUNT(*)::int FROM round_keyword_groups rkg
+        JOIN rounds rd ON rd.id = rkg.round_id
+        WHERE rd.period_start <= (NOW() AT TIME ZONE 'Asia/Seoul')::date
+          AND rd.period_end   >= (NOW() AT TIME ZONE 'Asia/Seoul')::date
+          AND rkg.brands_scraped_at >= r.run_at
+          AND rkg.brands_scraped_at < COALESCE(r.next_run_at, NOW() + INTERVAL '1 second')
+      ) AS processed
+    FROM recent r
+    ORDER BY r.id ASC
+  `);
+  const cycles = cyclesResult.rows.map((r, idx) => {
+    const mode = r.run_type.replace("brand_scrape:", "").replace("brand_scrape", "default");
+    return {
+      cycleNo: idx + 1,
+      runId: r.run_id,
+      mode,
+      status: r.status,
+      startedAt: r.started_at,
+      completedAt: r.completed_at,
+      processed: r.processed,
+      total: totals.total,
+    };
+  });
 
   return {
     perProduct,
@@ -679,6 +744,7 @@ export async function getCrawlProgress(): Promise<CrawlProgress> {
     etaHours,
     currentRunStatus: currentRun.status,
     currentRunStartedAt: currentRun.started_at,
+    cycles,
   };
 }
 
