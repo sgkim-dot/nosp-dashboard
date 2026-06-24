@@ -613,7 +613,7 @@ export async function getCrawlProgress(): Promise<CrawlProgress> {
     WITH cycle_start AS (
       SELECT COALESCE(
         (SELECT run_at FROM ingest_runs
-         WHERE run_type LIKE 'brand_scrape%' ORDER BY id DESC LIMIT 1),
+         WHERE run_type LIKE 'brand_scrape:%' ORDER BY id DESC LIMIT 1),
         NOW() - INTERVAL '24 hours'
       ) AS started_at
     )
@@ -683,21 +683,23 @@ export async function getCrawlProgress(): Promise<CrawlProgress> {
   const ratePerHour = r15 > 0 ? r15 * 4 : r60;
   const etaHours = ratePerHour > 0 ? totals.pending / ratePerHour : null;
 
-  // current run
+  // current run — only cycle-tagged rows (brand_scrape:*), not legacy ones
   const runResult = await db.execute<{
     status: string | null;
     started_at: string | null;
   }>(sql`
     SELECT status, run_at::text AS started_at
     FROM ingest_runs
-    WHERE run_type LIKE 'brand_scrape%'
+    WHERE run_type LIKE 'brand_scrape:%'
     ORDER BY id DESC
     LIMIT 1
   `);
   const currentRun = runResult.rows[0] ?? { status: null, started_at: null };
 
-  // Recent BAT cycles — last 48h of brand_scrape:* ingest_runs.
-  // Each row maps to one cycle (resume = cycle 1, full = cycle 2/3).
+  // Recent BAT cycles — last 3 brand_scrape:* runs (i.e. the current BAT
+  // session). 'brand_scrape' (no colon) is the legacy type; we exclude old
+  // stale 'started' rows from before the cycle-tagging feature because
+  // they'd otherwise pollute the 3-cycle display.
   const cyclesResult = await db.execute<{
     run_id: number;
     run_type: string;
@@ -713,8 +715,10 @@ export async function getCrawlProgress(): Promise<CrawlProgress> {
              rows_total, rows_inserted,
              LEAD(run_at) OVER (ORDER BY id) AS next_run_at
       FROM ingest_runs
-      WHERE run_type LIKE 'brand_scrape%'
+      WHERE run_type LIKE 'brand_scrape:%'
         AND run_at > NOW() - INTERVAL '48 hours'
+      ORDER BY id DESC
+      LIMIT 3
     )
     SELECT
       r.id AS run_id,

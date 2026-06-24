@@ -34,6 +34,9 @@ function fmtEta(hours: number | null): string {
 }
 
 function statusBadge(status: string | null) {
+  // ingest_runs.status actual values: 'started' / 'success' / 'error' /
+  // 'interrupted'. The 'running' alias is set in the UI for "active scrape
+  // observed in last 5 min" (separate signal from status column).
   if (status === "running") {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-200">
@@ -45,14 +48,14 @@ function statusBadge(status: string | null) {
       </span>
     );
   }
-  if (status === "completed") {
+  if (status === "success" || status === "completed") {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700 ring-1 ring-blue-200">
         <CheckCircle2 className="h-3.5 w-3.5" /> 완료
       </span>
     );
   }
-  if (status === "failed") {
+  if (status === "error" || status === "failed") {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-sm font-medium text-red-700 ring-1 ring-red-200">
         <XCircle className="h-3.5 w-3.5" /> 실패
@@ -63,6 +66,17 @@ function statusBadge(status: string | null) {
     return (
       <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700 ring-1 ring-amber-200">
         <XCircle className="h-3.5 w-3.5" /> 중단됨
+      </span>
+    );
+  }
+  if (status === "started") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 ring-1 ring-emerald-200">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+        </span>
+        실행 중
       </span>
     );
   }
@@ -191,19 +205,21 @@ export default async function CrawlPage() {
               </span>
               {[1, 2, 3].map((no) => {
                 const c = p.cycles.find((x) => x.cycleNo === no);
-                const isCurrent = c?.runId === currentCycle?.runId;
-                const isLiveCycle = c?.status === "started" && !c?.completedAt && isCurrent;
+                const isLiveCycle = c?.status === "started" && !c?.completedAt;
                 let label = "대기";
                 let className = "bg-muted text-muted-foreground";
                 if (c) {
                   if (isLiveCycle) {
                     label = "진행 중";
                     className = "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200";
-                  } else if (c.status === "completed") {
+                  } else if (c.status === "success" || c.status === "completed") {
                     label = "완료";
                     className = "bg-blue-50 text-blue-700 ring-1 ring-blue-200";
-                  } else if (c.status === "failed" || c.status === "interrupted") {
-                    label = c.status === "failed" ? "실패" : "중단";
+                  } else if (c.status === "error" || c.status === "failed") {
+                    label = "실패";
+                    className = "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
+                  } else if (c.status === "interrupted") {
+                    label = "중단";
                     className = "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
                   }
                 }

@@ -580,11 +580,15 @@ def _reset_dawn_zero_scrapes(conn: Connection) -> int:
 
 
 def _cleanup_stale_runs(conn: Connection) -> None:
-    """Mark any 'running' ingest_runs older than 1 hour as interrupted.
+    """Mark any stale 'started' ingest_runs older than 1 hour as interrupted.
 
     These leftover rows come from previous runs that were force-killed (closing
     cmd window, machine sleep, etc.). Cleaning them keeps the ingest_runs table
     tidy and makes the dashboard's 'last run' indicator accurate.
+
+    Fix: previously matched status='running' (wrong — actual value is 'started')
+    and run_type='brand_scrape' (wrong — new runs use 'brand_scrape:resume'
+    etc.). Now matches both legacy and tagged run_types.
     """
     with conn.cursor() as cur:
         cur.execute(
@@ -592,8 +596,8 @@ def _cleanup_stale_runs(conn: Connection) -> None:
             UPDATE ingest_runs
             SET status = 'interrupted',
                 error_message = COALESCE(error_message, 'process terminated; auto-cleanup on next start')
-            WHERE run_type = 'brand_scrape'
-              AND status = 'running'
+            WHERE run_type LIKE 'brand_scrape%'
+              AND status = 'started'
               AND run_at < NOW() - INTERVAL '1 hour'
             """
         )
