@@ -25,8 +25,17 @@ if errorlevel 1 (
 )
 
 echo.
+echo ------------------------------------------------------------
+echo   Strategy auto-tuning (best params -> strategy_params)
+echo ------------------------------------------------------------
+uv run python scripts/tune_strategy.py --write-db
+if errorlevel 1 (
+    echo [WARN] Tuning failed - existing active params preserved.
+)
+
+echo.
 echo ============================================================
-echo   완료! CSV 다운로드 + DB 업데이트 끝.
-echo   대시보드를 새로고침하면 새 데이터가 보입니다.
+echo   완료! CSV 다운로드 + DB 업데이트 + Strategy tuning 끝.
+echo   대시보드 /backtest 에서 새 활성/대기 파라미터를 확인하세요.
 echo ============================================================
 pause
