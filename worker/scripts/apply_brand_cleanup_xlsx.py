@@ -23,7 +23,8 @@ from openpyxl import load_workbook
 
 
 ROOT = Path(__file__).resolve().parents[2]
-XLSX = ROOT / "브랜드정리_긴급정정_20260625_1039.xlsx"
+DEFAULT_XLSX = ROOT / "브랜드정리_긴급정정_20260625_1039.xlsx"
+XLSX = DEFAULT_XLSX  # overridden by --file
 CANON = (
     Path(__file__).resolve().parents[1]
     / "src" / "worker" / "lib" / "canonical_brand.py"
@@ -31,7 +32,7 @@ CANON = (
 
 
 def read_xlsx() -> list[tuple[int, str, str]]:
-    wb = load_workbook(XLSX, read_only=True, data_only=True)
+    wb = load_workbook(str(XLSX), read_only=True, data_only=True)
     ws = wb.active
     out: list[tuple[int, str, str]] = []
     for row in ws.iter_rows(min_row=2, values_only=True):
@@ -114,12 +115,18 @@ def run_reconcile(dry_run: bool) -> int:
 
 def main() -> int:
     p = argparse.ArgumentParser()
+    p.add_argument("--file", type=Path, default=None, help="xlsx path (defaults to the 1039 file).")
     grp = p.add_mutually_exclusive_group(required=True)
     grp.add_argument("--dry-run", action="store_true")
     grp.add_argument("--apply", action="store_true")
     a = p.parse_args()
     dry = not a.apply
 
+    global XLSX
+    if a.file:
+        XLSX = a.file if a.file.is_absolute() else (ROOT / a.file)
+
+    print(f"reading: {XLSX}")
     rows = read_xlsx()
     print(f"엑셀에서 정정 기재된 행: {len(rows)}건")
     rc = insert_into_canonical(rows, dry_run=dry)
