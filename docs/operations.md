@@ -4,7 +4,7 @@
 
 | BAT | 무엇을 함 | 언제 |
 |------|------|---|
-| `NOSP_주간업데이트.bat` | NOSP의 회차별 입찰가/낙찰가 CSV 4종 다운로드 + DB ingest. | **화요일 00:00 KST 이후** (NOSP가 그때 새 회차 winning_bid 발표) |
+| `NOSP_주간업데이트.bat` | NOSP의 회차별 입찰가/낙찰가 CSV 4종 다운로드 + DB ingest + **strategy auto-tuning** (tune_strategy.py --write-db) | **화요일 00:00 KST 이후** (NOSP가 그때 새 회차 winning_bid 발표) |
 | `브랜드크롤링.bat` | `brand_scrape --resume` 실행 (Naver 검색으로 광고 → brand 추출). 끝나면 자동으로 `reconcile_brands.py --apply` 호출 | **월요일 00:00 KST 이후** 새 회차 active 되자마자 시작 가능. 한 사이클 약 15~25시간 |
 
 두 BAT는 서로 호출하지 않는다. 한쪽이 다른 쪽을 트리거하지 않으며 데이터 흐름도 독립적이다.
@@ -219,7 +219,64 @@ uv run python -m worker.jobs.brand_scrape --null-only
 - 원인: Vercel env add 시 `--no-sensitive` 안 줘서 값이 sensitive로 등록됨
 - 해결: 재등록 시 `vercel env add ... --value <value> --no-sensitive --yes --force`
 
-## 9. 관련 문서
+## 9. Strategy 자동 튜닝 (DB-backed)
+
+추천가 계산에 쓰이는 전략 파라미터(weights, percentile, premium)는 더 이상 코드 상수가 아니라 **DB의 `strategy_params` 테이블**에 저장된 active 행에서 읽어온다. `apps/dashboard/lib/strategy.ts`의 `DEFAULT_STRATEGY`는 DB read 실패 시 fallback일 뿐.
+
+### 자동 튜닝 흐름
+
+```
+화요일 00:00 KST 이후
+       ↓
+NOSP_주간업데이트.bat 실행
+       ↓
+CSV ingest 끝나면
+       ↓
+tune_strategy.py --write-db 자동 실행 (모든 활성 KG로 grid search 백테스트, 약 5~10분)
+       ↓
+상품별 best 후보를 strategy_params 테이블에 INSERT
+       ↓
+직전 active 대비 변동폭 ≤ ±25%?
+  ├─ YES → status='active' 즉시 갱신 (이전 active는 'archived')
+  └─ NO  → status='pending' 보류 → /backtest 페이지 상단 노란 카드 표시 → 관리자가 "활성화" 클릭
+```
+
+### 변동폭 ±25% 임계 (`DELTA_THRESHOLD_BPS = 2500`)
+
+`worker/scripts/tune_strategy.py`의 `_max_delta_bps()`가 새 후보와 현재 active의 4개 파라미터(low/high percentile, low/high premium)를 비교하여 최대 절대 변동폭을 bps 단위로 계산. 한 주 데이터가 이상해서 추천가가 갑자기 튀는 사고를 막기 위한 안전장치.
+
+### 대시보드 UI (`/backtest`)
+
+- **현재 활성 파라미터** 카드 — 실제 추천가 계산에 사용 중인 행 3개 (SV / NP / ANN)
+- **대기 중인 새 파라미터** 카드 (있을 때만) — 노란색 alert + 관리자만 "활성화" 버튼
+- **튜닝 이력** 카드 (상품별) — 최근 20건, status badge, 관리자만 "롤백" 버튼으로 archived 행 재활성화
+
+### 관리자 권한
+
+`apps/dashboard/lib/admin.ts`의 `ADMIN_EMAILS` 셋에 등록된 Clerk 이메일만 활성화/롤백 가능. 비관리자는 카드는 보이지만 버튼 없음.
+
+### 수동 트리거 (필요시)
+
+BAT 일정 외에 즉시 새 후보를 평가하고 싶을 때:
+
+```bash
+cd worker
+uv run python scripts/tune_strategy.py --write-db
+```
+
+dry-run (DB 변경 없이 top-N만 확인):
+
+```bash
+uv run python scripts/tune_strategy.py --top 5
+```
+
+### 트러블슈팅
+
+- **`/backtest` 활성 카드가 비어 있다** → DB read 실패 (DEFAULT_STRATEGY fallback이 작동 중). 서버 로그에 `[strategy] DB fetch failed` 검색 → DATABASE_URL/연결 문제 확인.
+- **튜닝 결과가 매주 pending으로만 쌓인다** → 데이터가 너무 흔들리거나 `DELTA_THRESHOLD_BPS`가 너무 빡빡함. 일관성 있는 흔들림이면 첫 pending을 한 번 활성화하고 그 다음부턴 active로 들어옴.
+- **롤백했는데 다음 주에 또 그 archived 행이 archived로 머묾** → 정상. 매주 새 INSERT 행이 active가 되고, 이전 active가 archived가 된다. 같은 archived 행이 반복 활성화될 일은 없음 (각 튜닝은 새 row).
+
+## 10. 관련 문서
 
 - [worker/scripts/README-brands.md](../worker/scripts/README-brands.md) — 브랜드 매핑 6중 방어 + 운영
 - [docs/naver-ad-dot-indicator.md](naver-ad-dot-indicator.md) — 광고 누락 진단
