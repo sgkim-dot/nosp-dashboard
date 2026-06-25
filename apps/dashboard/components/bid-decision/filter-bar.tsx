@@ -1,4 +1,5 @@
 import {
+  getAllKeywordGroupsForSearch,
   getCategoriesLvl1,
   getCategoriesLvl2,
   getKeywordGroups,
@@ -16,7 +17,7 @@ type FilterBarParams = {
 };
 
 export async function FilterBar(props: FilterBarParams) {
-  const [allProducts, lvl1, lvl2, kgs] = await Promise.all([
+  const [allProducts, lvl1, lvl2, kgs, allKgs] = await Promise.all([
     getProducts(),
     getCategoriesLvl1(props.product),
     props.categoryLvl1 ? getCategoriesLvl2(props.categoryLvl1, props.product) : Promise.resolve([]),
@@ -27,6 +28,7 @@ export async function FilterBar(props: FilterBarParams) {
           categoryLvl2: props.categoryLvl2,
         })
       : Promise.resolve([]),
+    getAllKeywordGroupsForSearch(props.product),
   ]);
 
   return (
@@ -40,6 +42,7 @@ export async function FilterBar(props: FilterBarParams) {
       lvl1={lvl1}
       lvl2={lvl2}
       kgs={kgs}
+      allKgs={allKgs}
     />
   );
 }

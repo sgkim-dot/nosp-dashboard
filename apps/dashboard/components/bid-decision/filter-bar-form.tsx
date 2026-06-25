@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import type { ProductCode } from "@/types/bid-decision";
+import { KgSearchCombobox, type KgSearchItem } from "./kg-search-combobox";
 
 const RANGE_OPTIONS = [6, 12, 24, 52];
 
@@ -16,6 +17,7 @@ type Props = {
   lvl1: { id: number; name: string }[];
   lvl2: { id: number; name: string }[];
   kgs: { id: number; name: string }[];
+  allKgs: KgSearchItem[];
 };
 
 export function FilterBarForm(props: Props) {
@@ -141,8 +143,18 @@ export function FilterBarForm(props: Props) {
         </select>
       </Field>
 
+      <div className="flex w-[22rem] flex-col gap-2">
+        <span className="text-base font-semibold text-foreground">빠른 검색</span>
+        <KgSearchCombobox
+          items={props.allKgs}
+          product={props.product}
+          lastNRounds={props.lastNRounds}
+          selectedKgId={props.keywordGroupId}
+        />
+      </div>
+
       {pending && (
-        <span className="ml-auto text-sm text-muted-foreground">로딩 중…</span>
+        <span className="text-sm text-muted-foreground">로딩 중…</span>
       )}
     </div>
   );
