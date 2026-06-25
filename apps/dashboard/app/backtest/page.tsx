@@ -8,9 +8,11 @@ import {
 } from "@/components/backtest/tune-button";
 import { ActiveStrategyCard } from "@/components/backtest/active-strategy-card";
 import { PendingStrategyCard } from "@/components/backtest/pending-strategy-card";
+import { StrategyHistoryCard } from "@/components/backtest/strategy-history-card";
 import {
   getActiveStrategyParams,
   getPendingStrategyParams,
+  getStrategyHistory,
 } from "@/lib/db/strategy-params";
 import { createDb } from "@/lib/db/client";
 import { getIsAdmin } from "@/lib/admin";
@@ -29,11 +31,17 @@ export default async function BacktestPage() {
     { aggregates, perKg },
     activeStrategyRows,
     pendingStrategyRows,
+    historySV,
+    historyNP,
+    historyANN,
     isAdmin,
   ] = await Promise.all([
     getBacktestResults(),
     getActiveStrategyParams(db),
     getPendingStrategyParams(db),
+    getStrategyHistory(db, "SEARCHING_VIEW"),
+    getStrategyHistory(db, "NEW_PRODUCT"),
+    getStrategyHistory(db, "ANNIVERSARY"),
     getIsAdmin(),
   ]);
 
@@ -69,6 +77,22 @@ export default async function BacktestPage() {
         <PendingStrategyCard rows={pendingStrategyRows} isAdmin={isAdmin} />
         {/* Currently active strategy params (from DB) */}
         <ActiveStrategyCard rows={activeStrategyRows} />
+        {/* Tuning history per product — rollback from archived rows (admin) */}
+        <StrategyHistoryCard
+          productCode="SEARCHING_VIEW"
+          rows={historySV}
+          isAdmin={isAdmin}
+        />
+        <StrategyHistoryCard
+          productCode="NEW_PRODUCT"
+          rows={historyNP}
+          isAdmin={isAdmin}
+        />
+        <StrategyHistoryCard
+          productCode="ANNIVERSARY"
+          rows={historyANN}
+          isAdmin={isAdmin}
+        />
         {/* Tuning results — appears on top after running tune */}
         <TuneResults />
         {/* Per-product aggregates */}
