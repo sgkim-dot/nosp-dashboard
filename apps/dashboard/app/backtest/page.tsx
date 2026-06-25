@@ -7,8 +7,13 @@ import {
   TuneResults,
 } from "@/components/backtest/tune-button";
 import { ActiveStrategyCard } from "@/components/backtest/active-strategy-card";
-import { getActiveStrategyParams } from "@/lib/db/strategy-params";
+import { PendingStrategyCard } from "@/components/backtest/pending-strategy-card";
+import {
+  getActiveStrategyParams,
+  getPendingStrategyParams,
+} from "@/lib/db/strategy-params";
 import { createDb } from "@/lib/db/client";
+import { getIsAdmin } from "@/lib/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -20,9 +25,16 @@ const PRODUCT_LABEL: Record<string, string> = {
 
 export default async function BacktestPage() {
   const db = createDb();
-  const [{ aggregates, perKg }, activeStrategyRows] = await Promise.all([
+  const [
+    { aggregates, perKg },
+    activeStrategyRows,
+    pendingStrategyRows,
+    isAdmin,
+  ] = await Promise.all([
     getBacktestResults(),
     getActiveStrategyParams(db),
+    getPendingStrategyParams(db),
+    getIsAdmin(),
   ]);
 
   // Sort aggregates: SV first then NP
@@ -53,6 +65,8 @@ export default async function BacktestPage() {
       </header>
 
       <div className="space-y-6 px-8 py-6">
+        {/* Pending strategy params — alert above active card when present */}
+        <PendingStrategyCard rows={pendingStrategyRows} isAdmin={isAdmin} />
         {/* Currently active strategy params (from DB) */}
         <ActiveStrategyCard rows={activeStrategyRows} />
         {/* Tuning results — appears on top after running tune */}
