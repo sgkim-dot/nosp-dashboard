@@ -391,6 +391,12 @@ HOST_TO_BRAND: dict[str, str] = {
     "주식회사 이브이씨코리아": "이브이씨코리아",
     "__unverified__::굿앤굿 어린이종합보험Q": "현대해상",
     "__unverified__::현대해상 굿앤굿어린이종합보험Q": "현대해상",
+    # ─── User-mapped 2026-06-25 batch #2 (cycle 3 신규 + crtekshop) ──
+    "smartstore.naver.com/crtekshop": "로지텍",
+    "m.gamtanstore.com": "감탄",
+    "__unverified__::Mobi Fold 출시": "로지텍",
+    "__unverified__::4.7만 리뷰 진센큐": "바른뉴트리",
+    "__unverified__::인견쿨 스트랩 큰컵브라": "감탄",
     # ─── User-mapped 2026-06-25 batch (긴급정정 xlsx) ─────────────
     "__unverified__::넾다세일 X 락티브": "락티브",
     "__unverified__::마이사이즈체어": "클라우드백",
