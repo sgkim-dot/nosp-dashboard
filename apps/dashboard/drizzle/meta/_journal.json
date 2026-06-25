@@ -15,6 +15,13 @@
       "when": 1779195581362,
       "tag": "0001_categories_nulls_not_distinct",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782387845516,
+      "tag": "0002_equal_thing",
+      "breakpoints": true
     }
   ]
 }

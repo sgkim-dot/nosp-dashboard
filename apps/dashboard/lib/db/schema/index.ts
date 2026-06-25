@@ -8,3 +8,4 @@ export * from "./brands";
 export * from "./round_brands";
 export * from "./clients";
 export * from "./ingest_runs";
+export * from "./strategy_params";
