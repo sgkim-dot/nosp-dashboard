@@ -41,6 +41,8 @@ echo --- Reconcile cycle 1 ---
 uv run python scripts/reconcile_brands.py --apply
 echo --- Cleanup __unverified__ brands (cycle 1) ---
 uv run python scripts/cleanup_unverified_brands.py --apply
+echo --- Cool-down 5 minutes before cycle 2 (Naver burst-throttle reset) ---
+timeout /t 300 /nobreak >nul
 
 set RETRY=0
 :cycle2
@@ -59,6 +61,8 @@ echo --- Reconcile cycle 2 ---
 uv run python scripts/reconcile_brands.py --apply
 echo --- Cleanup __unverified__ brands (cycle 2) ---
 uv run python scripts/cleanup_unverified_brands.py --apply
+echo --- Cool-down 5 minutes before cycle 3 (Naver burst-throttle reset) ---
+timeout /t 300 /nobreak >nul
 
 set RETRY=0
 :cycle3

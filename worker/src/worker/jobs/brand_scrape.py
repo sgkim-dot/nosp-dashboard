@@ -499,6 +499,24 @@ def scrape_brands_for_active_rounds(
     )
     log.info("active keyword groups", count=len(rows))
 
+    # Cycle-start burst-throttle warm-up. Cycle 2/3 of the 3-cycle BAT
+    # start immediately after the previous cycle ends, meaning Naver sees
+    # an unbroken hours-long scrape session from a single IP. The first
+    # ~30-45 minutes of a new cycle reliably produce false-negative 0건
+    # results across hundreds of high-bid KGs because Naver returns blank
+    # ad carousels until the burst window times out.
+    #
+    # Verified 2026-06-25: cycle 3 started 07:39, hit 217 high-bid KGs
+    # with 0건 between 07:39-08:24, all confirmed false negatives on
+    # manual rescrape later the same day.
+    #
+    # Sleeping at cycle start (when no scrape has started yet) lets the
+    # burst window drain. Skip this when targeting specific rkg_ids
+    # (force-rescrape) — those are interactive and don't need the wait.
+    if rkg_ids is None and rows:
+        log.info("cycle-start warm-up: 90s idle to drain burst-throttle window")
+        time.sleep(90)
+
     # Use a fresh connection for the ingest_run lifecycle so the INSERT
     # actually commits (the long-lived `conn` runs without autocommit and
     # we never commit it explicitly, so previously start rows were lost).
