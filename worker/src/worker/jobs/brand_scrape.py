@@ -35,6 +35,14 @@ _USER_AGENT = (
 _DELAY_SECONDS = 0.8
 _DELAY_JITTER = 0.7
 
+# High-bid 0-result retry. A 0건 result on a low-bid KG is usually
+# legitimate (no ad running), but a 0건 result on a big KG is almost
+# always a Naver hydration miss — burst-throttled, mid-load, or anti-bot.
+# Threshold chosen so that NP "자동차보험" (6,188만) and similar majors
+# always retry, but low-traffic small-business KGs don't pay the 30s tax.
+_HIGH_BID_RETRY_THRESHOLD = 1_000_000  # 100만원 이상이면 0건 시 retry
+_HIGH_BID_RETRY_PAUSE = 25.0  # outlast Naver's burst window
+
 # Watchdog: if no KG completes for this long, the process is presumed hung
 # (Playwright deadlock, Chromium spawn freeze, etc.) and we force-exit so
 # the BAT wrapper's retry loop can spawn a fresh Python process.
@@ -304,10 +312,11 @@ def _process_one_kg(
     Returns 0 on scrape exception, 0 on no-slots, or len(slots) on success.
     Sleeps `delay_seconds + jitter` at the end either way.
 
-    `winning_bid` is currently unused — bid-aware retry inside the main
-    loop was disabled in favor of the 3-cycle BAT strategy (cycle 2/3
-    re-scrape every active KG with --full, which is a cleaner way to
-    catch the same misses without bloating cycle 1 wall-clock).
+    High-bid retry: when winning_bid is large (>= _HIGH_BID_RETRY_THRESHOLD),
+    a 0-result scrape is almost certainly a false negative — Naver's SERP
+    didn't hydrate the ad carousel in time. We pause and retry once. Without
+    this, KGs like NP 자동차보험 (bid 6,000만+) silently stay empty for the
+    entire round just because the first morning fetch caught Naver mid-load.
     """
 
     global _consecutive_scrape_failures
@@ -315,6 +324,35 @@ def _process_one_kg(
         slots, detected_slot_count = scrape_brands_with_detected_count(
             kw, product_code
         )
+        # High-bid 0-result retry. Reasoning: a 0건 scrape on a low-bid KG
+        # is almost always "no ad running" and not worth a 30s pause. A 0건
+        # scrape on a bid=1,000,000+ KG is overwhelmingly a Naver hydration
+        # miss (verified 2026-06-25: NP 자동차보험 bid=6,188만 returned 0
+        # at 07:40 then 2 ads at 18:26 same day).
+        if (
+            product_code == "NEW_PRODUCT"
+            and not slots
+            and winning_bid >= _HIGH_BID_RETRY_THRESHOLD
+        ):
+            time.sleep(_HIGH_BID_RETRY_PAUSE + random.uniform(0, 5))
+            log.info(
+                "high-bid 0-result retry",
+                keyword=kw, winning_bid=winning_bid,
+            )
+            try:
+                retry_slots, retry_det = scrape_brands_with_detected_count(
+                    kw, product_code
+                )
+                if retry_slots:
+                    slots = retry_slots
+                    detected_slot_count = retry_det
+                    log.info(
+                        "high-bid retry success",
+                        keyword=kw, slots=len(slots), detected=retry_det,
+                    )
+            except Exception:
+                # Retry failure is non-fatal; fall through with original 0.
+                log.warning("high-bid retry raised", keyword=kw)
         _consecutive_scrape_failures = 0
     except Exception:
         _consecutive_scrape_failures += 1
