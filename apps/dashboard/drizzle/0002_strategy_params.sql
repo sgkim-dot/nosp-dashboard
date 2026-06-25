@@ -20,11 +20,11 @@ CREATE TABLE "strategy_params" (
 	"activated_by" varchar(128)
 );
 --> statement-breakpoint
-ALTER TABLE "keyword_groups" ADD COLUMN "search_keyword" varchar(128);--> statement-breakpoint
-ALTER TABLE "round_keyword_groups" ADD COLUMN "total_slots" smallint;--> statement-breakpoint
-ALTER TABLE "round_keyword_groups" ADD COLUMN "brands_scraped_at" timestamp with time zone;--> statement-breakpoint
-ALTER TABLE "round_keyword_groups" ADD COLUMN "detected_slot_count" smallint;--> statement-breakpoint
-ALTER TABLE "round_brands" ADD COLUMN "display_name" varchar(200);--> statement-breakpoint
-ALTER TABLE "round_brands" ADD COLUMN "sub_title" text;--> statement-breakpoint
-ALTER TABLE "round_brands" ADD COLUMN "description" text;--> statement-breakpoint
+ALTER TABLE "keyword_groups" ADD COLUMN IF NOT EXISTS "search_keyword" varchar(128);--> statement-breakpoint
+ALTER TABLE "round_keyword_groups" ADD COLUMN IF NOT EXISTS "total_slots" smallint;--> statement-breakpoint
+ALTER TABLE "round_keyword_groups" ADD COLUMN IF NOT EXISTS "brands_scraped_at" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "round_keyword_groups" ADD COLUMN IF NOT EXISTS "detected_slot_count" smallint;--> statement-breakpoint
+ALTER TABLE "round_brands" ADD COLUMN IF NOT EXISTS "display_name" varchar(200);--> statement-breakpoint
+ALTER TABLE "round_brands" ADD COLUMN IF NOT EXISTS "sub_title" text;--> statement-breakpoint
+ALTER TABLE "round_brands" ADD COLUMN IF NOT EXISTS "description" text;--> statement-breakpoint
 CREATE UNIQUE INDEX "strategy_params_active_unique" ON "strategy_params" USING btree ("product_code") WHERE status = 'active';

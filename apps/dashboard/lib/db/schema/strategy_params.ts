@@ -27,7 +27,9 @@ export const strategyParams = pgTable(
     expectedCostPercentileBps: integer("expected_cost_percentile_bps"),
     backtestScoreBps: integer("backtest_score_bps"),
     sampleSize: integer("sample_size"),
+    // KRW
     avgOverpay: integer("avg_overpay"),
+    // KRW
     avgUnderbid: integer("avg_underbid"),
     // 직전 active 대비 최대 변동폭 (bps). pending 결정 근거
     deltaMaxBps: integer("delta_max_bps"),
