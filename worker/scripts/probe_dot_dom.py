@@ -16,11 +16,14 @@ PROBE_JS = r"""
   // For comparison — total in document
   const dotsAllDoc = document.querySelectorAll('.sds-comps-dot-pagination-bullet');
 
-  // Unique ad_id count from extracted ader links
+  // Unique ad_id count from extracted ader links.
+  // Naver rotated placement-id format in mid-2026 from `i=SC1234567` to
+  // `i=nad-a001-04-…`. Match BOTH so the probe stays accurate.
   const placements = new Map();
   wrap.querySelectorAll('a[href*="ader.naver.com"]').forEach(a => {
     const onclick = a.getAttribute('onclick') || '';
-    const m = onclick.match(/i=(SC\d+)/);
+    let m = onclick.match(/[?&]i=(nad-[A-Za-z0-9_-]+)/);
+    if (!m) m = onclick.match(/[?&]i=(SC\d+)/);
     const adId = m ? m[1] : null;
     if (adId) placements.set(adId, true);
   });

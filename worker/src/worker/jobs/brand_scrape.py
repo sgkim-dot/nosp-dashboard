@@ -17,6 +17,7 @@ from worker.db import connect
 from worker.lib.brand_match import upsert_brand
 from worker.lib.canonical_brand import (
     GENERIC_REDIRECT_HOSTS,
+    canonical_brand_name,
     normalize_host,
     platform_business_name,
 )
@@ -377,17 +378,35 @@ def _process_one_kg(
         if s.destination_url and s.destination_url not in business_names:
             business_names[s.destination_url] = fetch_business_name(s.destination_url)
 
-    # Dedupe by host: Naver assigns different ad_ids to the same advertiser
-    # across fetches (rotation), so a single 1-slot brand can appear with N
-    # different ad_ids. Treat one host = one slot.
-    seen_hosts: set[str] = set()
+    # Dedupe by canonical brand: Naver runs same-advertiser ad rotations with
+    # different placement ids (e.g. 4 different `i=nad-…` creatives for 락티브
+    # in a single carousel), so a 1-slot brand can appear with N different
+    # ad_ids across fetches. Resolve each slot to its canonical brand first,
+    # then keep only the first slot per brand.
+    #
+    # Three-layer dedup, in priority order:
+    #   1) canonical brand from (host, display_name) — strongest signal,
+    #      catches rotation variants even when only one of N landings resolved.
+    #   2) host alone — backstop when canonical lookup yields "(미확인 브랜드)".
+    #   3) destination_url — last-resort when both host resolution AND
+    #      canonical lookup fail for a slot.
+    # Previously this used host alone, which let same-brand rotation variants
+    # through whenever fetch_business_name rate-limited (Naver 429), producing
+    # the "lactiv occupies slot 1 AND slot 2" symptom.
+    seen_keys: set[str] = set()
     unique_slots = []
     for s in slots:
         host = business_names.get(s.destination_url)
-        key = host or f"_url::{s.destination_url}"
-        if key in seen_hosts:
+        canon = canonical_brand_name(host, s.display_name)
+        if canon and canon != "(미확인 브랜드)":
+            key = f"brand::{canon}"
+        elif host:
+            key = f"host::{host}"
+        else:
+            key = f"url::{s.destination_url}"
+        if key in seen_keys:
             continue
-        seen_hosts.add(key)
+        seen_keys.add(key)
         unique_slots.append(s)
     # The dot indicator on the ad carousel reports how many slots Naver is
     # actually rotating for this keyword. detected_slot_count IS that dot

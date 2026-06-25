@@ -33,46 +33,162 @@ _MOBILE_UA = (
 )
 
 # JS extracted in the rendered page. Returns deduplicated ad placements.
+#
+# Two paths, run in this order so a card-scoped extraction wins over the
+# generic link scan when both apply:
+#
+#   1) NP card path — iterate `.new_product_wrap > .flick_item` (one card =
+#      one ad placement) and pull display_name, sub_title, description and
+#      the canonical destination link out of that single card's `.info_area`.
+#      This is the ONLY path that produces correct results for NP, because
+#      a single NP ad renders FOUR ader.naver.com links (thumbnail / info /
+#      "상세보기" / brand-specific action button) all with different opaque
+#      query tokens but the SAME `i=...` placement id, plus the carousel
+#      renders each card twice for infinite scrolling. Scanning by link and
+#      deduping by href fingerprint produces up to 8 spurious "slots" per
+#      single real ad.
+#
+#   2) SV / fallback link path — for SV (PC, no `.new_product_wrap`) and any
+#      stray NP link that wasn't captured by the card path, fall back to
+#      per-link extraction with a per-card walk-up (smallest ancestor with
+#      exactly one `strong.tit`) so we never reach into a sibling card.
+#
+# Placement identity: prefer Naver's `i=...` parameter inside the onclick
+# handler. Naver rotated the format in mid-2026 from `i=SC1234567` (legacy
+# Searching View) to `i=nad-a001-04-…` (current NP & SV). Match BOTH; if
+# neither matches, fall back to a card fingerprint (sub_tit + tit) — the
+# href itself is NOT safe to use as the dedup key because every ader.naver
+# redirect token is unique per link even within the same ad.
 _EXTRACT_JS = r"""
 () => {
-  const placements = new Map();  // ad_id -> placement object
+  const placements = new Map();  // dedup key -> placement object
+  const consumedLinks = new WeakSet();  // ader links captured by card path
 
+  const productFromHref = (href) => {
+    const m = (href || '').match(/[?&]c=([^&]+)/);
+    if (!m) return null;
+    const c = decodeURIComponent(m[1]);
+    if (c === 'naver.search.pc.sv' || c === 'mnaver.search.sv') return 'SEARCHING_VIEW';
+    if (c === 'mnaver.search.newproduct') return 'NEW_PRODUCT';
+    return null;
+  };
+
+  const extractAdId = (a) => {
+    const onclick = a.getAttribute('onclick') || '';
+    // Current format: i=nad-a001-04-000000537550529
+    let m = onclick.match(/[?&]i=(nad-[A-Za-z0-9_-]+)/);
+    if (m) return m[1];
+    // Legacy format: i=SC1234567
+    m = onclick.match(/[?&]i=(SC\d+)/);
+    if (m) return m[1];
+    return null;
+  };
+
+  const truncate = (s, n) => (s && s.length > n) ? s.slice(0, n) : s;
+
+  // === 1) NP card path ===========================================
+  const npWraps = document.querySelectorAll('.new_product_wrap');
+  for (const wrap of npWraps) {
+    // Mobile NP renders as .new_product_wrap > .flick_container > .flick_item.
+    // Each .flick_item is one ad card. The carousel duplicates each card for
+    // infinite scrolling — duplicates share the same ad_id so the dedup map
+    // collapses them naturally.
+    const cards = wrap.querySelectorAll('.flick_item');
+    for (const card of cards) {
+      const infoArea = card.querySelector('.info_area');
+      if (!infoArea) continue;
+
+      // The primary ader link is the anchor wrapping `.info_area`. It carries
+      // the canonical destination URL we follow to resolve the advertiser
+      // host. Fall back to any ader link inside the card if needed.
+      const infoLink = infoArea.querySelector('a[href*="ader.naver.com"]')
+        || infoArea.closest('a[href*="ader.naver.com"]');
+      const cardLinks = card.querySelectorAll('a[href*="ader.naver.com"]');
+      const primaryLink = infoLink || cardLinks[0] || null;
+      if (!primaryLink) continue;
+
+      const product = productFromHref(primaryLink.href);
+      if (product !== 'NEW_PRODUCT') continue;
+
+      // Mark ALL ader links inside this card as consumed so the link-scan
+      // path below doesn't double-count thumbnail / "상세보기" / action button.
+      for (const l of cardLinks) consumedLinks.add(l);
+
+      // display_name: brand headline from `.info_area strong.tit`. We scope
+      // to `.info_area` deliberately — the `.direct_link_area` of every NP
+      // card has its own `strong.tit` containing the label "신제품소개"
+      // which must NOT be used as the ad's display name.
+      const titEl = infoArea.querySelector('strong.tit')
+        || infoArea.querySelector('.tit');
+      let displayName = titEl ? (titEl.textContent || '').trim() : '';
+      if (!displayName || displayName === '신제품소개') {
+        // Defensive — if for some reason we picked up the label or empty,
+        // skip this card so we never emit a placement with a junk title.
+        continue;
+      }
+      displayName = truncate(displayName, 100);
+
+      const subEl = infoArea.querySelector('.sub_tit, em.sub_tit');
+      let subTitle = subEl ? (subEl.textContent || '').trim() : null;
+      if (!subTitle) subTitle = null; else subTitle = truncate(subTitle, 200);
+
+      const descEls = infoArea.querySelectorAll('.desc');
+      let description = null;
+      if (descEls.length) {
+        description = Array.from(descEls)
+          .map(e => (e.textContent || '').trim())
+          .filter(s => s)
+          .join(' ');
+        description = description ? truncate(description, 400) : null;
+      }
+
+      const adId = extractAdId(primaryLink);
+      // Card-level dedup key: real ad_id if available, otherwise fingerprint
+      // by visible content (subtitle + brand title). The fingerprint collapses
+      // carousel duplicates even when Naver removes the placement id entirely.
+      const key = adId
+        ? ('NP::' + adId)
+        : ('NP-fp::' + (subTitle || '') + '::' + displayName);
+
+      if (!placements.has(key)) {
+        placements.set(key, {
+          product: 'NEW_PRODUCT',
+          ad_id: adId || ('fp-' + key.slice(0, 40)),
+          display_name: displayName,
+          sub_title: subTitle,
+          description: description,
+          destination_url: primaryLink.href,
+        });
+      }
+    }
+  }
+
+  // === 2) SV + fallback link path ================================
   const aders = document.querySelectorAll('a[href*="ader.naver.com"]');
   for (const a of aders) {
-    const href = a.href || '';
-    let cParam = null;
-    const m = href.match(/[?&]c=([^&]+)/);
-    if (m) cParam = decodeURIComponent(m[1]);
+    if (consumedLinks.has(a)) continue;  // already captured by card path
 
-    let product = null;
-    if (cParam === 'naver.search.pc.sv' || cParam === 'mnaver.search.sv') {
-      product = 'SEARCHING_VIEW';
-    } else if (cParam === 'mnaver.search.newproduct') {
-      product = 'NEW_PRODUCT';
-    } else {
-      continue;  // content widget, unrelated ad
-    }
+    const product = productFromHref(a.href);
+    if (product !== 'SEARCHING_VIEW' && product !== 'NEW_PRODUCT') continue;
 
-    // NP labeled links must live inside .new_product_wrap. Mobile search
-    // results occasionally render an NP-style ad outside the wrap (related
-    // brand widgets reuse the same c-param), which would otherwise inflate
-    // detected_slot_count and trigger noise sweep alerts.
-    if (product === 'NEW_PRODUCT' && !a.closest('.new_product_wrap')) {
-      continue;
-    }
+    // Defense: a stray NP-tagged link OUTSIDE .new_product_wrap is usually
+    // a "related brand" widget reusing the c-param. We never count those.
+    if (product === 'NEW_PRODUCT' && !a.closest('.new_product_wrap')) continue;
 
-    // Ad placement id from onclick handler ("i=SC1234567")
-    const onclick = a.getAttribute('onclick') || '';
-    const im = onclick.match(/i=(SC\d+)/);
-    const adId = im ? im[1] : ('hash-' + href.slice(0, 60));
+    const adId = extractAdId(a);
 
-    // Headline element: prefer <strong class="tit"> in the nearest container.
-    let parent = a;
+    // Per-card scoped title: walk up until the smallest ancestor with
+    // exactly one matching tit element. Returning the first match in a
+    // multi-tit ancestor (the old behaviour) was the original source of
+    // wrong-brand assignments — refuse rather than pick.
+    let card = a;
     let titEl = null;
-    for (let i = 0; i < 8 && parent; i++) {
-      titEl = parent.querySelector('strong.tit, .info_area strong, .info_area .tit, a.sub_title');
-      if (titEl) break;
-      parent = parent.parentElement;
+    const titSelector = 'strong.tit, .info_area strong, .info_area .tit, a.sub_title';
+    for (let i = 0; i < 10 && card; i++) {
+      const matches = card.querySelectorAll(titSelector);
+      if (matches.length === 1) { titEl = matches[0]; break; }
+      if (matches.length > 1) { card = null; break; }
+      card = card.parentElement;
     }
     let displayName = titEl ? (titEl.textContent || '').trim() : '';
 
@@ -83,57 +199,25 @@ _EXTRACT_JS = r"""
       }
     }
     if (!displayName) continue;
-    if (displayName.length > 100) displayName = displayName.slice(0, 100);
+    displayName = truncate(displayName, 100);
 
-    // For NP ads: extract sub-title (above main title) and description
-    // (below main title). The OUTER .new_product_wrap contains MULTIPLE ad
-    // cards (and sometimes duplicates from a carousel), so we must NOT
-    // query .sub_tit / .desc against the wrap — that mixes data across ads.
-    //
-    // Instead, walk UP from the ad link until we find the smallest ancestor
-    // that contains exactly ONE .sub_tit element. That ancestor is the
-    // per-ad card. Then read .sub_tit and .desc relative to that card only.
-    let subTitle = null;
-    let description = null;
-    if (product === 'NEW_PRODUCT') {
-      let card = a;
-      for (let i = 0; i < 12 && card; i++) {
-        const sCount = card.querySelectorAll('.sub_tit').length;
-        if (sCount === 1) break;  // perfect: exactly one sub_tit → this ad's card
-        if (sCount > 1) {
-          // We went one level too high — back down isn't possible, but at
-          // this point the previous (smaller) ancestor had 0 sub_tit (the
-          // card wasn't on this branch). Fall back to null rather than mix.
-          card = null;
-          break;
-        }
-        card = card.parentElement;
-      }
-      if (card) {
-        const subEl = card.querySelector('.sub_tit');
-        if (subEl) subTitle = (subEl.textContent || '').trim().slice(0, 200) || null;
-        const descEls = card.querySelectorAll('.desc');
-        if (descEls.length) {
-          description = Array.from(descEls)
-            .map(e => (e.textContent || '').trim())
-            .filter(s => s)
-            .join(' ')
-            .slice(0, 400) || null;
-        }
-      }
-    }
+    // SV does NOT have NP-style sub_tit / desc; leave them null.
+    const key = adId
+      ? (product + '::' + adId)
+      : (product + '-href::' + a.href.slice(0, 80));
 
-    if (!placements.has(adId)) {
-      placements.set(adId, {
+    if (!placements.has(key)) {
+      placements.set(key, {
         product,
-        ad_id: adId,
+        ad_id: adId || ('href-' + key.slice(0, 40)),
         display_name: displayName,
-        sub_title: subTitle,
-        description: description,
-        destination_url: href,
+        sub_title: null,
+        description: null,
+        destination_url: a.href,
       });
     }
   }
+
   return Array.from(placements.values());
 };
 """
