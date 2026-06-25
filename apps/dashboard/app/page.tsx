@@ -68,6 +68,7 @@ export default async function HomePage({
                 <InsightsCard insights={computeInsights(summary)} />
                 <RoundsWithDetail
                   rounds={summary.rounds}
+                  keywordGroupName={summary.keywordGroupName}
                   defaultSelectedId={(() => {
                     const today = new Date().toISOString().slice(0, 10);
                     const active = summary.rounds.find(

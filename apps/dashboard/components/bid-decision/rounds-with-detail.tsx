@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 import type { RoundRow } from "@/types/bid-decision";
 import { RoundTable } from "./round-table";
 import { RoundDetailPanel } from "./round-detail-panel";
+import { RoundDownloadButton } from "./round-download-button";
 
 export function RoundsWithDetail({
   rounds,
+  keywordGroupName,
   defaultSelectedId: _defaultSelectedId,
 }: {
   rounds: RoundRow[];
+  keywordGroupName: string;
   // kept for API stability — the floating modal opens on demand, not by default
   defaultSelectedId: number | null;
 }) {
@@ -34,6 +37,12 @@ export function RoundsWithDetail({
 
   return (
     <>
+      <div className="mb-2 flex justify-end">
+        <RoundDownloadButton
+          rounds={rounds}
+          keywordGroupName={keywordGroupName}
+        />
+      </div>
       <RoundTable
         rounds={rounds}
         selectedRoundId={selectedId}
