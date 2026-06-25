@@ -6,6 +6,9 @@ import {
   TuneTrigger,
   TuneResults,
 } from "@/components/backtest/tune-button";
+import { ActiveStrategyCard } from "@/components/backtest/active-strategy-card";
+import { getActiveStrategyParams } from "@/lib/db/strategy-params";
+import { createDb } from "@/lib/db/client";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +19,11 @@ const PRODUCT_LABEL: Record<string, string> = {
 };
 
 export default async function BacktestPage() {
-  const { aggregates, perKg } = await getBacktestResults();
+  const db = createDb();
+  const [{ aggregates, perKg }, activeStrategyRows] = await Promise.all([
+    getBacktestResults(),
+    getActiveStrategyParams(db),
+  ]);
 
   // Sort aggregates: SV first then NP
   aggregates.sort((a, b) => (a.product === "SEARCHING_VIEW" ? -1 : 1));
@@ -46,6 +53,8 @@ export default async function BacktestPage() {
       </header>
 
       <div className="space-y-6 px-8 py-6">
+        {/* Currently active strategy params (from DB) */}
+        <ActiveStrategyCard rows={activeStrategyRows} />
         {/* Tuning results — appears on top after running tune */}
         <TuneResults />
         {/* Per-product aggregates */}
