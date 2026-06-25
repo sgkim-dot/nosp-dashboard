@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { Gauge, Building2, Tag } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs/server";
+import { getIsAdmin } from "@/lib/admin";
 import { MaintenanceMenu } from "./maintenance-menu";
-
-// Maintenance tools are admin-only. Add admin emails here when ops scope grows.
-const ADMIN_EMAILS = new Set(["sgkim@madup.com"]);
 
 const NAV = [
   { href: "/", label: "입낙찰 히스토리", icon: Gauge },
@@ -14,9 +11,7 @@ const NAV = [
 ];
 
 export async function Sidebar() {
-  const user = await currentUser();
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null;
-  const isAdmin = email !== null && ADMIN_EMAILS.has(email);
+  const isAdmin = await getIsAdmin();
 
   return (
     <aside className="w-72 shrink-0 bg-sidebar text-sidebar-foreground flex flex-col">

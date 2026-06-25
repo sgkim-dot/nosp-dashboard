@@ -10,6 +10,7 @@ import {
   Activity,
   AlertTriangle,
   AlertOctagon,
+  Users,
 } from "lucide-react";
 
 const MAINTENANCE_ITEMS = [
@@ -17,6 +18,7 @@ const MAINTENANCE_ITEMS = [
   { href: "/crawl", label: "크롤링 진행률", icon: Activity },
   { href: "/brand-cleanup", label: "브랜드 정리 필요", icon: AlertTriangle },
   { href: "/scrape-misses", label: "광고 누락 의심", icon: AlertOctagon },
+  { href: "/users", label: "사용자 관리", icon: Users },
 ];
 
 export function MaintenanceMenu() {
