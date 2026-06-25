@@ -50,11 +50,15 @@ _MAX_CONSECUTIVE_FAILURES = 10
 
 # Process-wide cache for fetch_business_name. ader.naver.com redirect URLs
 # are unique per (KG × ad placement) but the resolved smartstore product
-# pages repeat across KGs. Caching avoids re-fetching the same URL — and
-# importantly, caching FAILURES avoids burning another 5s timeout on URLs
-# that just timed out moments ago.
+# pages repeat across KGs. Caching avoids re-fetching the same URL within
+# the same BAT cycle.
+#
+# NOTE: we ONLY cache successes. Caching failures used to compound a single
+# transient timeout into 3 cycles worth of `__unverified__::` brand rows —
+# once a URL was poisoned in cycle 1, it stayed poisoned through cycle 2/3.
+# Letting failures re-try costs at most one extra fetch per cycle per URL.
 _CACHE_MISS = object()
-_BUSINESS_NAME_CACHE: dict[str, str | None] = {}
+_BUSINESS_NAME_CACHE: dict[str, str] = {}
 
 
 def _watchdog_thread() -> None:
@@ -93,18 +97,18 @@ def fetch_business_name(url: str) -> str | None:
     """
     # Process-wide cache: same ader.naver.com redirect URL often appears
     # across multiple KGs in one BAT run (same ad seen in multiple keyword
-    # groups). One resolve per URL is enough.
+    # groups). Successes only — see _BUSINESS_NAME_CACHE comment above.
     cached = _BUSINESS_NAME_CACHE.get(url)
-    if cached is not _CACHE_MISS:
+    if cached is not None:
         return cached
 
     try:
         with httpx.Client(
-            # Naver smartstore aggressively rate-limits the bulk redirect
-            # follows; 15s timeout meant every failure cost 15s. 5s is enough
-            # to distinguish 'server reachable' from 'rate-limited' and keeps
-            # the BAT pace healthy even when a chunk of URLs are 429-blocked.
-            headers={"User-Agent": _USER_AGENT}, timeout=5.0, follow_redirects=True
+            # Naver smartstore rate-limits aggressively but a healthy response
+            # typically arrives in 2-4s. 5s was too tight — normal landings
+            # timed out and poisoned the cache. 8s gives them room while still
+            # capping a 429-storm at a manageable cost per URL.
+            headers={"User-Agent": _USER_AGENT}, timeout=8.0, follow_redirects=True
         ) as client:
             resp = client.get(url)
             host = resp.url.host or None
@@ -116,7 +120,6 @@ def fetch_business_name(url: str) -> str | None:
             else:
                 query = raw_q or ""
             if not host:
-                _BUSINESS_NAME_CACHE[url] = None
                 return None
             # Priority 1: platform path-based identifier (brand.naver.com/X,
             # smartstore.naver.com/X, blog.naver.com/{blogId}).
@@ -131,17 +134,18 @@ def fetch_business_name(url: str) -> str | None:
             # tiktok.com, …) are never an advertiser identity. Return None
             # so upsert_brand falls back to display-side matching.
             if norm and norm in GENERIC_REDIRECT_HOSTS:
-                _BUSINESS_NAME_CACHE[url] = None
                 return None
-            _BUSINESS_NAME_CACHE[url] = norm
+            if norm:
+                _BUSINESS_NAME_CACHE[url] = norm
             return norm
     except Exception as e:
         # Don't dump full traceback for routine timeouts/429 — those are
         # expected when Naver rate-limits us. Log a short line instead.
+        # NOTE: we deliberately do NOT cache the failure. A retry on the next
+        # KG (or next cycle of the BAT) is cheaper than letting one transient
+        # 429 spawn dozens of __unverified__:: brand rows that we'd have to
+        # clean up later.
         log.warning("landing fetch failed", url=url[:120], err=type(e).__name__)
-        # Cache the failure too — same URL is unlikely to succeed within this
-        # BAT run, so don't waste another 5s timeout on it.
-        _BUSINESS_NAME_CACHE[url] = None
         return None
 
 
@@ -347,7 +351,17 @@ def _process_one_kg(
             continue
         seen_hosts.add(key)
         unique_slots.append(s)
-    slots = unique_slots[:max_brands]
+    # The dot indicator on the ad carousel reports how many slots Naver is
+    # actually rotating for this keyword. detected_slot_count IS that dot
+    # count. If it's lower than max_brands_per_group, trust it — NOSP's
+    # total_slots is the bid capacity, NOT the running advertiser count.
+    # Without this cap a 1-slot KG that briefly rotated 2 different ad_ids
+    # for the same advertiser ends up with two slot rows for the same brand.
+    if detected_slot_count and detected_slot_count > 0:
+        cap = min(max_brands, detected_slot_count)
+    else:
+        cap = max_brands
+    slots = unique_slots[:cap]
 
     # Reassign slot_no to 1-based sequential after dedup
     slots = [s.model_copy(update={"slot_no": i + 1}) for i, s in enumerate(slots)]

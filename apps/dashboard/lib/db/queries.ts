@@ -842,12 +842,19 @@ export async function getSuspectBrands(): Promise<SuspectBrand[]> {
     const copies = (r.ad_copies ?? []).filter(Boolean);
     const subs = (r.sub_titles ?? []).filter(Boolean);
 
-    // Reason 1: host is broken
-    if (_isHostBroken(host)) {
+    // Reason 1: host is broken. A junk-looking host (sentinel, parens,
+    // Korean text, …) is normally a red flag, but once the operator has
+    // explicitly registered it in HOST_TO_BRAND (so it shows up in
+    // CANONICAL_HOSTS) the brand is correctly identified — the sentinel is
+    // just a permanent placeholder for an advertiser whose landing page
+    // we can't fetch. Don't relitigate that decision.
+    if (_isHostBroken(host) && !CANONICAL_HOSTS.has(host)) {
       reasons.push("호스트 깨짐");
     }
-    // Reason 2: display_name == "(미확인 브랜드)"
-    if (display === "(미확인 브랜드)") {
+    // Reason 2: display_name == "(미확인 브랜드)". Same exception — once
+    // the host is explicitly mapped, the placeholder display will be
+    // refreshed on the next reconcile pass; don't flag it here.
+    if (display === "(미확인 브랜드)" && !CANONICAL_HOSTS.has(host)) {
       reasons.push("미확인 브랜드");
     }
     // Reason 3: first-word heuristic — only meaningful for brands whose

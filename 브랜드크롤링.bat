@@ -12,7 +12,8 @@ echo   - 3 cycles back-to-back
 echo   - Cycle 1: --resume (incremental, 24h skip)
 echo   - Cycle 2: --full   (re-scrape all active to cover misses)
 echo   - Cycle 3: --full   (final convergence pass)
-echo   - Reconcile after each cycle
+echo   - Between cycles: reconcile + cleanup __unverified__::
+echo     (host lookup failures cleared so next cycle retries clean)
 echo   - Auto-retry: if Python crashes, BAT waits 10s and resumes
 echo                 (max 5 attempts per cycle, then moves on)
 echo.
@@ -38,6 +39,8 @@ if errorlevel 1 (
 )
 echo --- Reconcile cycle 1 ---
 uv run python scripts/reconcile_brands.py --apply
+echo --- Cleanup __unverified__ brands (cycle 1) ---
+uv run python scripts/cleanup_unverified_brands.py --apply
 
 set RETRY=0
 :cycle2
@@ -54,6 +57,8 @@ if errorlevel 1 (
 )
 echo --- Reconcile cycle 2 ---
 uv run python scripts/reconcile_brands.py --apply
+echo --- Cleanup __unverified__ brands (cycle 2) ---
+uv run python scripts/cleanup_unverified_brands.py --apply
 
 set RETRY=0
 :cycle3
@@ -70,6 +75,8 @@ if errorlevel 1 (
 )
 echo --- Reconcile cycle 3 ---
 uv run python scripts/reconcile_brands.py --apply
+rem cycle 3 후에는 cleanup을 돌리지 않음 — 최종 사이클에 남은 __unverified__는
+rem 실제로 host lookup이 영구 불가한 광고들이므로 운영자가 dashboard에서 확인.
 
 echo.
 echo ============================================================
