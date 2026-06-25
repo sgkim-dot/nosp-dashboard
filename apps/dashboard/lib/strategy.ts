@@ -1,4 +1,6 @@
 import type { ProductCode } from "@/types/bid-decision";
+import type { Db } from "@/lib/db/client";
+import { getActiveStrategyParams } from "@/lib/db/strategy-params";
 
 // Weight applied to the N most-recent rounds. Newest first.
 // Tuned 2026-06-01 via tune_strategy.py: (5,3,2,1) gave the best backtest
@@ -22,7 +24,7 @@ export type StrategyPreset = {
 // Both use the same (lowPct=0.3, highPct=0.8, highPremium=1.2) sweet spot.
 // SV lowPremium=1.0 (neutral floor), NP lowPremium=1.05 (slight aggression
 // for #1 since published winning_bid = #2's bid).
-export const STRATEGY: Record<string, StrategyPreset> = {
+export const DEFAULT_STRATEGY: Record<string, StrategyPreset> = {
   SEARCHING_VIEW: {
     label: "1슬롯 방어 전략",
     hint: "1순위 = 본인 입찰가 그대로 지불. P30~P80 구간 + 20% 안전마진. 백테스트 적중률 99.3%.",
@@ -55,6 +57,68 @@ export const STRATEGY: Record<string, StrategyPreset> = {
     expectedCostPercentile: 0.7,
   },
 };
+
+/**
+ * Backwards-compat alias. Existing callers that read the hardcoded preset
+ * (UI labels, non-server modules) continue to import STRATEGY. New code that
+ * specifically wants the fallback should reach for DEFAULT_STRATEGY.
+ */
+export const STRATEGY = DEFAULT_STRATEGY;
+
+/**
+ * Load the active strategy params from DB for all product codes,
+ * mapped into the same StrategyPreset shape as DEFAULT_STRATEGY.
+ *
+ * On any error or missing rows, returns DEFAULT_STRATEGY as fallback so
+ * callers always get a usable object.
+ */
+export async function fetchActiveStrategy(
+  db: Db,
+): Promise<Record<string, StrategyPreset>> {
+  try {
+    const rows = await getActiveStrategyParams(db);
+    if (rows.length === 0) return DEFAULT_STRATEGY;
+
+    const out: Record<string, StrategyPreset> = { ...DEFAULT_STRATEGY };
+    for (const r of rows) {
+      out[r.productCode] = {
+        label: DEFAULT_STRATEGY[r.productCode]?.label ?? r.productCode,
+        hint: DEFAULT_STRATEGY[r.productCode]?.hint ?? "",
+        lowPercentile: r.lowPercentileBps / 10000,
+        highPercentile: r.highPercentileBps / 10000,
+        lowPremium: r.lowPremiumBps / 10000,
+        highPremium: r.highPremiumBps / 10000,
+        showExpectedCost: r.expectedCostPercentileBps != null,
+        expectedCostPercentile:
+          r.expectedCostPercentileBps != null
+            ? r.expectedCostPercentileBps / 10000
+            : undefined,
+      };
+    }
+    return out;
+  } catch (e) {
+    console.error("[strategy] DB fetch failed, using DEFAULT_STRATEGY", e);
+    return DEFAULT_STRATEGY;
+  }
+}
+
+/**
+ * Load the active weights from DB.
+ * Currently we keep all products on the same weights (SV is the canonical row).
+ * If SV is missing or DB errors, fall back to the hardcoded RECENT_WEIGHTS.
+ */
+export async function fetchActiveWeights(
+  db: Db,
+): Promise<readonly number[]> {
+  try {
+    const rows = await getActiveStrategyParams(db);
+    const sv = rows.find((r) => r.productCode === "SEARCHING_VIEW");
+    if (sv?.weights && sv.weights.length > 0) return sv.weights;
+    return RECENT_WEIGHTS;
+  } catch {
+    return RECENT_WEIGHTS;
+  }
+}
 
 export type WeightedRatio = { ratio: number; weight: number };
 
@@ -113,8 +177,9 @@ export function computeRecommendation(
   latestMin: number | null,
   productCode: ProductCode,
   weights: readonly number[] = RECENT_WEIGHTS,
+  strategies: Record<string, StrategyPreset> = DEFAULT_STRATEGY,
 ): Recommendation {
-  const strategy = STRATEGY[productCode] ?? STRATEGY.SEARCHING_VIEW;
+  const strategy = strategies[productCode] ?? strategies.SEARCHING_VIEW;
   const newestFirst = [...pastRoundsAsc].reverse();
   const weighted = buildWeighted(newestFirst, weights);
 

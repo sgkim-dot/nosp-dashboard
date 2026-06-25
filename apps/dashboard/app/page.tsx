@@ -37,6 +37,7 @@ export default async function HomePage({
   const summary = keywordGroupId
     ? await getKeywordGroupSummary({ keywordGroupId, lastNRounds })
     : null;
+  const insights = summary ? await computeInsights(summary) : null;
 
   return (
     <div>
@@ -56,7 +57,7 @@ export default async function HomePage({
       />
 
       <div className="space-y-4 px-6 py-4">
-        {!summary ? (
+        {!summary || !insights ? (
           <div className="rounded-md border border-dashed bg-muted/30 p-12 text-center text-sm text-muted-foreground">
             좌측 필터에서 키워드그룹을 선택하세요.
           </div>
@@ -65,7 +66,7 @@ export default async function HomePage({
             <SummaryCard summary={summary} />
             <div className="grid gap-4 xl:grid-cols-[max-content_minmax(0,1fr)]">
               <div className="space-y-4 min-w-0">
-                <InsightsCard insights={computeInsights(summary)} />
+                <InsightsCard insights={insights} />
                 <RoundsWithDetail
                   rounds={summary.rounds}
                   keywordGroupName={summary.keywordGroupName}

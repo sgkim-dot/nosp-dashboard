@@ -87,6 +87,24 @@ export async function getKeywordGroups(args: {
   return result.rows;
 }
 
+export async function getAllKeywordGroupsForSearch(productCode: ProductCode) {
+  const result = await db.execute<{
+    id: number;
+    name: string;
+    cat1: string;
+    cat2: string;
+  }>(sql`
+    SELECT kg.id, kg.name, c1.name AS cat1, c2.name AS cat2
+    FROM keyword_groups kg
+    JOIN products p ON p.id = kg.product_id
+    JOIN categories c2 ON c2.id = kg.category_id
+    JOIN categories c1 ON c1.id = c2.parent_id
+    WHERE p.code = ${productCode}
+    ORDER BY kg.name
+  `);
+  return result.rows;
+}
+
 type HeadRow = {
   keyword_group_id: number;
   keyword_group_name: string;
@@ -505,14 +523,18 @@ export async function getBrandHistory(brandId: number): Promise<{
 }
 
 
-import { STRATEGY, computeRecommendation } from "@/lib/strategy";
+import {
+  computeRecommendation,
+  fetchActiveStrategy,
+  fetchActiveWeights,
+} from "@/lib/strategy";
 
 // Brand crawling was only reliable from round 202622 onwards (5월 마지막 주).
 // Earlier rounds didn't have valid brand-scrape data, so we exclude them from
 // the vacancy-rate denominator to avoid noise.
 const VACANCY_RATE_MIN_ROUND = 202622;
 
-export function computeInsights(summary: KeywordGroupSummary): Insights {
+export async function computeInsights(summary: KeywordGroupSummary): Promise<Insights> {
   const monitoredRounds = summary.rounds.filter(
     (r) =>
       r.roundNo >= VACANCY_RATE_MIN_ROUND &&
@@ -524,9 +546,23 @@ export function computeInsights(summary: KeywordGroupSummary): Insights {
   const vacancyRate =
     monitoredRounds.length === 0 ? null : vacancies / monitoredRounds.length;
 
+  // Load active strategy + weights ONCE per request (two DB round-trips,
+  // executed in parallel). Both helpers fall back to the hardcoded defaults
+  // on DB error so the computation never breaks.
+  const [activeStrategy, activeWeights] = await Promise.all([
+    fetchActiveStrategy(db),
+    fetchActiveWeights(db),
+  ]);
+
   const latestMin =
     summary.rounds[summary.rounds.length - 1]?.minBidPrice ?? null;
-  const rec = computeRecommendation(summary.rounds, latestMin, summary.product);
+  const rec = computeRecommendation(
+    summary.rounds,
+    latestMin,
+    summary.product,
+    activeWeights,
+    activeStrategy,
+  );
 
   // Per-KG backtest: how often would `recommendedHigh` have captured the
   // actual winning_bid on past rounds (using only data BEFORE each round).
@@ -541,6 +577,8 @@ export function computeInsights(summary: KeywordGroupSummary): Insights {
       train.map((t) => ({ ratio: t.ratio })),
       test.minBidPrice,
       summary.product,
+      activeWeights,
+      activeStrategy,
     );
     if (r.high == null) continue;
     sims += 1;
@@ -995,6 +1033,14 @@ export async function getBacktestResults(): Promise<BacktestResult> {
     byKg.set(r.kg_id, entry);
   }
 
+  // Load active strategy + weights ONCE before iterating thousands of (KG,
+  // round) simulations. fetch helpers fall back to hardcoded defaults on
+  // DB error.
+  const [activeStrategy, activeWeights] = await Promise.all([
+    fetchActiveStrategy(db),
+    fetchActiveWeights(db),
+  ]);
+
   const rows: BacktestRow[] = [];
   for (const kg of byKg.values()) {
     // Iterate rounds; for each round with a known winning_bid, use only
@@ -1009,6 +1055,8 @@ export async function getBacktestResults(): Promise<BacktestResult> {
         train.map((t) => ({ ratio: t.ratio })),
         test.minBid,
         kg.product,
+        activeWeights,
+        activeStrategy,
       );
       if (rec.high == null) continue;
       const diff = rec.high - test.winning;
