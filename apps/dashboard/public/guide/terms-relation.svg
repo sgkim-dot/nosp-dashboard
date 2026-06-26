@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" font-family="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#475569"/>
+    </marker>
+    <linearGradient id="kgGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#bfdbfe"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .kg-box { fill: url(#kgGrad); stroke: #3b82f6; stroke-width: 2; }
+    .kg-title { fill: #1e3a8a; font-weight: 700; font-size: 18px; }
+    .kg-desc { fill: #1e40af; font-size: 13px; }
+    .round-box { fill: #ffffff; stroke: #6366f1; stroke-width: 2; }
+    .round-title { fill: #312e81; font-weight: 700; font-size: 16px; }
+    .round-sub { fill: #6366f1; font-size: 13px; font-weight: 600; }
+    .slot { stroke-width: 2; }
+    .slot-text { font-size: 13px; font-weight: 600; text-anchor: middle; }
+    .slot-filled { fill: #d1fae5; stroke: #10b981; }
+    .slot-empty { fill: #fef3c7; stroke: #f59e0b; stroke-dasharray: 5 3; }
+    .price-box { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; }
+    .price-label { fill: #64748b; font-size: 12px; }
+    .price-val { fill: #0f172a; font-weight: 700; font-size: 16px; }
+    .arr { stroke: #475569; stroke-width: 1.8; fill: none; }
+    .annot { fill: #64748b; font-size: 13px; }
+    .annot-strong { fill: #0f172a; font-size: 13px; font-weight: 600; }
+  </style>
+
+  <!-- 제목 -->
+  <text x="500" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">
+    회차 한 개의 구조 한눈에 보기
+  </text>
+  <text x="500" y="56" text-anchor="middle" font-size="13" fill="#64748b">
+    KG · 회차 · 슬롯 · 낙찰가 가 어떻게 엮이는지
+  </text>
+
+  <!-- 좌측: 키워드그룹 -->
+  <rect x="40" y="100" width="220" height="180" rx="14" class="kg-box"/>
+  <text x="150" y="135" text-anchor="middle" class="kg-title">키워드그룹 (KG)</text>
+  <text x="150" y="160" text-anchor="middle" class="kg-desc">예: "자동차보험"</text>
+  <text x="60" y="194" class="kg-desc">동일 검색 의도를 가진</text>
+  <text x="60" y="212" class="kg-desc">키워드 묶음</text>
+  <text x="60" y="240" class="kg-desc">입찰은 KG 단위로 진행됨</text>
+  <text x="60" y="258" class="kg-desc">→ 매주 새 회차가 열림</text>
+
+  <!-- 화살표 KG → 회차 -->
+  <line x1="260" y1="190" x2="320" y2="190" class="arr" marker-end="url(#arr2)"/>
+  <text x="290" y="178" text-anchor="middle" class="annot">매주</text>
+
+  <!-- 중앙: 한 회차 -->
+  <rect x="320" y="100" width="370" height="430" rx="14" class="round-box"/>
+  <text x="505" y="130" text-anchor="middle" class="round-title">회차 (예: 202622)</text>
+  <text x="505" y="150" text-anchor="middle" class="round-sub">2026년 22주차 · 5/27 ~ 6/2</text>
+
+  <!-- 슬롯 1 (채워짐) -->
+  <rect x="345" y="180" width="320" height="56" rx="10" class="slot slot-filled"/>
+  <text x="505" y="204" class="slot-text" fill="#064e3b">슬롯 1 — 삼성화재 다이렉트</text>
+  <text x="505" y="222" class="slot-text" fill="#065f46" font-weight="400" font-size="12">광고가 노출됨 (낙찰자)</text>
+
+  <!-- 슬롯 2 (채워짐) -->
+  <rect x="345" y="248" width="320" height="56" rx="10" class="slot slot-filled"/>
+  <text x="505" y="272" class="slot-text" fill="#064e3b">슬롯 2 — DB손해보험</text>
+  <text x="505" y="290" class="slot-text" fill="#065f46" font-weight="400" font-size="12">광고가 노출됨 (낙찰자)</text>
+
+  <!-- 슬롯 3 (공실) -->
+  <rect x="345" y="316" width="320" height="56" rx="10" class="slot slot-empty"/>
+  <text x="505" y="340" class="slot-text" fill="#78350f">슬롯 3 — 공실</text>
+  <text x="505" y="358" class="slot-text" fill="#92400e" font-weight="400" font-size="12">아무도 입찰 안 함 (공실 슬롯)</text>
+
+  <!-- 가격 박스 -->
+  <rect x="345" y="392" width="155" height="80" rx="10" class="price-box"/>
+  <text x="422" y="416" text-anchor="middle" class="price-label">최저가 (VAT-)</text>
+  <text x="422" y="445" text-anchor="middle" class="price-val">5,000원</text>
+  <text x="422" y="464" text-anchor="middle" font-size="11" fill="#64748b">시스템이 정함</text>
+
+  <rect x="510" y="392" width="155" height="80" rx="10" class="price-box"/>
+  <text x="587" y="416" text-anchor="middle" class="price-label">낙찰가 (VAT-)</text>
+  <text x="587" y="445" text-anchor="middle" class="price-val" fill="#10b981">7,500원</text>
+  <text x="587" y="464" text-anchor="middle" font-size="11" fill="#64748b">입찰자가 정함</text>
+
+  <!-- 배수 -->
+  <text x="505" y="500" text-anchor="middle" class="annot-strong">낙찰 배수 = 7,500 ÷ 5,000 = 1.50x</text>
+  <text x="505" y="520" text-anchor="middle" font-size="12" fill="#64748b">최저가 대비 어느 정도 비싸게 낙찰됐는지</text>
+
+  <!-- 화살표 회차 → 우측 설명들 -->
+  <line x1="690" y1="208" x2="745" y2="208" class="arr" marker-end="url(#arr2)"/>
+  <line x1="690" y1="344" x2="745" y2="344" class="arr" marker-end="url(#arr2)"/>
+  <line x1="690" y1="432" x2="745" y2="432" class="arr" marker-end="url(#arr2)"/>
+
+  <!-- 우측 설명들 -->
+  <rect x="745" y="172" width="220" height="72" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="760" y="194" font-size="14" font-weight="700" fill="#14532d">집행 브랜드</text>
+  <text x="760" y="215" font-size="12" fill="#166534">슬롯을 차지한 광고주</text>
+  <text x="760" y="232" font-size="12" fill="#166534">→ "브랜드 추적" 페이지서 누적 확인</text>
+
+  <rect x="745" y="308" width="220" height="72" rx="10" fill="#fefce8" stroke="#fde047" stroke-width="1.5"/>
+  <text x="760" y="330" font-size="14" font-weight="700" fill="#713f12">공실 (구좌)</text>
+  <text x="760" y="351" font-size="12" fill="#854d0e">채워지지 않은 슬롯</text>
+  <text x="760" y="368" font-size="12" fill="#854d0e">→ 진입 기회 (보수적 입찰 OK)</text>
+
+  <rect x="745" y="396" width="220" height="72" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="760" y="418" font-size="14" font-weight="700" fill="#1e3a8a">추천 입찰가</text>
+  <text x="760" y="439" font-size="12" fill="#1e40af">최근 4회차 가중평균</text>
+  <text x="760" y="456" font-size="12" fill="#1e40af">5·3·2·1 가중치 → 하한~상한</text>
+
+  <!-- 하단 보충 -->
+  <text x="500" y="580" text-anchor="middle" font-size="14" fill="#64748b">
+    💡 한 회차에는 슬롯 1·2·3 이 있고, 각 슬롯이 채워지면 그 광고주가 낙찰가만큼 지불해요.
+  </text>
+  <text x="500" y="602" text-anchor="middle" font-size="14" fill="#64748b">
+    공실은 다음 회차에 "재입찰" 이라는 형태로 채워질 수 있어요.
+  </text>
+</svg>

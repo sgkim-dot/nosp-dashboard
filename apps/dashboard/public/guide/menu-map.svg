@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" font-family="'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif">
+  <style>
+    .root { fill: #1e293b; }
+    .root-text { fill: #ffffff; font-weight: 700; }
+    .item { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; }
+    .item-title { fill: #0f172a; font-weight: 600; font-size: 18px; }
+    .item-desc { fill: #64748b; font-size: 14px; }
+    .item-tag { fill: #3b82f6; font-size: 13px; font-weight: 600; }
+    .branch { stroke: #cbd5e1; stroke-width: 2; fill: none; }
+  </style>
+
+  <!-- 루트 박스 -->
+  <rect x="40" y="140" width="180" height="80" rx="14" class="root"/>
+  <text x="130" y="180" text-anchor="middle" font-size="18" class="root-text">NOSP 대시보드</text>
+  <text x="130" y="202" text-anchor="middle" font-size="13" fill="#cbd5e1">사이드바 메뉴</text>
+
+  <!-- 가지 연결선 -->
+  <path d="M220 180 H290" class="branch"/>
+  <path d="M290 80 V280" class="branch"/>
+  <path d="M290 80 H320" class="branch"/>
+  <path d="M290 180 H320" class="branch"/>
+  <path d="M290 280 H320" class="branch"/>
+
+  <!-- 자식 1: 입낙찰 히스토리 -->
+  <rect x="320" y="40" width="540" height="90" rx="12" class="item"/>
+  <text x="345" y="70" class="item-title">📊 입낙찰 히스토리</text>
+  <text x="345" y="92" class="item-tag">메인 화면 — 다음 입찰가 결정</text>
+  <text x="345" y="114" class="item-desc">키워드그룹을 고르면 추천 입찰가·과거 추이·집행 브랜드를 볼 수 있어요</text>
+
+  <!-- 자식 2: 브랜드 점유 -->
+  <rect x="320" y="140" width="540" height="90" rx="12" class="item"/>
+  <text x="345" y="170" class="item-title">🏢 브랜드 점유</text>
+  <text x="345" y="192" class="item-tag">카테고리 단위 경쟁 구도</text>
+  <text x="345" y="214" class="item-desc">"어느 브랜드가 어느 회차에 얼마나 깔렸나" 를 히트맵으로 한눈에</text>
+
+  <!-- 자식 3: 브랜드 추적 -->
+  <rect x="320" y="240" width="540" height="90" rx="12" class="item"/>
+  <text x="345" y="270" class="item-title">🏷️ 브랜드 추적</text>
+  <text x="345" y="292" class="item-tag">광고주별 누적 노출 기록</text>
+  <text x="345" y="314" class="item-desc">"이 광고주, 어디어디 깔려 있지?" 가 궁금할 때</text>
+</svg>

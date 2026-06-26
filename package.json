@@ -6,6 +6,11 @@
     "dashboard:dev": "pnpm --filter dashboard dev",
     "dashboard:build": "pnpm --filter dashboard build",
     "db:generate": "pnpm --filter dashboard drizzle-kit generate",
-    "db:migrate": "pnpm --filter dashboard drizzle-kit migrate"
+    "db:migrate": "pnpm --filter dashboard drizzle-kit migrate",
+    "docs:sync": "node scripts/sync-user-guide-to-notion.mjs"
+  },
+  "devDependencies": {
+    "@notionhq/client": "^5.22.0",
+    "@tryfabric/martian": "^1.2.4"
   }
 }
