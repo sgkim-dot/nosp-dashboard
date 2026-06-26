@@ -1,89 +1,63 @@
 @echo off
 chcp 65001 >nul
 set PYTHONIOENCODING=utf-8
-title NOSP Brand Crawling (3-cycle, auto-retry)
+title NOSP Brand Crawling (single-cycle, anti-block)
 cd /d "C:\Users\MADUP\Documents\SearchingviewNewProduct\worker"
 
 echo ============================================================
-echo   NOSP Brand Crawling   (3-cycle convergence + auto-retry)
+echo   NOSP Brand Crawling   (single-cycle, anti-block)
 echo ============================================================
 echo.
-echo   - 3 cycles back-to-back
-echo   - Cycle 1: --resume (incremental, 24h skip)
-echo   - Cycle 2: --full   (re-scrape all active to cover misses)
-echo   - Cycle 3: --full   (final convergence pass)
-echo   - Between cycles: reconcile + cleanup __unverified__::
-echo     (host lookup failures cleared so next cycle retries clean)
-echo   - Auto-retry: if Python crashes, BAT waits 10s and resumes
-echo                 (max 5 attempts per cycle, then moves on)
+echo   - 1 cycle only (--resume, 24h skip)
+echo   - Per-KG pause: ~11.5s avg (anti-bot cadence)
+echo   - Per-KG fetches: 4 (NP) / 1 (SV), inter-fetch ~2.75s
+echo   - High-bid 0-result retry (25s) for KGs with winning_bid >= 1M
+echo   - Naver IP-block detection: aborts cycle, exit code 4
+echo   - Auto-retry: if Python crashes (codes 1/2/3), BAT waits 10s
+echo                 and resumes (max 5 attempts). Exit 4 = block, NO retry.
 echo.
 echo   - Safe to stop: completed KGs are saved per-KG.
-echo   - Look for "all cycles done" at the very end.
+echo   - Look for "cycle done" at the very end.
+echo   - Expected wall-clock: ~22-26 hours for a full ~2,700 KG round.
+echo.
+echo   - If exit code 4: clear Naver IP block manually
+echo     1) Open browser → https://m.naver.com
+echo     2) Click the "제한 해제" button + solve CAPTCHA
+echo     3) Wait 30-60 min before re-running this BAT
 echo.
 echo ============================================================
 echo.
 
-set CYCLE_NUM=1
 set RETRY=0
-:cycle1
-echo === Cycle 1/3 attempt %RETRY% (resume) ===
+:cycle
+echo === Brand crawl attempt %RETRY% (resume) ===
 uv run python -m worker.jobs.brand_scrape --resume
-if errorlevel 1 (
+set EXITCODE=%errorlevel%
+if %EXITCODE% EQU 4 (
+    echo.
+    echo ============================================================
+    echo   [STOP] Naver IP-block detected. BAT aborted.
+    echo   Clear the block on m.naver.com before re-running.
+    echo ============================================================
+    pause
+    exit /b 4
+)
+if %EXITCODE% NEQ 0 (
     set /a RETRY+=1
     if %RETRY% lss 5 (
-        echo --- cycle 1 crashed, retry in 10s ---
+        echo --- crashed (exit %EXITCODE%), retry in 10s ---
         timeout /t 10 /nobreak >nul
-        goto cycle1
+        goto cycle
     )
-    echo --- cycle 1 hit max retries, moving on ---
+    echo --- hit max retries, moving on to reconcile ---
 )
-echo --- Reconcile cycle 1 ---
+echo --- Reconcile ---
 uv run python scripts/reconcile_brands.py --apply
-echo --- Cleanup __unverified__ brands (cycle 1) ---
-uv run python scripts/cleanup_unverified_brands.py --apply
-echo --- Cool-down 5 minutes before cycle 2 (Naver burst-throttle reset) ---
-timeout /t 300 /nobreak >nul
-
-set RETRY=0
-:cycle2
-echo === Cycle 2/3 attempt %RETRY% (full) ===
-uv run python -m worker.jobs.brand_scrape --full
-if errorlevel 1 (
-    set /a RETRY+=1
-    if %RETRY% lss 5 (
-        echo --- cycle 2 crashed, retry in 10s ---
-        timeout /t 10 /nobreak >nul
-        goto cycle2
-    )
-    echo --- cycle 2 hit max retries, moving on ---
-)
-echo --- Reconcile cycle 2 ---
-uv run python scripts/reconcile_brands.py --apply
-echo --- Cleanup __unverified__ brands (cycle 2) ---
-uv run python scripts/cleanup_unverified_brands.py --apply
-echo --- Cool-down 5 minutes before cycle 3 (Naver burst-throttle reset) ---
-timeout /t 300 /nobreak >nul
-
-set RETRY=0
-:cycle3
-echo === Cycle 3/3 attempt %RETRY% (full) ===
-uv run python -m worker.jobs.brand_scrape --full
-if errorlevel 1 (
-    set /a RETRY+=1
-    if %RETRY% lss 5 (
-        echo --- cycle 3 crashed, retry in 10s ---
-        timeout /t 10 /nobreak >nul
-        goto cycle3
-    )
-    echo --- cycle 3 hit max retries, moving on ---
-)
-echo --- Reconcile cycle 3 ---
-uv run python scripts/reconcile_brands.py --apply
-rem cycle 3 후에는 cleanup을 돌리지 않음 — 최종 사이클에 남은 __unverified__는
-rem 실제로 host lookup이 영구 불가한 광고들이므로 운영자가 dashboard에서 확인.
+rem No cleanup after the single cycle: any remaining __unverified__ rows are
+rem permanently un-resolvable hosts; operator handles them in the dashboard.
 
 echo.
 echo ============================================================
-echo   all cycles done!  Press any key to close.
+echo   cycle done!  Press any key to close.
 echo ============================================================
 pause

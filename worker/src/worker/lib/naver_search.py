@@ -23,6 +23,28 @@ from worker.models import SlotExtract
 
 log = get_logger(__name__)
 
+
+class NaverBlockedError(RuntimeError):
+    """Raised when Naver returns a bot-block / "검색 서비스 제한" page.
+
+    The fetcher pages out — keyword scraping must STOP for this BAT run, or
+    the IP block will escalate. Caller (brand_scrape) catches this and aborts
+    the rest of the cycle so the user can clear the IP block manually.
+    """
+
+
+# Phrases that Naver's "검색 서비스 이용이 제한되었습니다" interstitial reliably
+# contains. We check page text after navigation. The interstitial is served
+# instead of the real SERP when Naver flags the client IP/UA as automated.
+_BLOCK_MARKERS = (
+    "검색 서비스 이용이 제한",
+    "검색서비스 이용이 제한",
+    "안정적인 검색 서비스를 방해",
+    "프로그램을 이용한 자동 검색",
+    "보안 절차를 거치",
+    "제한 해제",
+)
+
 _PC_UA = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
@@ -334,7 +356,25 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
             context = pool.get_context(mobile)
             page = context.new_page()
             try:
-                page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
+                response = page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
+                # ── Bot-block detection ──────────────────────────────────
+                # Naver returns 403 OR a 200-with-interstitial when the IP/UA
+                # is flagged. Either signal is a stop-the-world event: we MUST
+                # abort the whole BAT or the block escalates.
+                status = response.status if response is not None else 0
+                if status >= 400:
+                    raise NaverBlockedError(
+                        f"HTTP {status} on {url[:120]} — Naver appears to be blocking this IP"
+                    )
+                # 200 OK but interstitial body? Scan the text.
+                try:
+                    body_text = page.evaluate("() => document.body && document.body.innerText || ''")
+                except Exception:
+                    body_text = ""
+                if body_text and any(m in body_text for m in _BLOCK_MARKERS):
+                    raise NaverBlockedError(
+                        f"검색 제한 페이지 감지 ({url[:120]}) — IP 차단 가능성"
+                    )
                 # Brand widgets hydrate quickly on mobile; PC even faster.
                 page.wait_for_timeout(800)
                 # NP (신제품검색) ad widget is lazy-loaded — without a scroll
@@ -354,6 +394,10 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
                 except Exception:
                     pass
             return raw or []
+        except NaverBlockedError:
+            # IP block is a stop-the-world event — do NOT retry, do NOT swallow.
+            # Propagate up so brand_scrape aborts the cycle.
+            raise
         except Exception as e:  # noqa: BLE001 — Playwright wraps many types
             last_err = e
             if attempt == 1:
@@ -372,15 +416,17 @@ def _run(keyword: str, *, mobile: bool, timeout_ms: int) -> list[dict]:
             raise last_err
 
 
-# Multi-cycle strategy: a single BAT does 4 fetches (good enough for rotation
-# in ~90% of running-ad KGs) and skips the unconditional 0-empty retry
-# entirely. The 4% of misses that escape are caught by:
+# Single-cycle strategy (2026-06-26): the 3-cycle BAT was retired after Naver
+# IP-blocked the operator's network during a back-to-back cycle 1→2→3 run.
+# Recovery: one cycle only, fetch count stays at 4 per KG (tested optimum),
+# but inter-fetch wait is doubled below to spread rotation observation across
+# more seconds. Across the round we now do 4 × 1 = 4 fetches per KG instead
+# of the old 4 × 3 = 12, reducing total Naver requests by 67%.
+# Misses are caught by:
 #   1) bid-aware retry inside _process_one_kg (winning_bid > 0 + 0 caught)
 #   2) post-scrape sweep (detected > caught)
-#   3) next cycle (the BAT runs 3 cycles back-to-back — see 브랜드크롤링.bat)
-#   4) dawn reset (KST 03-09 0-caught → NULL on next start)
-# This gets one cycle under ~14h, so three cycles in ~42h (same wall-clock
-# as the old single 4-5 day cycle) deliver higher net recall + fresher data.
+#   3) dawn reset (KST 03-09 0-caught → NULL on next BAT start)
+#   4) operator re-runs the BAT if needed (manual)
 _NP_RETRIES = 4
 _SV_RETRIES = 1
 
@@ -448,9 +494,16 @@ def scrape_brands_with_detected_count(
             # placement count at its best hydration during this session.
             if len(this_fetch_ids) > detected_slot_count:
                 detected_slot_count = len(this_fetch_ids)
-            # Inter-fetch jittered pause — disguise burst pattern.
+            # Inter-fetch jittered pause — disguise burst pattern AND let
+            # Naver's ad-rotation move on between observations so we get
+            # better coverage of the rotating advertiser set.
+            # 2026-06-26: increased from (0.8s + 0.7) → (2.0s + 1.5s, avg 2.75s)
+            # to give carousel rotation more time to surface alternative
+            # advertisers between observation passes. Trade-off: per-KG
+            # latency +6s, but recovers some of the recall lost when the
+            # 3-cycle BAT was retired.
             if num > 1 and i < num - 1:
-                time.sleep(0.8 + random.uniform(0, 0.7))
+                time.sleep(2.0 + random.uniform(0, 1.5))
         return m
 
     merged = _do_fetches(n_fetches)

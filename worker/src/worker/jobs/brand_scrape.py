@@ -21,7 +21,7 @@ from worker.lib.canonical_brand import (
     normalize_host,
     platform_business_name,
 )
-from worker.lib.naver_search import close_pool, scrape_brands_with_detected_count
+from worker.lib.naver_search import NaverBlockedError, close_pool, scrape_brands_with_detected_count
 from worker.logging import configure_logging, get_logger
 from worker.upsert import complete_ingest_run, fail_ingest_run, start_ingest_run
 
@@ -33,8 +33,15 @@ _USER_AGENT = (
 )
 # Base inter-keyword pause. Actual sleep is `_DELAY_SECONDS + uniform(0, _DELAY_JITTER)`
 # so the request cadence isn't perfectly periodic (anti-bot signal).
-_DELAY_SECONDS = 0.8
-_DELAY_JITTER = 0.7
+#
+# 2026-06-26: increased from (0.8s + 0.7s jitter) → (8s + 7s jitter, avg 11.5s)
+# after Naver IP-blocked the operator's network during a 3-cycle BAT run. The
+# 3-cycle BAT is retired (1-cycle only now), so we trade per-KG speed for a
+# request cadence well under Naver's automated-traffic detection threshold.
+# One cycle now lands in ~22-26h on a ~2,700-KG round, which is acceptable
+# given the BAT auto-skips KGs scraped in the last 24h (--resume).
+_DELAY_SECONDS = 8.0
+_DELAY_JITTER = 7.0
 
 # High-bid 0-result retry. A 0건 result on a low-bid KG is usually
 # legitimate (no ad running), but a 0건 result on a big KG is almost
@@ -351,10 +358,23 @@ def _process_one_kg(
                         "high-bid retry success",
                         keyword=kw, slots=len(slots), detected=retry_det,
                     )
+            except NaverBlockedError:
+                # Block during retry — propagate. Caller aborts the cycle.
+                raise
             except Exception:
                 # Retry failure is non-fatal; fall through with original 0.
                 log.warning("high-bid retry raised", keyword=kw)
         _consecutive_scrape_failures = 0
+    except NaverBlockedError:
+        # Naver IP-block detected — STOP THE WORLD.
+        # Re-raising propagates up through scrape_brands_for_active_rounds
+        # and exits the BAT with a clear error. Do NOT close the pool — we
+        # want the abort to be fast and clean.
+        log.error(
+            "naver IP-block detected — aborting BAT to prevent escalation",
+            keyword=kw, rkg_id=rkg_id,
+        )
+        raise
     except Exception:
         _consecutive_scrape_failures += 1
         log.exception(
@@ -552,11 +572,42 @@ def scrape_brands_for_active_rounds(
     try:
         for rkg_id, kw, product_code, max_brands, winning_bid in rows:
             kgs_scraped += 1
-            slots_inserted += _process_one_kg(
-                rkg_id, kw, product_code, max_brands,
-                persist_conn=persist_conn, delay_seconds=delay_seconds,
-                winning_bid=winning_bid,
-            )
+            try:
+                slots_inserted += _process_one_kg(
+                    rkg_id, kw, product_code, max_brands,
+                    persist_conn=persist_conn, delay_seconds=delay_seconds,
+                    winning_bid=winning_bid,
+                )
+            except NaverBlockedError as block_err:
+                # IP-block detected — STOP THE WORLD. Mark ingest_run as
+                # failed with a clear reason and exit so the operator knows
+                # to clear the block (CAPTCHA on m.naver.com) before the
+                # next BAT run. Do NOT retry — that just escalates the block.
+                log.error(
+                    "BAT aborted due to Naver IP-block",
+                    rkg_id=rkg_id, keyword=kw,
+                    kgs_scraped_so_far=kgs_scraped,
+                    error=str(block_err)[:200],
+                )
+                try:
+                    if persist_conn is None:
+                        with connect() as fresh:
+                            fail_ingest_run(
+                                fresh, run_id=run_id,
+                                error=f"NaverBlockedError: {block_err}",
+                            )
+                            fresh.commit()
+                    else:
+                        fail_ingest_run(
+                            persist_conn, run_id=run_id,
+                            error=f"NaverBlockedError: {block_err}",
+                        )
+                except Exception:
+                    log.exception("fail_ingest_run after block raised")
+                # Exit code 4 — distinct from generic crash (1/2) and from
+                # consecutive-failure exit (3). BAT wrapper does NOT auto-retry
+                # this code (see 브랜드크롤링.bat).
+                sys.exit(4)
             if _consecutive_scrape_failures >= _MAX_CONSECUTIVE_FAILURES:
                 log.error(
                     "too many consecutive scrape failures — exiting "
