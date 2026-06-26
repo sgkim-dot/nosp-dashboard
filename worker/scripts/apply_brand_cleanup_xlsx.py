@@ -65,19 +65,17 @@ def insert_into_canonical(rows: list[tuple[int, str, str]], dry_run: bool) -> in
     kst = timezone(timedelta(hours=9))
     today = datetime.now(kst).strftime("%Y-%m-%d")
     batch_header = (
-        f'    # ─── User-mapped {today} batch (긴급정정 xlsx) ─────────────\n'
+        f'    # ─── User-mapped {today} batch (xlsx 일괄 적용) ─────────────\n'
     )
 
-    # Collect existing keys so we don't add dupes
-    existing_keys = set(re.findall(r'"(__unverified__::[^"]+)"\s*:', text))
+    # Collect ALL existing HOST_TO_BRAND keys (sentinel + regular host) so we
+    # don't add dupes. Regular host keys go into the same dict — same lookup.
+    existing_keys = set(re.findall(r'^\s*"([^"]+)"\s*:\s*"[^"]*",\s*$', text, re.MULTILINE))
 
     new_lines: list[str] = []
     added = []
     skipped_dup = []
     for brand_id, host, fix in rows:
-        if not host.startswith("__unverified__::"):
-            print(f"  [skip] id={brand_id} host not __unverified__::  ({host[:60]})")
-            continue
         if host in existing_keys:
             skipped_dup.append((brand_id, host, fix))
             continue
