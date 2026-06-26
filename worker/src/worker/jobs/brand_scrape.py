@@ -34,14 +34,22 @@ _USER_AGENT = (
 # Base inter-keyword pause. Actual sleep is `_DELAY_SECONDS + uniform(0, _DELAY_JITTER)`
 # so the request cadence isn't perfectly periodic (anti-bot signal).
 #
-# 2026-06-26: increased from (0.8s + 0.7s jitter) → (8s + 7s jitter, avg 11.5s)
-# after Naver IP-blocked the operator's network during a 3-cycle BAT run. The
-# 3-cycle BAT is retired (1-cycle only now), so we trade per-KG speed for a
-# request cadence well under Naver's automated-traffic detection threshold.
-# One cycle now lands in ~22-26h on a ~2,700-KG round, which is acceptable
-# given the BAT auto-skips KGs scraped in the last 24h (--resume).
-_DELAY_SECONDS = 8.0
-_DELAY_JITTER = 7.0
+# 2026-06-26: increased from (0.8s + 0.7s jitter) → (10s + 10s jitter, avg 15s)
+# after Naver IP-blocked the operator's network. The 3-cycle BAT is retired
+# (1-cycle only) — slower cadence + batch-and-rest below keeps total request
+# rate well under Naver's automated-traffic detection threshold.
+# One cycle lands in ~25-28h on a ~2,700-KG round.
+_DELAY_SECONDS = 10.0
+_DELAY_JITTER = 10.0
+
+# Batch-and-rest: every N KGs processed, take a longer break. Naver's anti-bot
+# heuristics combine short-window request rate AND sustained-traffic-over-time
+# signals — periodic multi-minute idle windows reset the longer signal even
+# when per-KG cadence is already slow.
+# 100 KGs × ~35s/KG = ~58 min per batch, then 3 min rest = ~62 min effective
+# cycle, with ~24 batches over a full round → ~72 min of total rest added.
+_BATCH_REST_EVERY_N_KGS = 100
+_BATCH_REST_SECONDS = 180.0  # 3 minutes
 
 # High-bid 0-result retry. A 0건 result on a low-bid KG is usually
 # legitimate (no ad running), but a 0건 result on a big KG is almost
@@ -553,6 +561,39 @@ def scrape_brands_for_active_rounds(
     # burst window drain. Skip this when targeting specific rkg_ids
     # (force-rescrape) — those are interactive and don't need the wait.
     if rkg_ids is None and rows:
+        # Pre-flight check — make sure the operator IP isn't already blocked
+        # by Naver before we start a 25+ hour BAT. If it is, abort immediately
+        # so the operator can clear the CAPTCHA without burning further on
+        # the blocked IP. The check uses a benign keyword and the same
+        # fetcher path (m.search.naver.com) so it gets the same response a
+        # real scrape would.
+        log.info("pre-flight: checking Naver isn't IP-blocking this network…")
+        try:
+            from worker.lib.naver_search import (
+                NaverBlockedError as _PreflightBlocked,
+                scrape_brands_with_detected_count as _preflight_scrape,
+            )
+            _preflight_scrape("날씨", "NEW_PRODUCT")
+            log.info("pre-flight OK — proceeding")
+        except _PreflightBlocked as block_err:
+            log.error(
+                "pre-flight FAILED — Naver is blocking this IP. "
+                "Clear the block at m.naver.com (제한 해제 + CAPTCHA) and retry.",
+                error=str(block_err)[:200],
+            )
+            if persist_conn is None:
+                with connect() as fresh:
+                    fail_ingest_run(
+                        fresh, run_id=start_ingest_run(fresh, run_type=run_type),
+                        error=f"NaverBlockedError (pre-flight): {block_err}",
+                    )
+                    fresh.commit()
+            sys.exit(4)
+        except Exception:
+            # Non-block errors at pre-flight (timeouts, driver init issues)
+            # are NOT fatal — they could be transient. Log and proceed.
+            log.warning("pre-flight check raised non-block error; proceeding anyway")
+
         log.info("cycle-start warm-up: 90s idle to drain burst-throttle window")
         time.sleep(90)
 
@@ -572,6 +613,21 @@ def scrape_brands_for_active_rounds(
     try:
         for rkg_id, kw, product_code, max_brands, winning_bid in rows:
             kgs_scraped += 1
+            # Batch-and-rest: every N KGs, take a longer break so Naver's
+            # sustained-traffic anti-bot signal resets. Skip on targeted
+            # rescrape (rkg_ids set) since those are short and interactive.
+            if (
+                rkg_ids is None
+                and kgs_scraped > 1
+                and (kgs_scraped - 1) % _BATCH_REST_EVERY_N_KGS == 0
+            ):
+                log.info(
+                    "batch rest — sustained-traffic backoff",
+                    kgs_done=kgs_scraped - 1,
+                    rest_seconds=_BATCH_REST_SECONDS,
+                )
+                time.sleep(_BATCH_REST_SECONDS)
+                _bump_progress()
             try:
                 slots_inserted += _process_one_kg(
                     rkg_id, kw, product_code, max_brands,

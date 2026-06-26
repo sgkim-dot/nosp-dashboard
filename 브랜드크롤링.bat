@@ -1,38 +1,33 @@
 @echo off
 chcp 65001 >nul
 set PYTHONIOENCODING=utf-8
-title NOSP Brand Crawling (single-cycle, anti-block)
+title NOSP Brand Crawling
 cd /d "C:\Users\MADUP\Documents\SearchingviewNewProduct\worker"
 
 echo ============================================================
-echo   NOSP Brand Crawling   (single-cycle, anti-block)
+echo   NOSP Brand Crawling - single cycle, anti-block
 echo ============================================================
 echo.
-echo   - 1 cycle only (--resume, 24h skip)
-echo   - Per-KG pause: ~11.5s avg (anti-bot cadence)
-echo   - Per-KG fetches: 4 (NP) / 1 (SV), inter-fetch ~2.75s
-echo   - High-bid 0-result retry (25s) for KGs with winning_bid >= 1M
-echo   - Naver IP-block detection: aborts cycle, exit code 4
-echo   - Auto-retry: if Python crashes (codes 1/2/3), BAT waits 10s
-echo                 and resumes (max 5 attempts). Exit 4 = block, NO retry.
+echo   - 1 cycle resume mode, skips KGs scraped within 24h
+echo   - Slower cadence: ~11s pause between KGs, ~22-26h total
+echo   - High-bid retry: 25s pause on 0-result for bid greater than 1M
+echo   - Auto-stop on Naver IP-block (exit code 4, no retry)
+echo   - Auto-retry on crash codes 1/2/3 up to 5 times
 echo.
-echo   - Safe to stop: completed KGs are saved per-KG.
-echo   - Look for "cycle done" at the very end.
-echo   - Expected wall-clock: ~22-26 hours for a full ~2,700 KG round.
-echo.
-echo   - If exit code 4: clear Naver IP block manually
-echo     1) Open browser → https://m.naver.com
-echo     2) Click the "제한 해제" button + solve CAPTCHA
-echo     3) Wait 30-60 min before re-running this BAT
+echo   If you see exit code 4 STOP message:
+echo     1. Open m.naver.com in browser
+echo     2. Click 'block release' and solve CAPTCHA
+echo     3. Wait 30-60 min before re-running
 echo.
 echo ============================================================
 echo.
 
 set RETRY=0
 :cycle
-echo === Brand crawl attempt %RETRY% (resume) ===
+echo === Brand crawl attempt %RETRY% ===
 uv run python -m worker.jobs.brand_scrape --resume
 set EXITCODE=%errorlevel%
+
 if %EXITCODE% EQU 4 (
     echo.
     echo ============================================================
@@ -42,19 +37,19 @@ if %EXITCODE% EQU 4 (
     pause
     exit /b 4
 )
+
 if %EXITCODE% NEQ 0 (
     set /a RETRY+=1
     if %RETRY% lss 5 (
-        echo --- crashed (exit %EXITCODE%), retry in 10s ---
+        echo --- crashed exit=%EXITCODE%, retry in 10s ---
         timeout /t 10 /nobreak >nul
         goto cycle
     )
     echo --- hit max retries, moving on to reconcile ---
 )
+
 echo --- Reconcile ---
 uv run python scripts/reconcile_brands.py --apply
-rem No cleanup after the single cycle: any remaining __unverified__ rows are
-rem permanently un-resolvable hosts; operator handles them in the dashboard.
 
 echo.
 echo ============================================================
