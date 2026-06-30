@@ -101,8 +101,8 @@ export default async function CrawlPage() {
   const lastKgSec = secondsAgo(p.lastKgScrapedAt);
   // "actively running" heuristic: KG processed in last 5 min
   const isLive = lastKgSec != null && lastKgSec < 300;
-  // Current cycle = most recent ingest_run row
-  const currentCycle = p.cycles[p.cycles.length - 1] ?? null;
+  // Latest BAT attempt = most recent ingest_run row (mode label only)
+  const latestAttempt = p.cycles[p.cycles.length - 1] ?? null;
 
   return (
     <div>
@@ -125,12 +125,11 @@ export default async function CrawlPage() {
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-base font-medium text-muted-foreground">
-                  현재 사이클 진행률
+                  전체 진행률
                 </span>
-                {currentCycle && (
+                {latestAttempt && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
-                    {currentCycle.cycleNo}차 ·{" "}
-                    {MODE_LABEL[currentCycle.mode] ?? currentCycle.mode}
+                    {MODE_LABEL[latestAttempt.mode] ?? latestAttempt.mode}
                   </span>
                 )}
                 {statusBadge(isLive ? "running" : p.currentRunStatus)}
@@ -196,36 +195,39 @@ export default async function CrawlPage() {
           })}
         </div>
 
-        {/* Cycle breakdown — simple status row (이번 BAT 실행의 1/2/3차 사이클 상태) */}
+        {/* Recent BAT attempts — 1-cycle policy: each row is one BAT invocation.
+            Multiple attempts in a short window are crash/sleep/interrupt + restart,
+            NOT a multi-pass cycle. Show start time so the operator can correlate
+            with the actual cmd window. */}
         {p.cycles.length > 0 && (
           <div className="rounded-xl border bg-card px-5 py-4">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
               <span className="text-sm font-medium text-muted-foreground">
-                사이클 진행
+                최근 BAT 실행
               </span>
-              {[1, 2, 3].map((no) => {
-                const c = p.cycles.find((x) => x.cycleNo === no);
-                const isLiveCycle = c?.status === "started" && !c?.completedAt;
-                let label = "대기";
+              {p.cycles.map((c) => {
+                const isLiveAttempt = c.status === "started" && !c.completedAt;
+                let label = c.status;
                 let className = "bg-muted text-muted-foreground";
-                if (c) {
-                  if (isLiveCycle) {
-                    label = "진행 중";
-                    className = "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200";
-                  } else if (c.status === "success" || c.status === "completed") {
-                    label = "완료";
-                    className = "bg-blue-50 text-blue-700 ring-1 ring-blue-200";
-                  } else if (c.status === "error" || c.status === "failed") {
-                    label = "실패";
-                    className = "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
-                  } else if (c.status === "interrupted") {
-                    label = "중단";
-                    className = "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
-                  }
+                if (isLiveAttempt) {
+                  label = "진행 중";
+                  className = "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200";
+                } else if (c.status === "success" || c.status === "completed") {
+                  label = "완료";
+                  className = "bg-blue-50 text-blue-700 ring-1 ring-blue-200";
+                } else if (c.status === "error" || c.status === "failed") {
+                  label = "실패";
+                  className = "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
+                } else if (c.status === "interrupted") {
+                  label = "중단";
+                  className = "bg-amber-50 text-amber-700 ring-1 ring-amber-200";
                 }
+                const startedSec = secondsAgo(c.startedAt);
                 return (
-                  <span key={no} className="inline-flex items-center gap-1.5 text-sm">
-                    <span className="text-muted-foreground">{no}차</span>
+                  <span key={c.runId} className="inline-flex items-center gap-1.5 text-sm">
+                    <span className="text-muted-foreground tabular-nums">
+                      {fmtAgo(startedSec)} 시작
+                    </span>
                     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${className}`}>
                       {label}
                     </span>
