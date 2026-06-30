@@ -882,8 +882,29 @@ def _print_progress_summary(
     print()
 
 
+def _prevent_windows_sleep() -> None:
+    """Block Windows from entering sleep/hibernate while this process runs.
+
+    Without this, a 25-hour crawl that overlaps an idle window gets paused by
+    the OS — incident 2026-06-29 lost ~7h after the machine slept at 07:28 KST
+    despite standby-timeout being 0 (modern-standby kicked in anyway).
+    State auto-clears when the process exits.
+    """
+    if sys.platform != "win32":
+        return
+    try:
+        import ctypes
+        ES_CONTINUOUS = 0x80000000
+        ES_SYSTEM_REQUIRED = 0x00000001
+        ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)
+        log.info("windows sleep prevention armed (SetThreadExecutionState)")
+    except Exception as e:
+        log.warning("failed to arm sleep prevention", error=str(e))
+
+
 def main(argv: list[str] | None = None) -> int:
     configure_logging()
+    _prevent_windows_sleep()
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=None, help="cap on keyword groups (for pilot)")
     parser.add_argument(
