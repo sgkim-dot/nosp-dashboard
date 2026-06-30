@@ -402,6 +402,15 @@ HOST_TO_BRAND: dict[str, str] = {
     "staymore.co.kr": "스테이모어",
     "www.staymore.co.kr": "스테이모어",
     "m.staymore.co.kr": "스테이모어",
+    # ─── User-confirmed 2026-06-30 batch (cleanup 제외용 — 정상 브랜드) ──
+    # 휴리스틱이 "짧은 이름"으로 잘못 flag하는 정상 브랜드들. HOST_TO_BRAND에
+    # 명시 등록되면 getSuspectBrands가 자동 skip (CANONICAL_HOSTS.has 조건).
+    "shokz.co.kr": "샥즈",
+    "www.shokz.co.kr": "샥즈",
+    "piev.kr": "피에브",
+    "www.piev.kr": "피에브",
+    "baro-lab.com": "바로랩",
+    "www.baro-lab.com": "바로랩",
     # ─── User-mapped 2026-06-26 batch (xlsx 일괄 적용) ─────────────
     "direct.hanwhalife.com": "한화생명",
     "brand.naver.com/delico_korea": "딜리코",
