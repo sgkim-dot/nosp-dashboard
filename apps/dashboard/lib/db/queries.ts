@@ -437,6 +437,9 @@ export type BrandHistoryRow = {
   host: string;               // per-capture landing hostname (from brands row)
   source: string;
   confidence: number | null;
+  periodStart: string;        // 회차 집행 시작일 (rounds.period_start, YYYY-MM-DD)
+  periodEnd: string;          // 회차 집행 종료일 (rounds.period_end, YYYY-MM-DD)
+  regularAnnounceDate: string | null; // 정규 낙찰일자 (rounds.regular_announce_date)
 };
 
 export async function getBrandHistory(brandId: number): Promise<{
@@ -472,6 +475,9 @@ export async function getBrandHistory(brandId: number): Promise<{
     host: string;
     source: string;
     confidence: number | null;
+    period_start: string;
+    period_end: string;
+    regular_announce_date: string | null;
   }>(sql`
     SELECT
       rb.captured_at::text AS captured_at,
@@ -486,7 +492,10 @@ export async function getBrandHistory(brandId: number): Promise<{
       rb.description,
       b.business_name AS host,
       rb.source,
-      rb.confidence
+      rb.confidence,
+      r.period_start::text AS period_start,
+      r.period_end::text AS period_end,
+      r.regular_announce_date::text AS regular_announce_date
     FROM brands b
     JOIN round_brands rb ON rb.brand_id = b.id
     JOIN round_keyword_groups rkg ON rkg.id = rb.round_keyword_group_id
@@ -518,6 +527,9 @@ export async function getBrandHistory(brandId: number): Promise<{
       host: r.host,
       source: r.source,
       confidence: r.confidence,
+      periodStart: r.period_start,
+      periodEnd: r.period_end,
+      regularAnnounceDate: r.regular_announce_date,
     })),
   };
 }

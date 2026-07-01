@@ -203,6 +203,9 @@ function BrandHistoryTable({ history }: { history: BrandHistoryRow[] }) {
     sources: Set<string>;
     confidences: number[];
     capturedAt: string;
+    periodStart: string;
+    periodEnd: string;
+    regularAnnounceDate: string | null;
   };
 
   const groups: Group[] = [];
@@ -225,6 +228,9 @@ function BrandHistoryTable({ history }: { history: BrandHistoryRow[] }) {
         sources: new Set(),
         confidences: [],
         capturedAt: h.capturedAt,
+        periodStart: h.periodStart,
+        periodEnd: h.periodEnd,
+        regularAnnounceDate: h.regularAnnounceDate,
       };
       byKey.set(k, g);
       groups.push(g);
@@ -248,6 +254,8 @@ function BrandHistoryTable({ history }: { history: BrandHistoryRow[] }) {
             <th className="px-2 py-1.5">대분류 › 소분류</th>
             <th className="px-2 py-1.5">키워드그룹</th>
             <th className="px-2 py-1.5 w-20 text-center">점유</th>
+            <th className="px-2 py-1.5 w-40">집행일</th>
+            <th className="px-2 py-1.5 w-24">낙찰일자</th>
             <th className="px-2 py-1.5">타이틀</th>
             <th className="px-2 py-1.5">호스트</th>
             <th className="px-2 py-1.5 w-16 text-center">출처</th>
@@ -282,6 +290,12 @@ function BrandHistoryTable({ history }: { history: BrandHistoryRow[] }) {
                   ) : (
                     slotLabel
                   )}
+                </td>
+                <td className="px-2 py-1 text-[10px] text-muted-foreground tabular-nums whitespace-nowrap">
+                  {g.periodStart.slice(5)} ~ {g.periodEnd.slice(5)}
+                </td>
+                <td className="px-2 py-1 text-[10px] text-muted-foreground tabular-nums whitespace-nowrap">
+                  {g.regularAnnounceDate ?? "-"}
                 </td>
                 <td className="px-2 py-1 text-muted-foreground">
                   {Array.from(g.adCopies).join(" / ") || "-"}
