@@ -413,6 +413,8 @@ HOST_TO_BRAND: dict[str, str] = {
     "www.baro-lab.com": "바로랩",
     "lazybee.co.kr": "레이지비",
     "www.lazybee.co.kr": "레이지비",
+    "makeshop.co.kr": "메이크샵",
+    "www.makeshop.co.kr": "메이크샵",
     # ─── User-mapped 2026-06-26 batch (xlsx 일괄 적용) ─────────────
     "direct.hanwhalife.com": "한화생명",
     "brand.naver.com/delico_korea": "딜리코",
