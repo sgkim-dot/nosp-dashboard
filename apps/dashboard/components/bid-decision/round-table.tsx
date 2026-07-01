@@ -43,6 +43,7 @@ export function RoundTable({
           <col className="w-[96px]" />
           <col className="w-[160px]" />
           <col className="w-[112px]" />
+          <col className="w-[112px]" />
           <col className="w-[140px]" />
           <col className="w-[140px]" />
           <col className="w-[80px]" />
@@ -54,6 +55,7 @@ export function RoundTable({
           <TableRow className="[&_th]:text-center [&_th]:text-sm [&_th]:font-semibold [&_th]:text-muted-foreground [&_th]:py-3 bg-muted/40">
             <TableHead>회차</TableHead>
             <TableHead>집행기간</TableHead>
+            <TableHead>낙찰일자</TableHead>
             <TableHead>기준조회수</TableHead>
             <TableHead>최저 (VAT-)</TableHead>
             <TableHead>낙찰 (VAT-)</TableHead>
@@ -81,6 +83,9 @@ export function RoundTable({
                 {formatDate(r.periodStart)}
                 <span className="mx-1.5 text-muted-foreground">~</span>
                 {formatDate(r.periodEnd)}
+              </TableCell>
+              <TableCell className="font-mono text-sm whitespace-nowrap tabular-nums text-muted-foreground">
+                {r.regularAnnounceDate ? formatDate(r.regularAnnounceDate) : "-"}
               </TableCell>
               <TableCell className="tabular-nums">
                 {r.referenceQueryVolume == null

@@ -125,6 +125,7 @@ type TailRow = {
   total_slots: number | null;
   bid_status: string | null;
   brands_scraped_at: string | null;
+  regular_announce_date: string | null;
 };
 
 export async function getKeywordGroupSummary(args: {
@@ -173,7 +174,8 @@ export async function getKeywordGroupSummary(args: {
           THEN '입찰기간종료'
         ELSE rkg.bid_status
       END AS bid_status,
-      rkg.brands_scraped_at::text AS brands_scraped_at
+      rkg.brands_scraped_at::text AS brands_scraped_at,
+      r.regular_announce_date::text AS regular_announce_date
     FROM round_keyword_groups rkg
     JOIN rounds r ON r.id = rkg.round_id
     WHERE rkg.keyword_group_id = ${args.keywordGroupId}
@@ -267,6 +269,7 @@ export async function getKeywordGroupSummary(args: {
             : null,
         brands: brandsByRound.get(r.round_id) ?? [],
         brandsScrapedAt: r.brands_scraped_at,
+        regularAnnounceDate: r.regular_announce_date,
       };
     });
 

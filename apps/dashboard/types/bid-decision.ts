@@ -35,6 +35,7 @@ export type RoundRow = {
   ratio: number | null;
   brands: RoundBrand[];
   brandsScrapedAt: string | null;
+  regularAnnounceDate: string | null;
 };
 
 export type KeywordGroupSummary = {

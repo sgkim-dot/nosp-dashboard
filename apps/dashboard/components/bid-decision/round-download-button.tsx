@@ -37,6 +37,7 @@ export function RoundDownloadButton({
         [
           "회차",
           "집행기간",
+          "낙찰일자",
           "기준조회수",
           "최저(VAT-)",
           "낙찰(VAT-)",
@@ -48,6 +49,7 @@ export function RoundDownloadButton({
         ...ordered.map((r) => [
           r.roundNo,
           `${r.periodStart} ~ ${r.periodEnd}`,
+          r.regularAnnounceDate ?? "",
           r.referenceQueryVolume ?? "",
           r.minBidPrice ?? "",
           r.regularWinningBid ?? "",
@@ -61,6 +63,7 @@ export function RoundDownloadButton({
       summarySheet["!cols"] = [
         { wch: 8 },
         { wch: 24 },
+        { wch: 12 },
         { wch: 12 },
         { wch: 14 },
         { wch: 14 },
